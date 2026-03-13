@@ -12,10 +12,9 @@
 
 
 // ---------- API Configuration ----------
-
-const OPENROUTER_API_KEY = 'OPENROUTER_API_KEY';          // ← Replace with your real key
-const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
-const AI_MODEL = 'meta-llama/llama-3.1-8b-instruct:free'; // Free model on OpenRouter
+// API key is now stored server-side in Vercel environment variables
+// The frontend calls our own /api/transform endpoint
+const API_ENDPOINT = '/api/transform';  // Vercel serverless function
 const MAX_CHARS = 5000;
 
 
@@ -141,13 +140,13 @@ function getValidatedInput() {
 }
 
 /**
- * Check that the API key has been configured.
+ * Check that the API endpoint has been configured.
  * Returns true if valid, false otherwise.
  */
 function isApiKeyConfigured() {
-  if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'OPENROUTER_API_KEY') {
-    showError('API key not configured. Please set your OpenRouter API key in script.js.');
-    showToast('Missing API key!', 'error');
+  if (!API_ENDPOINT) {
+    showError('API endpoint not configured. Please deploy to Vercel.');
+    showToast('Missing API endpoint!', 'error');
     return false;
   }
   return true;
@@ -181,12 +180,14 @@ function revealCards() {
  */
 function setButtonLoading(isLoading) {
   transformBtn.disabled = isLoading;
-  transformBtn.innerHTML = isLoading 
-    ? '<span class="loading-dots"><span></span><span></span><span></span></span> Transforming...'
-    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
-        <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
-      </svg> Transform Text`;
+  if (isLoading) {
+    transformBtn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> Transforming...';
+  } else {
+    transformBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+      <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+    </svg> Transform Text`;
+  }
 }
 
 
@@ -209,12 +210,12 @@ function handleCopy(button) {
   }
 
   navigator.clipboard.writeText(text).then(() => {
-    const originalHTML = button.innerHTML;
-    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    const btnHTML = button.innerHTML;
+    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
     button.classList.add('copied');
 
     setTimeout(() => {
-      button.innerHTML = originalHTML;
+      button.innerHTML = btnHTML;
       button.classList.remove('copied');
     }, 1500);
 
@@ -225,119 +226,60 @@ function handleCopy(button) {
 }
 
 
-// ---------- AI Prompt Builder ----------
+// ---------- API Call (Serverless) ----------
 
 /**
- * Build the system + user messages for the OpenRouter API call.
- * The system prompt instructs the model to return three clearly
- * delimited sections so we can parse them.
+ * Send the user's text to the serverless API and return the transformed result.
+ * The server handles the OpenRouter API call securely.
  */
-function buildMessages(userText) {
-  const systemPrompt = `You are ToneShift, a text transformation assistant.
+async function callTransformAPI(userText, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: userText,
+        }),
+      });
 
-Given the user's text, produce exactly THREE rewritten versions.
-Return them in this EXACT format — use the markers exactly as shown,
-each on its own line, followed by the content on the next line(s).
+      if (response.status === 429 && attempt < retries - 1) {
+        const waitTime = Math.pow(2, attempt) * 1000;
+        await new Promise(r => setTimeout(r, waitTime));
+        continue;
+      }
 
-PROFESSIONAL:
-<A polished, professional version suitable for emails, clients, bosses, or formal communication. Fix grammar, improve clarity, and elevate the tone.>
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        const msg = errorBody?.error || `API error ${response.status}`;
+        throw new Error(msg);
+      }
 
-CASUAL:
-<A casual, modern, Gen-Z-friendly version. Fix errors but keep it relaxed and friendly. Use light slang where appropriate, but keep it readable.>
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Transformation failed.');
+      }
+      
+      // Return the sections from the server response
+      return data.sections || data.raw || '';
 
-PROMPT:
-<Convert the user's message into a well-structured prompt for an AI coding agent. Understand the user's intent, structure instructions clearly, break complex tasks into phases if necessary, and produce a prompt that gives reliable AI outputs. Do not ask the AI to do everything at once.>
-
-Rules:
-- Use the markers PROFESSIONAL:, CASUAL:, and PROMPT: exactly as shown.
-- Do NOT wrap the output in markdown code fences or add extra labels.
-- Each section should be separated by a blank line.
-- Respond ONLY with the three sections, nothing else.`;
-
-  return [
-    { role: 'system', content: systemPrompt },
-    { role: 'user',   content: userText },
-  ];
-}
-
-
-// ---------- OpenRouter API Call ----------
-
-/**
- * Send the user's text to OpenRouter and return the raw AI response string.
- * Throws on network or API errors.
- */
-async function callOpenRouter(userText) {
-  const messages = buildMessages(userText);
-
-  const response = await fetch(OPENROUTER_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-      'HTTP-Referer':  window.location.href,
-      'X-Title':       'ToneShift',
-    },
-    body: JSON.stringify({
-      model: AI_MODEL,
-      messages,
-      temperature: 0.7,
-      max_tokens: 1500,
-    }),
-  });
-
-  // Handle HTTP-level errors
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({}));
-    const msg = errorBody?.error?.message || `API error ${response.status}`;
-    throw new Error(msg);
+    } catch (error) {
+      if (error.message.includes('429') && attempt < retries - 1) {
+        const waitTime = Math.pow(2, attempt) * 1000;
+        await new Promise(r => setTimeout(r, waitTime));
+        continue;
+      }
+      throw error;
+    }
   }
-
-  const data = await response.json();
-
-  // Validate that the response contains a message
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error('Empty response from AI model.');
-  }
-
-  return content;
+  throw new Error('Max retries exceeded');
 }
 
 
 // ---------- Response Parser ----------
-
-/**
- * Parse the raw AI response into three sections using the
- * PROFESSIONAL: / CASUAL: / PROMPT: markers.
- *
- * Returns an object: { professional, casual, prompt }
- * Each value is a trimmed string, or an empty string if
- * the marker was not found.
- */
-function parseResponse(raw) {
-  const sections = {
-    professional: '',
-    casual:       '',
-    prompt:       '',
-  };
-
-  // Regex captures everything after a marker until the next marker or end-of-string.
-  // Flags: case-insensitive (i) + dotAll (s) so . matches newlines.
-  const markerPattern = /PROFESSIONAL:\s*(.+?)(?=\nCASUAL:|$)/is;
-  const casualPattern = /CASUAL:\s*(.+?)(?=\nPROMPT:|$)/is;
-  const promptPattern = /PROMPT:\s*(.+)/is;
-
-  const proMatch    = raw.match(markerPattern);
-  const casualMatch = raw.match(casualPattern);
-  const promptMatch = raw.match(promptPattern);
-
-  if (proMatch)    sections.professional = proMatch[1].trim();
-  if (casualMatch) sections.casual       = casualMatch[1].trim();
-  if (promptMatch) sections.prompt       = promptMatch[1].trim();
-
-  return sections;
-}
 
 /**
  * Check whether the parsed result has at least one non-empty section.
@@ -351,7 +293,7 @@ function hasValidSections(sections) {
 
 /**
  * Main handler — triggered when the user clicks "Transform Text".
- * Calls OpenRouter, parses the response, and fills the output boxes.
+ * Calls the serverless API which securely handles OpenRouter,
  */
 async function handleTransform() {
   const text = getValidatedInput();
@@ -366,17 +308,18 @@ async function handleTransform() {
   showLoading();
 
   try {
-    const rawResponse = await callOpenRouter(text);
-    const sections    = parseResponse(rawResponse);
-
-    if (hasValidSections(sections)) {
+    // Call our serverless API which handles OpenRouter securely
+    const sections = await callTransformAPI(text);
+    
+    // Check if we got valid sections
+    if (sections && typeof sections === 'object' && hasValidSections(sections)) {
       // Place each parsed section into its output box
       setOutputContent(outputBoxes.professional, sections.professional || '—');
       setOutputContent(outputBoxes.casual,       sections.casual       || '—');
       setOutputContent(outputBoxes.prompt,       sections.prompt       || '—');
     } else {
-      // Fallback: markers were missing — dump raw response into Professional box
-      setOutputContent(outputBoxes.professional, rawResponse);
+      // Fallback: dump raw response into Professional box
+      setOutputContent(outputBoxes.professional, sections || '—');
       setPlaceholder(outputBoxes.casual, 'Could not parse the casual section.');
       setPlaceholder(outputBoxes.prompt, 'Could not parse the prompt section.');
     }
@@ -386,7 +329,8 @@ async function handleTransform() {
 
   } catch (error) {
     console.error('ToneShift error:', error);
-    showError(`Something went wrong: ${error.message}`);
+    const errorMsg = error.message || 'Unknown error';
+    showError(`Error: ${errorMsg}`);
     showToast('Transformation failed.', 'error');
   } finally {
     setButtonLoading(false);
