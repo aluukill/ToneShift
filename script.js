@@ -7,14 +7,12 @@
    3. AI Prompt     — optimized prompt for coding agents
 
    Tech: Vanilla HTML / CSS / JS + OpenRouter API
-   Design: Neo-Brutalism
+   Design: Modern dark theme (GitHub/Cursor/ChatGPT inspired)
    ============================================================ */
 
 
 // ---------- API Configuration ----------
-// API key is now stored server-side in Vercel environment variables
-// The frontend calls our own /api/transform endpoint
-const API_ENDPOINT = '/api/transform';  // Vercel serverless function
+const API_ENDPOINT = '/api/transform';
 const MAX_CHARS = 5000;
 
 
@@ -24,6 +22,10 @@ const userInput      = document.getElementById('user-input');
 const transformBtn   = document.getElementById('transform-btn');
 const charCount      = document.getElementById('char-count');
 const toastContainer = document.getElementById('toast-container');
+const sidebar        = document.getElementById('sidebar');
+const sidebarToggle  = document.getElementById('sidebar-toggle');
+const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
+const themeToggle    = document.getElementById('theme-toggle');
 
 const outputBoxes = {
   professional: document.getElementById('professional-text'),
@@ -38,17 +40,103 @@ const outputCards = {
 };
 
 const copyButtons = document.querySelectorAll('.copy-btn');
+const navLinks    = document.querySelectorAll('.nav-link');
+
+
+// ---------- Theme Management ----------
+
+/**
+ * Initialize theme from localStorage or system preference.
+ */
+function initTheme() {
+  const stored = localStorage.getItem('toneshift-theme');
+  if (stored) {
+    document.documentElement.setAttribute('data-theme', stored);
+  } else {
+    // Default to dark
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+}
+
+/**
+ * Toggle between light and dark themes.
+ */
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('toneshift-theme', next);
+}
+
+
+// ---------- Sidebar ----------
+
+/**
+ * Toggle sidebar visibility on desktop.
+ */
+function toggleSidebar() {
+  sidebar.classList.toggle('collapsed');
+  localStorage.setItem('toneshift-sidebar', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+}
+
+/**
+ * Toggle mobile sidebar.
+ */
+function toggleMobileSidebar() {
+  sidebar.classList.toggle('mobile-open');
+}
+
+/**
+ * Initialize sidebar state from localStorage.
+ */
+function initSidebar() {
+  const stored = localStorage.getItem('toneshift-sidebar');
+  if (stored === 'collapsed') {
+    sidebar.classList.add('collapsed');
+  }
+}
+
+
+// ---------- Navigation Highlighting ----------
+
+/**
+ * Handle nav link clicks for smooth scrolling and active state.
+ */
+function handleNavClick(e) {
+  e.preventDefault();
+  const targetId = e.currentTarget.getAttribute('data-target');
+  const targetEl = document.getElementById(targetId);
+
+  if (targetEl) {
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Highlight the clicked card briefly
+    targetEl.style.borderColor = 'var(--text-primary)';
+    targetEl.style.boxShadow = '0 0 0 1px var(--text-primary)';
+    setTimeout(() => {
+      targetEl.style.borderColor = '';
+      targetEl.style.boxShadow = '';
+    }, 1500);
+  }
+
+  // Update nav active state
+  navLinks.forEach(link => link.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+
+  // Close mobile sidebar if open
+  sidebar.classList.remove('mobile-open');
+}
 
 
 // ---------- Toast Notifications ----------
 
 /**
- * Show a small toast notification at the bottom-right.
+ * Show a small toast notification.
  * @param {string} message - Text to display
  * @param {'success'|'error'} type - Toast variant
- * @param {number} duration - Auto-dismiss in ms (default 2000)
+ * @param {number} duration - Auto-dismiss in ms (default 2500)
  */
-function showToast(message, type = 'success', duration = 2000) {
+function showToast(message, type = 'success', duration = 2500) {
   const toast = document.createElement('div');
   toast.className = `toast toast--${type}`;
   toast.textContent = message;
@@ -63,9 +151,6 @@ function showToast(message, type = 'success', duration = 2000) {
 
 // ---------- Character Counter ----------
 
-/**
- * Update the character count display.
- */
 function updateCharCount() {
   const len = userInput.value.length;
   charCount.textContent = `${len.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
@@ -74,33 +159,21 @@ function updateCharCount() {
 
 // ---------- UI Helpers ----------
 
-/**
- * Set placeholder text inside an output box.
- */
 function setPlaceholder(box, message) {
   box.innerHTML = `<p class="placeholder-text">${message}</p>`;
 }
 
-/**
- * Set real content inside an output box.
- */
 function setOutputContent(box, text) {
   box.innerHTML = '';
   box.textContent = text;
 }
 
-/**
- * Reset all output boxes to their default placeholder state.
- */
 function resetOutputs() {
   setPlaceholder(outputBoxes.professional, 'Your professional version will appear here.');
   setPlaceholder(outputBoxes.casual,       'Your casual version will appear here.');
   setPlaceholder(outputBoxes.prompt,       'Your optimized AI prompt will appear here.');
 }
 
-/**
- * Show an animated loading state in all output boxes.
- */
 function showLoading() {
   const loadingHTML = `
     <div class="loading-dots">
@@ -112,19 +185,12 @@ function showLoading() {
   });
 }
 
-/**
- * Display a user-facing error in all output boxes.
- */
 function showError(message) {
   Object.values(outputBoxes).forEach(box => {
     box.innerHTML = `<p class="error-text">${message}</p>`;
   });
 }
 
-/**
- * Validate that the user has entered text.
- * Returns the trimmed input or null if empty.
- */
 function getValidatedInput() {
   const text = userInput.value.trim();
 
@@ -139,10 +205,6 @@ function getValidatedInput() {
   return text;
 }
 
-/**
- * Check that the API endpoint has been configured.
- * Returns true if valid, false otherwise.
- */
 function isApiKeyConfigured() {
   if (!API_ENDPOINT) {
     showError('API endpoint not configured. Please deploy to Vercel.');
@@ -155,47 +217,38 @@ function isApiKeyConfigured() {
 
 // ---------- Card Reveal ----------
 
-/**
- * Trigger a staggered slide-in animation on all output cards.
- */
 function revealCards() {
   const cards = Object.values(outputCards);
   cards.forEach((card, i) => {
-    card.classList.remove('reveal');
-
-    // Force reflow so the animation restarts
-    void card.offsetWidth;
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(12px)';
 
     setTimeout(() => {
-      card.classList.add('reveal');
-    }, i * 120);   // 120ms stagger between cards
+      card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, i * 100);
   });
 }
 
 
 // ---------- Button State ----------
 
-/**
- * Disable / enable the transform button during processing.
- */
 function setButtonLoading(isLoading) {
   transformBtn.disabled = isLoading;
   if (isLoading) {
     transformBtn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> Transforming...';
   } else {
-    transformBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    transformBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
       <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
-    </svg> Transform Text`;
+    </svg> Transform`;
   }
 }
 
 
 // ---------- Copy to Clipboard ----------
 
-/**
- * Copy the text content of a target output box to the clipboard.
- */
 function handleCopy(button) {
   const targetId = button.getAttribute('data-target');
   const targetBox = document.getElementById(targetId);
@@ -204,14 +257,13 @@ function handleCopy(button) {
 
   const text = targetBox.textContent.trim();
 
-  // Don't copy placeholder / loading text
   if (!text || targetBox.querySelector('.placeholder-text') || targetBox.querySelector('.error-text') || targetBox.querySelector('.loading-dots')) {
     return;
   }
 
   navigator.clipboard.writeText(text).then(() => {
     const btnHTML = button.innerHTML;
-    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span>Copied!</span>`;
     button.classList.add('copied');
 
     setTimeout(() => {
@@ -226,12 +278,8 @@ function handleCopy(button) {
 }
 
 
-// ---------- API Call (Serverless) ----------
+// ---------- API Call ----------
 
-/**
- * Send the user's text to the serverless API and return the transformed result.
- * The server handles the OpenRouter API call securely.
- */
 async function callTransformAPI(userText, retries = 3) {
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
@@ -263,7 +311,6 @@ async function callTransformAPI(userText, retries = 3) {
         throw new Error(data.error || 'Transformation failed.');
       }
       
-      // Return the sections from the server response
       return data.sections || data.raw || '';
 
     } catch (error) {
@@ -279,11 +326,8 @@ async function callTransformAPI(userText, retries = 3) {
 }
 
 
-// ---------- Response Parser ----------
+// ---------- Response Validation ----------
 
-/**
- * Check whether the parsed result has at least one non-empty section.
- */
 function hasValidSections(sections) {
   return Object.values(sections).some(v => v.length > 0);
 }
@@ -291,15 +335,10 @@ function hasValidSections(sections) {
 
 // ---------- Transform Handler ----------
 
-/**
- * Main handler — triggered when the user clicks "Transform Text".
- * Calls the serverless API which securely handles OpenRouter,
- */
 async function handleTransform() {
   const text = getValidatedInput();
   if (!text) return;
 
-  // Guard: check API key before making the call
   if (!isApiKeyConfigured()) {
     return;
   }
@@ -308,23 +347,18 @@ async function handleTransform() {
   showLoading();
 
   try {
-    // Call our serverless API which handles OpenRouter securely
     const sections = await callTransformAPI(text);
     
-    // Check if we got valid sections
     if (sections && typeof sections === 'object' && hasValidSections(sections)) {
-      // Place each parsed section into its output box
       setOutputContent(outputBoxes.professional, sections.professional || '—');
       setOutputContent(outputBoxes.casual,       sections.casual       || '—');
       setOutputContent(outputBoxes.prompt,       sections.prompt       || '—');
     } else {
-      // Fallback: dump raw response into Professional box
       setOutputContent(outputBoxes.professional, sections || '—');
       setPlaceholder(outputBoxes.casual, 'Could not parse the casual section.');
       setPlaceholder(outputBoxes.prompt, 'Could not parse the prompt section.');
     }
 
-    // Animate cards into view
     revealCards();
 
   } catch (error) {
@@ -340,10 +374,10 @@ async function handleTransform() {
 
 // ---------- Event Listeners ----------
 
-// Transform button click
+// Transform
 transformBtn.addEventListener('click', handleTransform);
 
-// Keyboard shortcut: Ctrl + Enter to transform
+// Keyboard shortcut: Ctrl + Enter
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     e.preventDefault();
@@ -351,16 +385,47 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Update character counter on input
+// Character counter
 userInput.addEventListener('input', () => {
   userInput.classList.remove('input-error');
   updateCharCount();
 });
 
-// Attach copy handlers
+// Copy handlers
 copyButtons.forEach(btn => {
   btn.addEventListener('click', () => handleCopy(btn));
 });
 
-// Initialize character count on load
+// Sidebar toggle
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', toggleSidebar);
+}
+
+// Mobile menu
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
+}
+
+// Theme toggle
+if (themeToggle) {
+  themeToggle.addEventListener('click', toggleTheme);
+}
+
+// Nav links
+navLinks.forEach(link => {
+  link.addEventListener('click', handleNavClick);
+});
+
+// Close mobile sidebar when clicking outside
+document.addEventListener('click', (e) => {
+  if (sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== mobileMenuBtn) {
+    sidebar.classList.remove('mobile-open');
+  }
+});
+
+
+// ---------- Initialize ----------
+
+initTheme();
+initSidebar();
 updateCharCount();
