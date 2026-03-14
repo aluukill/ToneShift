@@ -124,7 +124,7 @@
     .hero {
       position: relative;
       height: 100vh;
-      min-height: 720px;
+      min-height: 600px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -153,10 +153,17 @@
       pointer-events: none;
       z-index: 0;
     }
-    .orb-center {
-      width: 800px; height: 600px;
+    /* FIX: orb-center uses a wrapper for centering so JS transform doesn't break translateX(-50%) */
+    .orb-center-wrap {
+      position: absolute;
       top: -140px; left: 50%;
       transform: translateX(-50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .orb-center {
+      width: 800px; height: 600px;
+      border-radius: 50%;
       background: radial-gradient(ellipse at center,
         rgba(41,151,255,0.065) 0%,
         rgba(41,151,255,0.02) 40%,
@@ -169,13 +176,12 @@
       background: radial-gradient(ellipse at center,
         rgba(48,209,88,0.035) 0%,
         transparent 65%);
-      animation: orbBreathe 18s ease-in-out infinite reverse;
+      animation: orbBreath2 18s ease-in-out infinite;
     }
     @keyframes orbBreathe {
-      0%, 100% { transform: translateX(-50%) scale(1);    opacity: 1; }
-      50%       { transform: translateX(-50%) scale(1.08); opacity: 0.7; }
+      0%, 100% { transform: scale(1);    opacity: 1; }
+      50%       { transform: scale(1.08); opacity: 0.7; }
     }
-    .orb-accent { animation-name: orbBreath2; }
     @keyframes orbBreath2 {
       0%, 100% { transform: scale(1); opacity: 1; }
       50%       { transform: scale(1.12); opacity: 0.6; }
@@ -214,7 +220,8 @@
     /* Headline */
     .hero-headline {
       font-family: var(--font-display);
-      font-size: clamp(4.2rem, 9.8vw, 10rem);
+      /* FIX: reduced min from 4.2rem to 3rem to prevent overflow on small screens */
+      font-size: clamp(3rem, 9.8vw, 10rem);
       font-weight: 800;
       line-height: 0.96;
       letter-spacing: -0.045em;
@@ -233,7 +240,7 @@
 
     /* Sub */
     .hero-sub {
-      font-size: clamp(1rem, 2vw, 1.18rem);
+      font-size: clamp(0.9rem, 2vw, 1.18rem);
       font-weight: 300;
       color: var(--gray-86);
       max-width: 460px;
@@ -248,7 +255,9 @@
     .hero-actions {
       display: flex;
       align-items: center;
-      gap: 26px;
+      /* FIX: wrap so buttons stack cleanly on narrow screens */
+      flex-wrap: wrap;
+      gap: 16px 26px;
       justify-content: center;
       opacity: 0;
       animation: fadeUp 0.9s 1.35s var(--ease-out) forwards;
@@ -265,6 +274,7 @@
       padding: 13px 28px;
       border-radius: 980px;
       transition: background 0.2s, transform 0.35s var(--ease-out), box-shadow 0.35s;
+      white-space: nowrap;
     }
     .btn-primary:hover {
       background: #1a9aff;
@@ -283,47 +293,10 @@
       font-weight: 400;
       color: var(--gray-6e);
       transition: color 0.22s;
+      white-space: nowrap;
     }
     .btn-ghost:hover { color: var(--white); }
 
-    /* Scroll hint */
-    .hero-scroll {
-      position: absolute;
-      bottom: 44px; left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      opacity: 0;
-      animation: fadeIn 1s 2.4s forwards;
-    }
-    .scroll-mouse {
-      width: 22px; height: 34px;
-      border: 1.5px solid rgba(255,255,255,0.12);
-      border-radius: 11px;
-      display: flex;
-      justify-content: center;
-      padding-top: 6px;
-    }
-    .scroll-wheel {
-      width: 3px; height: 7px;
-      background: var(--gray-42);
-      border-radius: 2px;
-      animation: scrollWheel 2.4s ease-in-out infinite;
-    }
-    .scroll-label {
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gray-2d);
-    }
-    @keyframes scrollWheel {
-      0%, 100% { transform: translateY(0); opacity: 1; }
-      60%       { transform: translateY(8px); opacity: 0; }
-      61%       { transform: translateY(-4px); opacity: 0; }
-      80%       { opacity: 1; }
-    }
 
     /* ─────────────────────────────────────────
        SPLIT STATEMENT
@@ -338,7 +311,7 @@
     }
     .split-line {
       font-family: var(--font-display);
-      font-size: clamp(2.6rem, 5.8vw, 5.8rem);
+      font-size: clamp(2.4rem, 5.8vw, 5.8rem);
       font-weight: 800;
       line-height: 1.02;
       letter-spacing: -0.042em;
@@ -547,6 +520,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(0,0,0,0.72);
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       font-family: var(--font-body);
       font-size: 0.72rem;
       font-weight: 500;
@@ -575,6 +549,84 @@
     .story-to.mode-1 { border-color: rgba(255,214,10,0.18); }
     .story-to.mode-2 { border-color: rgba(48,209,88,0.18); }
 
+    /* ── SCROLL CUE (new) ───────────────────── */
+    /* Tells the user to keep scrolling through the 3 sticky modes */
+    .story-scroll-cue {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.7s var(--ease-out);
+      will-change: opacity;
+    }
+    .story-scroll-cue.faded { opacity: 0; }
+    .ssc-label {
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gray-42);
+      white-space: nowrap;
+    }
+    .ssc-chevron {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-6e);
+      animation: bounceCue 2.2s ease-in-out infinite;
+    }
+    @keyframes bounceCue {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(6px); }
+    }
+
+    /* ── STORY PROGRESS BAR (new) ──────────── */
+    .story-progress-bar {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--blue);
+      transition: width 0.35s ease, background 0.8s ease;
+      z-index: 10;
+      border-radius: 0 1px 1px 0;
+    }
+
+    /* ── MOBILE FROM HINT (new) ─────────────── */
+    /* Shows original text on mobile since story-from panel is hidden */
+    .story-from-mobile {
+      display: none; /* shown via media query below */
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+    .sfm-label {
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-42);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .sfm-text {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--gray-6e);
+      line-height: 1.6;
+    }
+
     /* ─────────────────────────────────────────
        BIG COPY
     ───────────────────────────────────────── */
@@ -585,7 +637,7 @@
     }
     .big-copy h2 {
       font-family: var(--font-display);
-      font-size: clamp(3rem, 6.6vw, 6.4rem);
+      font-size: clamp(2.8rem, 6.6vw, 6.4rem);
       font-weight: 800;
       line-height: 1.02;
       letter-spacing: -0.042em;
@@ -638,7 +690,7 @@
 
     .mode-title {
       font-family: var(--font-display);
-      font-size: clamp(2.1rem, 4.2vw, 3.6rem);
+      font-size: clamp(1.9rem, 4.2vw, 3.6rem);
       font-weight: 800;
       line-height: 1.04;
       letter-spacing: -0.038em;
@@ -749,7 +801,7 @@
     }
     .stat-val {
       font-family: var(--font-display);
-      font-size: clamp(3rem, 5.2vw, 4.6rem);
+      font-size: clamp(2.8rem, 5.2vw, 4.6rem);
       font-weight: 800;
       letter-spacing: -0.05em;
       line-height: 1;
@@ -794,7 +846,7 @@
     .cta-title {
       position: relative;
       font-family: var(--font-display);
-      font-size: clamp(3.4rem, 8.6vw, 8.4rem);
+      font-size: clamp(2.8rem, 8.6vw, 8.4rem);
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.05em;
@@ -816,7 +868,9 @@
       position: relative;
       display: flex;
       align-items: center;
-      gap: 24px;
+      /* FIX: wrap so buttons stack on small screens */
+      flex-wrap: wrap;
+      gap: 16px 24px;
       justify-content: center;
     }
     .btn-cta-primary {
@@ -830,6 +884,7 @@
       padding: 15px 36px;
       border-radius: 980px;
       transition: background 0.2s, transform 0.35s var(--ease-out), box-shadow 0.35s;
+      white-space: nowrap;
     }
     .btn-cta-primary:hover {
       background: #1a9aff;
@@ -845,6 +900,7 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
     }
     .btn-cta-secondary:hover { opacity: 0.68; }
 
@@ -924,29 +980,118 @@
     }
 
     /* ─────────────────────────────────────────
-       RESPONSIVE
+       RESPONSIVE — 900px (small tablets / large phones)
     ───────────────────────────────────────── */
     @media (max-width: 900px) {
+      #nav { padding: 0 20px; }
+      .nav-links a:not(.nav-cta-pill) { display: none; }
+
       .story-ui {
         grid-template-columns: 1fr;
-        gap: 24px;
-        padding: 0 24px;
+        gap: 16px;
+        padding: 0 20px;
+        /* push ui down so mode-badge doesn't overlap */
+        margin-top: 56px;
       }
       .story-from, .story-arrow { display: none; }
+      /* FIX: show compact from-hint on mobile */
+      .story-from-mobile { display: block; }
+      .story-to { min-height: auto; }
+      /* FIX: meta badge needs to sit below nav height on mobile */
+      .story-meta { top: 68px; }
+
       .mode-row, .mode-row.flip {
         grid-template-columns: 1fr;
         gap: 48px;
         direction: ltr;
         padding: 80px 24px;
       }
-      .split-statement { padding: 100px 24px 80px; }
-      .big-copy { padding: 100px 24px; }
-      .stats-grid { grid-template-columns: 1fr; }
+      .split-statement { padding: 80px 24px 60px; }
+      .big-copy { padding: 80px 24px; }
+      .stats-section { padding: 80px 24px; }
+      .stats-grid {
+        grid-template-columns: 1fr;
+        /* dividers between stacked cells */
+        gap: 1px;
+      }
       .stat-cell { padding: 40px 32px; }
       footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 24px; }
-      #nav { padding: 0 20px; }
-      .nav-links a:not(.nav-cta-pill) { display: none; }
-      .final-cta { padding: 160px 24px 140px; }
+      .final-cta { padding: 120px 24px 100px; }
+      .demo-body { padding: 24px 24px 28px; }
+    }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE — 640px (phones in landscape / small tablets)
+    ───────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .story-sticky { align-items: flex-start; padding-top: 0; }
+      .story-ui { margin-top: 80px; gap: 14px; }
+      .story-to { padding: 24px; }
+      .story-scroll-cue { bottom: 28px; }
+      .split-line { font-size: clamp(2rem, 9vw, 3.6rem); }
+      .big-copy h2 { font-size: clamp(2.2rem, 8vw, 4rem); }
+      .mode-title { font-size: clamp(1.7rem, 6vw, 2.6rem); }
+      .stats-label { margin-bottom: 40px; }
+      .cta-title { font-size: clamp(2.4rem, 10vw, 5rem); }
+      .cta-sub { font-size: 0.95rem; margin-bottom: 40px; }
+    }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE — 430px (small phones)
+    ───────────────────────────────────────── */
+    @media (max-width: 430px) {
+      #nav { height: 48px; }
+      .hero { min-height: 580px; }
+      .hero-headline { margin-bottom: 24px; }
+      .hero-sub { margin-bottom: 36px; font-size: 0.92rem; }
+      /* Stack hero buttons vertically on very small screens */
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto;
+      }
+      .btn-primary {
+        justify-content: center;
+        padding: 14px 24px;
+      }
+      .btn-ghost {
+        justify-content: center;
+        padding: 8px 0;
+      }
+      .story-meta { top: 60px; gap: 12px; }
+      .mode-badge { font-size: 0.65rem; padding: 5px 12px; }
+      .story-ui { padding: 0 16px; margin-top: 68px; }
+      .story-to { padding: 20px; border-radius: 14px; }
+      .slide-body { font-size: 0.82rem; line-height: 1.72; }
+      .slide-2 .slide-body { font-size: 0.7rem; }
+      .split-statement { padding: 60px 20px 50px; }
+      .big-copy { padding: 60px 20px; }
+      .mode-row, .mode-row.flip { padding: 60px 20px; gap: 36px; }
+      .stats-section { padding: 60px 20px; }
+      .stat-cell { padding: 32px 24px; }
+      .final-cta { padding: 90px 20px 80px; }
+      .cta-actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .btn-cta-primary { padding: 14px 32px; width: 100%; max-width: 260px; justify-content: center; }
+      footer { padding: 24px 20px; }
+    }
+
+    /* ─────────────────────────────────────────
+       REDUCED MOTION
+    ───────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .hero-headline .line-inner { opacity: 1; transform: none; }
     }
   </style>
 </head>
@@ -964,7 +1109,10 @@
 
   <!-- ─── HERO ──────────────────────────────── -->
   <section class="hero">
-    <div class="orb orb-center"></div>
+    <!-- FIX: orb-center wrapped so JS parallax doesn't break translateX(-50%) -->
+    <div class="orb-center-wrap" id="orbCenterWrap">
+      <div class="orb-center"></div>
+    </div>
     <div class="orb orb-accent"></div>
     <div class="hero-inner">
       <h1 class="hero-headline">
@@ -980,10 +1128,7 @@
         <a href="#modes" class="btn-ghost">See how it works ›</a>
       </div>
     </div>
-    <div class="hero-scroll">
-      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
-      <span class="scroll-label">Scroll</span>
-    </div>
+
   </section>
 
   <!-- ─── SPLIT STATEMENT ─────────────────── -->
@@ -1013,17 +1158,23 @@
 
       <div class="story-ui">
 
-        <!-- Original -->
+        <!-- Original (desktop only) -->
         <div class="story-from">
           <div class="panel-label">You wrote</div>
           <p class="from-text">"hey can we move the meeting, i totally forgot to prep the deck lol"</p>
         </div>
 
-        <!-- Arrow -->
+        <!-- Arrow (desktop only) -->
         <div class="story-arrow">
           <div class="arrow-track"></div>
           <div class="arrow-icon" id="arrowIcon">→</div>
           <div class="arrow-track"></div>
+        </div>
+
+        <!-- FIX: Mobile compact "from" context shown above output panel -->
+        <div class="story-from-mobile">
+          <span class="sfm-label">You wrote</span>
+          <p class="sfm-text">"hey can we move the meeting, i totally forgot to prep the deck lol"</p>
         </div>
 
         <!-- Output -->
@@ -1043,6 +1194,20 @@
         </div>
 
       </div>
+
+      <!-- FIX: Scroll cue — tells users to keep scrolling through sticky modes -->
+      <div class="story-scroll-cue" id="storyScrollCue">
+        <span class="ssc-label">Scroll to explore all 3 modes</span>
+        <div class="ssc-chevron">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- FIX: Progress bar along bottom of sticky section -->
+      <div class="story-progress-bar" id="storyProgressBar"></div>
+
     </div>
   </div>
 
@@ -1184,8 +1349,6 @@
 
   <script>
 
-
-
     /* ═══════════════════════════════════════════════════════
        NAV
     ═══════════════════════════════════════════════════════ */
@@ -1206,10 +1369,11 @@
 
     /* ═══════════════════════════════════════════════════════
        HERO PARALLAX + FADE-OUT  (RAF-batched)
+       FIX: parallax applied to .orb-center-wrap (the positioning
+       wrapper) so translateX(-50%) centering is not overridden
     ═══════════════════════════════════════════════════════ */
-    const heroInner  = document.querySelector('.hero-inner');
-    const heroOrbC   = document.querySelector('.orb-center');
-    const heroScroll = document.querySelector('.hero-scroll');
+    const heroInner    = document.querySelector('.hero-inner');
+    const orbCenterWrap = document.getElementById('orbCenterWrap');
     let _rawY = 0;
 
     window.addEventListener('scroll', () => { _rawY = window.scrollY; }, { passive: true });
@@ -1222,8 +1386,10 @@
         const opacity = Math.max(0, 1 - p * 1.7);
         heroInner.style.transform  = `translateY(${y * 0.13}px)`;
         heroInner.style.opacity    = opacity;
-        if (heroOrbC) heroOrbC.style.transform = `translateY(${y * 0.42}px)`;
-        if (heroScroll) heroScroll.style.opacity = Math.max(0, (1 - p * 5)).toString();
+        /* FIX: translateX(-50%) preserved — we only shift Y on the wrapper */
+        if (orbCenterWrap) {
+          orbCenterWrap.style.transform = `translateX(-50%) translateY(${y * 0.42}px)`;
+        }
       }
       requestAnimationFrame(heroRAF);
     })();
@@ -1247,13 +1413,15 @@
     /* ═══════════════════════════════════════════════════════
        SCROLLYTELLING ENGINE
     ═══════════════════════════════════════════════════════ */
-    const scrollStory   = document.getElementById('scrollStory');
-    const storyTint     = document.getElementById('storyTint');
-    const storyTo       = document.getElementById('storyTo');
-    const arrowIcon     = document.getElementById('arrowIcon');
-    const modeIndicator = document.getElementById('modeIndicator');
-    const modeBadgeText = document.getElementById('modeBadgeText');
-    const slides        = [
+    const scrollStory    = document.getElementById('scrollStory');
+    const storyTint      = document.getElementById('storyTint');
+    const storyTo        = document.getElementById('storyTo');
+    const arrowIcon      = document.getElementById('arrowIcon');
+    const modeIndicator  = document.getElementById('modeIndicator');
+    const modeBadgeText  = document.getElementById('modeBadgeText');
+    const storyScrollCue = document.getElementById('storyScrollCue');
+    const storyProgressBar = document.getElementById('storyProgressBar');
+    const slides         = [
       document.getElementById('storySlide0'),
       document.getElementById('storySlide1'),
       document.getElementById('storySlide2'),
@@ -1262,11 +1430,14 @@
 
     const MODES = [
       { label: 'Professional',    tint: 'rgba(41,151,255,0.025)',  indicator: '#2997ff',
-        arrow: 'rgba(41,151,255,0.22)', arrowColor: '#2997ff' },
+        arrow: 'rgba(41,151,255,0.22)', arrowColor: '#2997ff',
+        bar: '#2997ff' },
       { label: 'Casual / Gen-Z',  tint: 'rgba(255,214,10,0.022)', indicator: '#ffd60a',
-        arrow: 'rgba(255,214,10,0.22)', arrowColor: '#ffd60a' },
+        arrow: 'rgba(255,214,10,0.22)', arrowColor: '#ffd60a',
+        bar: '#ffd60a' },
       { label: 'AI Agent Prompt', tint: 'rgba(48,209,88,0.022)',  indicator: '#30d158',
-        arrow: 'rgba(48,209,88,0.22)',  arrowColor: '#30d158' },
+        arrow: 'rgba(48,209,88,0.22)',  arrowColor: '#30d158',
+        bar: '#30d158' },
     ];
 
     let currentMode = -1;
@@ -1277,11 +1448,13 @@
       const m = MODES[idx];
       storyTint.style.background      = m.tint;
       storyTo.className               = 'story-to mode-' + idx;
-      arrowIcon.style.borderColor     = m.arrow;
-      arrowIcon.style.color           = m.arrowColor;
-      arrowIcon.style.boxShadow       = `0 0 20px ${m.arrow}`;
+      if (arrowIcon) {
+        arrowIcon.style.borderColor   = m.arrow;
+        arrowIcon.style.color         = m.arrowColor;
+        arrowIcon.style.boxShadow     = `0 0 20px ${m.arrow}`;
+      }
       modeIndicator.style.background  = m.indicator;
-      modeBadgeText.textContent        = m.label;
+      modeBadgeText.textContent       = m.label;
       slides.forEach((s, i) => s.classList.toggle('active', i === idx));
       pips.forEach((p, i)   => p.classList.toggle('active', i === idx));
     }
@@ -1291,12 +1464,27 @@
       const scrolled = -rect.top;
       const total    = rect.height - window.innerHeight;
       if (total <= 0) return;
+
       const p = Math.max(0, Math.min(1, scrolled / total));
-      setMode(p >= 0.66 ? 2 : p >= 0.33 ? 1 : 0);
+      const modeIdx = p >= 0.66 ? 2 : p >= 0.33 ? 1 : 0;
+      setMode(modeIdx);
+
+      /* ── Progress bar: fill as user scrolls through section ── */
+      if (storyProgressBar) {
+        storyProgressBar.style.width      = `${p * 100}%`;
+        storyProgressBar.style.background = MODES[modeIdx].bar;
+      }
+
+      /* ── Scroll cue: fade out once user has scrolled past ~8% ── */
+      if (storyScrollCue) {
+        storyScrollCue.classList.toggle('faded', p > 0.06);
+      }
     }
 
     window.addEventListener('scroll', onScrollStory, { passive: true });
     setMode(0);
+    /* Also check if story section is already in view on load */
+    onScrollStory();
 
 
     /* ═══════════════════════════════════════════════════════
@@ -1363,7 +1551,6 @@
     }, { threshold: 0.55 });
 
     document.querySelectorAll('.demo-text').forEach(el => {
-      // Preserve line breaks for mono elements
       const raw = el.classList.contains('mono')
         ? el.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim()
         : el.textContent.replace(/\s+/g, ' ').trim();
