@@ -26,6 +26,7 @@ const sidebar        = document.getElementById('sidebar');
 const sidebarToggle  = document.getElementById('sidebar-toggle');
 const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
 const themeToggle    = document.getElementById('theme-toggle');
+const sidebarBackdrop = document.getElementById('sidebar-backdrop');
 
 const outputBoxes = {
   professional: document.getElementById('professional-text'),
@@ -83,7 +84,12 @@ function toggleSidebar() {
  * Toggle mobile sidebar.
  */
 function toggleMobileSidebar() {
-  sidebar.classList.toggle('mobile-open');
+  const isOpen = sidebar.classList.toggle('mobile-open');
+  if (isOpen) {
+    sidebarBackdrop.classList.add('visible');
+  } else {
+    sidebarBackdrop.classList.remove('visible');
+  }
 }
 
 /**
@@ -108,15 +114,10 @@ function handleNavClick(e) {
   const targetEl = document.getElementById(targetId);
 
   if (targetEl) {
-    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Highlight the clicked card briefly
-    targetEl.style.borderColor = 'var(--text-primary)';
-    targetEl.style.boxShadow = '0 0 0 1px var(--text-primary)';
-    setTimeout(() => {
-      targetEl.style.borderColor = '';
-      targetEl.style.boxShadow = '';
-    }, 1500);
+    // Hide all output cards
+    Object.values(outputCards).forEach(card => card.classList.remove('active'));
+    // Show the targeted card
+    targetEl.classList.add('active');
   }
 
   // Update nav active state
@@ -125,6 +126,7 @@ function handleNavClick(e) {
 
   // Close mobile sidebar if open
   sidebar.classList.remove('mobile-open');
+  sidebarBackdrop.classList.remove('visible');
 }
 
 
@@ -180,15 +182,19 @@ function showLoading() {
       <span></span><span></span><span></span>
     </div>
   `;
-  Object.values(outputBoxes).forEach(box => {
-    box.innerHTML = loadingHTML;
-  });
+  const activeNav = document.querySelector('.nav-link.active');
+  const tone = activeNav ? activeNav.getAttribute('data-target').replace('output-', '') : 'professional';
+  if (outputBoxes[tone]) {
+    outputBoxes[tone].innerHTML = loadingHTML;
+  }
 }
 
 function showError(message) {
-  Object.values(outputBoxes).forEach(box => {
-    box.innerHTML = `<p class="error-text">${message}</p>`;
-  });
+  const activeNav = document.querySelector('.nav-link.active');
+  const tone = activeNav ? activeNav.getAttribute('data-target').replace('output-', '') : 'professional';
+  if (outputBoxes[tone]) {
+    outputBoxes[tone].innerHTML = `<p class="error-text">${message}</p>`;
+  }
 }
 
 function getValidatedInput() {
@@ -214,22 +220,6 @@ function isApiKeyConfigured() {
   return true;
 }
 
-
-// ---------- Card Reveal ----------
-
-function revealCards() {
-  const cards = Object.values(outputCards);
-  cards.forEach((card, i) => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(12px)';
-
-    setTimeout(() => {
-      card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-      card.style.opacity = '1';
-      card.style.transform = 'translateY(0)';
-    }, i * 100);
-  });
-}
 
 
 // ---------- Button State ----------
@@ -281,6 +271,9 @@ function handleCopy(button) {
 // ---------- API Call ----------
 
 async function callTransformAPI(userText, retries = 3) {
+  const activeNav = document.querySelector('.nav-link.active');
+  const tone = activeNav ? activeNav.getAttribute('data-target').replace('output-', '') : 'professional';
+
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       const response = await fetch(API_ENDPOINT, {
@@ -290,6 +283,7 @@ async function callTransformAPI(userText, retries = 3) {
         },
         body: JSON.stringify({
           text: userText,
+          tone: tone,
         }),
       });
 
@@ -311,7 +305,7 @@ async function callTransformAPI(userText, retries = 3) {
         throw new Error(data.error || 'Transformation failed.');
       }
       
-      return data.sections || data.raw || '';
+      return data.text || data.raw || '';
 
     } catch (error) {
       if (error.message.includes('429') && attempt < retries - 1) {
@@ -323,13 +317,6 @@ async function callTransformAPI(userText, retries = 3) {
     }
   }
   throw new Error('Max retries exceeded');
-}
-
-
-// ---------- Response Validation ----------
-
-function hasValidSections(sections) {
-  return Object.values(sections).some(v => v.length > 0);
 }
 
 
@@ -347,19 +334,16 @@ async function handleTransform() {
   showLoading();
 
   try {
-    const sections = await callTransformAPI(text);
+    const resultText = await callTransformAPI(text);
     
-    if (sections && typeof sections === 'object' && hasValidSections(sections)) {
-      setOutputContent(outputBoxes.professional, sections.professional || '—');
-      setOutputContent(outputBoxes.casual,       sections.casual       || '—');
-      setOutputContent(outputBoxes.prompt,       sections.prompt       || '—');
+    const activeNav = document.querySelector('.nav-link.active');
+    const tone = activeNav ? activeNav.getAttribute('data-target').replace('output-', '') : 'professional';
+    
+    if (resultText && typeof resultText === 'string') {
+      setOutputContent(outputBoxes[tone], resultText);
     } else {
-      setOutputContent(outputBoxes.professional, sections || '—');
-      setPlaceholder(outputBoxes.casual, 'Could not parse the casual section.');
-      setPlaceholder(outputBoxes.prompt, 'Could not parse the prompt section.');
+      setOutputContent(outputBoxes[tone], resultText || '—');
     }
-
-    revealCards();
 
   } catch (error) {
     console.error('ToneShift error:', error);
@@ -418,8 +402,10 @@ navLinks.forEach(link => {
 
 // Close mobile sidebar when clicking outside
 document.addEventListener('click', (e) => {
-  if (sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== mobileMenuBtn) {
+  // If clicking on the backdrop, close the sidebar
+  if (e.target === sidebarBackdrop) {
     sidebar.classList.remove('mobile-open');
+    sidebarBackdrop.classList.remove('visible');
   }
 });
 
