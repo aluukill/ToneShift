@@ -344,7 +344,7 @@
     ───────────────────────────────────────── */
     .scroll-story {
       position: relative;
-      height: 380vh;
+      height: 560vh;
     }
     .story-sticky {
       position: sticky;
@@ -549,6 +549,21 @@
     .story-to.mode-0 { border-color: rgba(41,151,255,0.2); }
     .story-to.mode-1 { border-color: rgba(255,214,10,0.18); }
     .story-to.mode-2 { border-color: rgba(48,209,88,0.18); }
+    .story-to.mode-3 { border-color: rgba(168,85,247,0.22); }
+    .story-to.mode-4 { border-color: rgba(249,115,22,0.22); }
+
+    /* Slide label colors for modes 3 & 4 */
+    .slide-3 .slide-label { color: #a855f7; }
+    .slide-3 .slide-label::before { background: #a855f7; }
+    .slide-4 .slide-label { color: #f97316; }
+    .slide-4 .slide-label::before { background: #f97316; }
+    .slide-3 .slide-body { color: var(--gray-d2); }
+    .slide-4 .slide-body {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #f97316;
+      line-height: 1.95;
+    }
 
     /* ── SCROLL CUE (new) ───────────────────── */
     /* Tells the user to keep scrolling through the 3 sticky modes */
@@ -1120,7 +1135,7 @@
         <span class="line"><span class="line-inner" id="hl1">Words that</span></span>
         <span class="line"><span class="line-inner" id="hl2">resonate.</span></span>
       </h1>
-      <p class="hero-sub">Write it rough. ToneShift transforms it into the exact voice your moment demands — instantly.</p>
+      <p class="hero-sub">Write it rough. ToneShift transforms it into the exact voice your moment demands — with 5 powerful modes, instantly.</p>
       <div class="hero-actions">
         <a href="toneshift.html" class="btn-primary">
           Start for free
@@ -1154,6 +1169,8 @@
           <div class="story-pip active" data-pip="0"></div>
           <div class="story-pip" data-pip="1"></div>
           <div class="story-pip" data-pip="2"></div>
+          <div class="story-pip" data-pip="3"></div>
+          <div class="story-pip" data-pip="4"></div>
         </div>
       </div>
 
@@ -1192,13 +1209,21 @@
             <div class="slide-label">AI Agent Prompt</div>
             <p class="slide-body mono">Task: Meeting reschedule request<br>Context: User forgot to prepare slide deck<br>Tone: Apologetic, professional<br>Constraints: ≤3 sentences, email-ready<br>Output: Include subject line suggestion</p>
           </div>
+          <div class="story-slide slide-3" id="storySlide3">
+            <div class="slide-label">Humanize</div>
+            <p class="slide-body">Honestly? I totally spaced on getting the deck ready 😅 — could we push the meeting back a bit? Really sorry about the short notice, I promise I'll have everything sorted by then!</p>
+          </div>
+          <div class="story-slide slide-4" id="storySlide4">
+            <div class="slide-label">AI Detection</div>
+            <p class="slide-body mono">Human Score: 94%<br><br>Indicators Found:<br>• Natural contractions used<br>• Informal, authentic tone<br>• Personal self-expression<br><br>Verdict: Human-Written ✓</p>
+          </div>
         </div>
 
       </div>
 
       <!-- FIX: Scroll cue — tells users to keep scrolling through sticky modes -->
       <div class="story-scroll-cue" id="storyScrollCue">
-        <span class="ssc-label">Scroll to explore all 3 modes</span>
+        <span class="ssc-label">Scroll to explore all 5 modes</span>
         <div class="ssc-chevron">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1298,14 +1323,64 @@
     </div>
   </div>
 
+  <!-- ─── MODE 4: HUMANIZE ─────────────────── -->
+  <div style="background: var(--gray-14);">
+    <hr class="section-sep">
+    <div class="mode-row flip">
+      <div class="reveal">
+        <div class="mode-eyebrow">
+          <span class="mode-num">04</span>
+          <div class="mode-rule"></div>
+          <span class="mode-tag" style="color: #a855f7; border-color: #a855f7;">Humanize</span>
+        </div>
+        <h3 class="mode-title">Make AI text<br>feel real.</h3>
+        <p class="mode-desc">Transform robotic, AI-generated content into natural, human-sounding writing. Perfect for bypassing AI detectors while maintaining quality and clarity.</p>
+      </div>
+      <div class="demo-card reveal reveal-d2">
+        <div class="demo-top-bar">
+          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+        </div>
+        <div class="demo-body">
+          <div class="demo-chip" style="background: rgba(168,85,247,0.09); color: #a855f7;">Humanize Output</div>
+          <p class="demo-text">"honestly? i totally spaced on prepping the deck 😅 can we push the meeting to next week? i'll have everything ready by then, promise! lmk what works for you"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MODE 5: AI DETECTOR ─────────────────── -->
+  <div style="background: var(--black);">
+    <hr class="section-sep">
+    <div class="mode-row">
+      <div class="reveal">
+        <div class="mode-eyebrow">
+          <span class="mode-num">05</span>
+          <div class="mode-rule"></div>
+          <span class="mode-tag" style="color: #f97316; border-color: #f97316;">Detector</span>
+        </div>
+        <h3 class="mode-title">Spot the machine.<br>Instantly.</h3>
+        <p class="mode-desc">Analyze any text and detect whether it was written by AI or human. Get detailed breakdowns of patterns, probabilities, and specific indicators found.</p>
+      </div>
+      <div class="demo-card reveal reveal-d2">
+        <div class="demo-top-bar">
+          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+        </div>
+        <div class="demo-body">
+          <div class="demo-chip" style="background: rgba(249,115,22,0.09); color: #f97316;">Detection Result</div>
+          <p class="demo-text mono">AI Probability: 87%<br><br>Indicators Found:<br>• Uniform sentence structure<br>• Formal transitions only<br>• Lack of colloquialisms<br><br>Assessment: AI-Generated</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ─── STATS ──────────────────────────────── -->
   <div id="why" class="stats-section">
     <div class="stats-inner">
       <p class="stats-label reveal">Why ToneShift</p>
       <div class="stats-grid">
         <div class="stat-cell reveal">
-          <div class="stat-val">3<sup>×</sup></div>
-          <p class="stat-desc">Tone modes covering every context — professional, casual, and AI-ready.</p>
+          <div class="stat-val">5<sup>×</sup></div>
+          <p class="stat-desc">Tone modes for every context — professional, casual, AI prompt, humanize, and detection.</p>
         </div>
         <div class="stat-cell reveal reveal-d1">
           <div class="stat-val">&lt;2<sup>s</sup></div>
@@ -1426,6 +1501,8 @@
       document.getElementById('storySlide0'),
       document.getElementById('storySlide1'),
       document.getElementById('storySlide2'),
+      document.getElementById('storySlide3'),
+      document.getElementById('storySlide4'),
     ];
     const pips = document.querySelectorAll('[data-pip]');
 
@@ -1439,6 +1516,12 @@
       { label: 'AI Agent Prompt', tint: 'rgba(48,209,88,0.022)',  indicator: '#30d158',
         arrow: 'rgba(48,209,88,0.22)',  arrowColor: '#30d158',
         bar: '#30d158' },
+      { label: 'Humanize',        tint: 'rgba(168,85,247,0.022)', indicator: '#a855f7',
+        arrow: 'rgba(168,85,247,0.22)', arrowColor: '#a855f7',
+        bar: '#a855f7' },
+      { label: 'AI Detector',     tint: 'rgba(249,115,22,0.022)', indicator: '#f97316',
+        arrow: 'rgba(249,115,22,0.22)', arrowColor: '#f97316',
+        bar: '#f97316' },
     ];
 
     let currentMode = -1;
@@ -1467,7 +1550,7 @@
       if (total <= 0) return;
 
       const p = Math.max(0, Math.min(1, scrolled / total));
-      const modeIdx = p >= 0.66 ? 2 : p >= 0.33 ? 1 : 0;
+      const modeIdx = p >= 0.8 ? 4 : p >= 0.6 ? 3 : p >= 0.4 ? 2 : p >= 0.2 ? 1 : 0;
       setMode(modeIdx);
 
       /* ── Progress bar: fill as user scrolls through section ── */

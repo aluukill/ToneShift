@@ -51,6 +51,39 @@ Structure the prompt logically. If the task is complex, break it into clear sect
 Expand the prompt where necessary to remove ambiguity and improve reliability. The output should be detailed and comprehensive so the coding agent can perform the task with minimal confusion.
 
 Do not answer the task yourself. Only produce the improved prompt. Preserve the user's original intent and meaning.`,
+
+  humanize: `Your task is to rewrite AI-generated text to make it sound more natural, human, and authentic.
+
+Transform the text by:
+- Varying sentence length and structure
+- Adding natural flow and rhythm
+- Including subtle imperfections that make writing feel human
+- Removing robotic or overly formal patterns
+- Adding warmth and personality while maintaining clarity
+- Using conversational transitions
+
+The goal is to make the text indistinguishable from human-written content while preserving the original message and meaning. Do not add new information or change the core message.`,
+
+  detector: `Your task is to analyze the given text and determine if it was written by AI or by a human.
+
+Analyze the text for these AI-written indicators:
+- Repetitive sentence structures
+- Overly formal or robotic language patterns
+- Predictable transitions
+- Lack of personal anecdotes or casual expressions
+- Uniform vocabulary complexity
+- Formulaic paragraph structures
+- Absence of colloquialisms or slang
+
+Provide your analysis in this format:
+
+**AI Probability**: [percentage]%
+
+**Indicators Found**: [list specific patterns found in the text]
+
+**Assessment**: [AI-Generated / Likely Human / Cannot Determine]
+
+Be objective and provide evidence for your assessment.`,
 };
 
 // ============================================================================

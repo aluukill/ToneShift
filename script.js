@@ -32,12 +32,16 @@ const outputBoxes = {
   professional: document.getElementById('professional-text'),
   casual:       document.getElementById('casual-text'),
   prompt:       document.getElementById('prompt-text'),
+  humanize:     document.getElementById('humanize-text'),
+  detector:     document.getElementById('detector-text'),
 };
 
 const outputCards = {
   professional: document.getElementById('output-professional'),
   casual:       document.getElementById('output-casual'),
   prompt:       document.getElementById('output-prompt'),
+  humanize:     document.getElementById('output-humanize'),
+  detector:     document.getElementById('output-detector'),
 };
 
 const copyButtons = document.querySelectorAll('.copy-btn');
@@ -174,6 +178,8 @@ function resetOutputs() {
   setPlaceholder(outputBoxes.professional, 'Your professional version will appear here.');
   setPlaceholder(outputBoxes.casual,       'Your casual version will appear here.');
   setPlaceholder(outputBoxes.prompt,       'Your optimized AI prompt will appear here.');
+  setPlaceholder(outputBoxes.humanize,     'Your humanized version will appear here.');
+  setPlaceholder(outputBoxes.detector,     'AI detection result will appear here.');
 }
 
 function showLoading() {
