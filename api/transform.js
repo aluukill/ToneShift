@@ -10,15 +10,15 @@
    ============================================================ */
 
 // Environment variables (set in Vercel dashboard)
-// OPENROUTER_API_KEY - Your OpenRouter API key
-// OPENROUTER_REFERRER - Your website URL (optional)
+// GROQ_API_KEY - Your Groq API key
+// https://console.groq.com/keys
 
 // ============================================================================
 // Configuration
 // ============================================================================
 
-const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
-const AI_MODEL = 'nvidia/nemotron-3-nano-30b-a3b:free';
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+const AI_MODEL = 'llama-3.3-70b-versatile';
 const MAX_CHARS = 5000;
 
 // ============================================================================
@@ -369,9 +369,9 @@ export default async function handler(request, response) {
   // -------------------------------------------------------------------------
   // API Key Validation
   // -------------------------------------------------------------------------
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    console.error('OPENROUTER_API_KEY not configured');
+    console.error('GROQ_API_KEY not configured');
     return response.status(500).json({ error: 'Server configuration error.' });
   }
 
@@ -408,13 +408,11 @@ export default async function handler(request, response) {
     // -----------------------------------------------------------------------
     // API Call
     // -----------------------------------------------------------------------
-    const apiResponse = await fetch(OPENROUTER_ENDPOINT, {
+    const apiResponse = await fetch(GROQ_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': process.env.OPENROUTER_REFERRER || 'https://toneshift-app.vercel.app',
-        'X-Title': 'ToneShift',
       },
       body: JSON.stringify(modelParams),
     });

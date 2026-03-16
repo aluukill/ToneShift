@@ -172,66 +172,59 @@ function setDetectorContent(box, data) {
   const aiPercent = data.aiProbability || 0;
   const humanPercent = data.humanProbability || (100 - aiPercent);
   const confidence = data.confidence || 85;
-  const verdict = aiPercent > 50 ? 'AI-Generated' : 'Human-Written';
-  const verdictIcon = aiPercent > 50 
-    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>'
-    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="8" r="1.5" fill="currentColor"/></svg>';
+  const isAI = aiPercent > 50;
+  const primaryPercent = isAI ? aiPercent : humanPercent;
+  const primaryLabel = isAI ? 'AI Probability' : 'Human Score';
+  const primaryClass = isAI ? 'ai' : 'human';
+  const verdict = isAI ? 'AI-Generated' : 'Human-Written';
+  const verdictIcon = isAI 
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>';
+
+  // Calculate secondary values based on primary
+  const secondaryValue = isAI ? humanPercent : aiPercent;
+  const secondaryLabel = isAI ? 'Human Score' : 'AI Probability';
+  const secondaryClass = isAI ? 'human' : 'ai';
 
   box.innerHTML = `
     <div class="ai-analysis-panel">
       <div class="analysis-results">
-        <div class="metric-card">
-          <div class="metric-ring ${aiPercent > 70 ? 'glow' : ''}">
-            <svg viewBox="0 0 84 84">
-              <circle class="ring-bg" cx="42" cy="42" r="40"/>
-              <circle class="ring-progress ai" cx="42" cy="42" r="40" data-percent="${aiPercent}"/>
+        <div class="analysis-primary">
+          <div class="primary-ring ${primaryPercent > 70 ? 'glow' : ''}">
+            <svg viewBox="0 0 140 140">
+              <circle class="ring-bg" cx="70" cy="70" r="65"/>
+              <circle class="ring-progress ${primaryClass}" cx="70" cy="70" r="65" data-percent="${primaryPercent}"/>
             </svg>
-            <div class="metric-value">
-              <span class="metric-percent">${aiPercent}%</span>
-              <span class="metric-label">AI</span>
+            <div class="primary-value">
+              <span class="primary-percent">${primaryPercent}%</span>
+              <span class="primary-label">${primaryLabel}</span>
             </div>
           </div>
-          <div class="metric-title">AI Probability</div>
-          <div class="metric-desc">Likelihood of AI generation</div>
+          <span class="primary-sublabel">Analysis Result</span>
         </div>
-        <div class="metric-card">
-          <div class="metric-ring ${humanPercent > 70 ? 'glow' : ''}">
-            <svg viewBox="0 0 84 84">
-              <circle class="ring-bg" cx="42" cy="42" r="40"/>
-              <circle class="ring-progress human" cx="42" cy="42" r="40" data-percent="${humanPercent}"/>
-            </svg>
-            <div class="metric-value">
-              <span class="metric-percent">${humanPercent}%</span>
-              <span class="metric-label">Human</span>
-            </div>
+        
+        <div class="analysis-secondary">
+          <div class="metric-card">
+            <span class="metric-row-value ${secondaryClass === 'human' ? 'low' : 'high'}">${secondaryValue}%</span>
+            <span class="metric-row-label">${secondaryLabel}</span>
           </div>
-          <div class="metric-title">Human Score</div>
-          <div class="metric-desc">Likelihood of human writing</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-ring ${confidence > 80 ? 'glow' : ''}">
-            <svg viewBox="0 0 84 84">
-              <circle class="ring-bg" cx="42" cy="42" r="40"/>
-              <circle class="ring-progress confidence" cx="42" cy="42" r="40" data-percent="${confidence}"/>
-            </svg>
-            <div class="metric-value">
-              <span class="metric-percent">${confidence}%</span>
-              <span class="metric-label">Conf.</span>
-            </div>
+          <div class="metric-card">
+            <span class="metric-row-value">${confidence}%</span>
+            <span class="metric-row-label">Confidence</span>
           </div>
-          <div class="metric-title">Confidence</div>
-          <div class="metric-desc">Analysis reliability</div>
         </div>
       </div>
+      
       <div class="analysis-verdict">
-        <div class="verdict-icon ${aiPercent > 50 ? 'ai' : 'human'}">
+        <div class="verdict-icon ${isAI ? 'ai' : 'human'}">
           ${verdictIcon}
         </div>
         <div>
           <div class="verdict-text">${verdict}</div>
-          <div class="verdict-sub">${aiPercent > 50 ? 'Text shows AI-generated patterns' : 'Text appears naturally written'}</div>
+          <div class="verdict-sub">${isAI ? 'Text shows AI-generated patterns' : 'Text appears naturally written'}</div>
         </div>
       </div>
+      
       ${data.details ? `
       <div class="analysis-details">
         <div class="details-title">Analysis Details</div>
@@ -248,12 +241,12 @@ function setDetectorContent(box, data) {
 
   // Animate the progress rings
   requestAnimationFrame(() => {
-    box.querySelectorAll('.ring-progress').forEach(ring => {
-      const percent = parseFloat(ring.dataset.percent);
-      const circumference = 251.2;
-      const offset = circumference - (percent / 100) * circumference;
-      ring.style.strokeDashoffset = offset;
-    });
+    const primaryRing = box.querySelector('.primary-ring .ring-progress');
+    if (primaryRing) {
+      const circumference = 408;
+      const offset = circumference - (primaryPercent / 100) * circumference;
+      primaryRing.style.strokeDashoffset = offset;
+    }
   });
 }
 
