@@ -171,7 +171,13 @@ function setPlaceholder(box, message) {
 
 function setOutputContent(box, text) {
   box.innerHTML = '';
-  box.textContent = text;
+  // Parse markdown and render as HTML
+  if (text && typeof text === 'string') {
+    const html = marked.parse(text);
+    box.innerHTML = html;
+  } else {
+    box.textContent = text;
+  }
 }
 
 function resetOutputs() {
