@@ -1,20 +1,13 @@
 /* ============================================================
    ToneShift — AI Text Transformer
-   ============================================================
-   Transforms user text into three AI-generated variations:
-   1. Professional  — polished, formal tone
-   2. Casual Gen-Z  — modern, friendly tone
-   3. AI Prompt     — optimized prompt for coding agents
-
-   Tech: Vanilla HTML / CSS / JS + OpenRouter API
-   Design: Modern dark theme (GitHub/Cursor/ChatGPT inspired)
+   Transforms user text into AI-generated variations.
+   Tech: Vanilla HTML/CSS/JS + OpenRouter API
    ============================================================ */
 
 
 // ---------- API Configuration ----------
 const API_ENDPOINT = '/api/transform';
 const MAX_CHARS = 5000;
-
 
 // ---------- DOM References ----------
 
@@ -47,7 +40,6 @@ const outputCards = {
 const copyButtons = document.querySelectorAll('.copy-btn');
 const navLinks    = document.querySelectorAll('.nav-link');
 
-
 // ---------- Theme Management ----------
 
 /**
@@ -72,7 +64,6 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('toneshift-theme', next);
 }
-
 
 // ---------- Sidebar ----------
 
@@ -106,7 +97,6 @@ function initSidebar() {
   }
 }
 
-
 // ---------- Navigation Highlighting ----------
 
 /**
@@ -118,21 +108,16 @@ function handleNavClick(e) {
   const targetEl = document.getElementById(targetId);
 
   if (targetEl) {
-    // Hide all output cards
     Object.values(outputCards).forEach(card => card.classList.remove('active'));
-    // Show the targeted card
     targetEl.classList.add('active');
   }
 
-  // Update nav active state
   navLinks.forEach(link => link.classList.remove('active'));
   e.currentTarget.classList.add('active');
 
-  // Close mobile sidebar if open
   sidebar.classList.remove('mobile-open');
   sidebarBackdrop.classList.remove('visible');
 }
-
 
 // ---------- Toast Notifications ----------
 
@@ -162,7 +147,6 @@ function updateCharCount() {
   charCount.textContent = `${len.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
 }
 
-
 // ---------- UI Helpers ----------
 
 function setPlaceholder(box, message) {
@@ -171,7 +155,6 @@ function setPlaceholder(box, message) {
 
 function setOutputContent(box, text) {
   box.innerHTML = '';
-  // Parse markdown and render as HTML
   if (text && typeof text === 'string') {
     const html = marked.parse(text);
     box.innerHTML = html;
@@ -279,7 +262,6 @@ function handleCopy(button) {
   });
 }
 
-
 // ---------- API Call ----------
 
 async function callTransformAPI(userText, retries = 3) {
@@ -290,13 +272,8 @@ async function callTransformAPI(userText, retries = 3) {
     try {
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: userText,
-          tone: tone,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: userText, tone: tone }),
       });
 
       if (response.status === 429 && attempt < retries - 1) {
@@ -312,11 +289,7 @@ async function callTransformAPI(userText, retries = 3) {
       }
 
       const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Transformation failed.');
-      }
-      
+      if (!data.success) throw new Error(data.error || 'Transformation failed.');
       return data.text || data.raw || '';
 
     } catch (error) {
@@ -331,42 +304,30 @@ async function callTransformAPI(userText, retries = 3) {
   throw new Error('Max retries exceeded');
 }
 
-
 // ---------- Transform Handler ----------
 
 async function handleTransform() {
   const text = getValidatedInput();
   if (!text) return;
 
-  if (!isApiKeyConfigured()) {
-    return;
-  }
+  if (!isApiKeyConfigured()) return;
 
   setButtonLoading(true);
   showLoading();
 
   try {
     const resultText = await callTransformAPI(text);
-    
     const activeNav = document.querySelector('.nav-link.active');
     const tone = activeNav ? activeNav.getAttribute('data-target').replace('output-', '') : 'professional';
-    
-    if (resultText && typeof resultText === 'string') {
-      setOutputContent(outputBoxes[tone], resultText);
-    } else {
-      setOutputContent(outputBoxes[tone], resultText || '—');
-    }
-
+    setOutputContent(outputBoxes[tone], resultText || '—');
   } catch (error) {
     console.error('ToneShift error:', error);
-    const errorMsg = error.message || 'Unknown error';
-    showError(`Error: ${errorMsg}`);
+    showError(`Error: ${error.message || 'Unknown error'}`);
     showToast('Transformation failed.', 'error');
   } finally {
     setButtonLoading(false);
   }
 }
-
 
 // ---------- Event Listeners ----------
 
@@ -388,39 +349,27 @@ userInput.addEventListener('input', () => {
 });
 
 // Copy handlers
-copyButtons.forEach(btn => {
-  btn.addEventListener('click', () => handleCopy(btn));
-});
+copyButtons.forEach(btn => btn.addEventListener('click', () => handleCopy(btn)));
 
 // Sidebar toggle
-if (sidebarToggle) {
-  sidebarToggle.addEventListener('click', toggleSidebar);
-}
+if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
 
 // Mobile menu
-if (mobileMenuBtn) {
-  mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
-}
+if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
 
 // Theme toggle
-if (themeToggle) {
-  themeToggle.addEventListener('click', toggleTheme);
-}
+if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
 // Nav links
-navLinks.forEach(link => {
-  link.addEventListener('click', handleNavClick);
-});
+navLinks.forEach(link => link.addEventListener('click', handleNavClick));
 
 // Close mobile sidebar when clicking outside
 document.addEventListener('click', (e) => {
-  // If clicking on the backdrop, close the sidebar
   if (e.target === sidebarBackdrop) {
     sidebar.classList.remove('mobile-open');
     sidebarBackdrop.classList.remove('visible');
   }
 });
-
 
 // ---------- Initialize ----------
 
