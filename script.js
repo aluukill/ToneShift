@@ -163,12 +163,117 @@ function setOutputContent(box, text) {
   }
 }
 
+function setDetectorContent(box, data) {
+  if (!data) {
+    setPlaceholderDetector();
+    return;
+  }
+
+  const aiPercent = data.aiProbability || 0;
+  const humanPercent = data.humanProbability || (100 - aiPercent);
+  const confidence = data.confidence || 85;
+  const verdict = aiPercent > 50 ? 'AI-Generated' : 'Human-Written';
+  const verdictIcon = aiPercent > 50 
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="8" r="1.5" fill="currentColor"/></svg>';
+
+  box.innerHTML = `
+    <div class="ai-analysis-panel">
+      <div class="analysis-results">
+        <div class="metric-card">
+          <div class="metric-ring ${aiPercent > 70 ? 'glow' : ''}">
+            <svg viewBox="0 0 84 84">
+              <circle class="ring-bg" cx="42" cy="42" r="40"/>
+              <circle class="ring-progress ai" cx="42" cy="42" r="40" data-percent="${aiPercent}"/>
+            </svg>
+            <div class="metric-value">
+              <span class="metric-percent">${aiPercent}%</span>
+              <span class="metric-label">AI</span>
+            </div>
+          </div>
+          <div class="metric-title">AI Probability</div>
+          <div class="metric-desc">Likelihood of AI generation</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-ring ${humanPercent > 70 ? 'glow' : ''}">
+            <svg viewBox="0 0 84 84">
+              <circle class="ring-bg" cx="42" cy="42" r="40"/>
+              <circle class="ring-progress human" cx="42" cy="42" r="40" data-percent="${humanPercent}"/>
+            </svg>
+            <div class="metric-value">
+              <span class="metric-percent">${humanPercent}%</span>
+              <span class="metric-label">Human</span>
+            </div>
+          </div>
+          <div class="metric-title">Human Score</div>
+          <div class="metric-desc">Likelihood of human writing</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-ring ${confidence > 80 ? 'glow' : ''}">
+            <svg viewBox="0 0 84 84">
+              <circle class="ring-bg" cx="42" cy="42" r="40"/>
+              <circle class="ring-progress confidence" cx="42" cy="42" r="40" data-percent="${confidence}"/>
+            </svg>
+            <div class="metric-value">
+              <span class="metric-percent">${confidence}%</span>
+              <span class="metric-label">Conf.</span>
+            </div>
+          </div>
+          <div class="metric-title">Confidence</div>
+          <div class="metric-desc">Analysis reliability</div>
+        </div>
+      </div>
+      <div class="analysis-verdict">
+        <div class="verdict-icon ${aiPercent > 50 ? 'ai' : 'human'}">
+          ${verdictIcon}
+        </div>
+        <div>
+          <div class="verdict-text">${verdict}</div>
+          <div class="verdict-sub">${aiPercent > 50 ? 'Text shows AI-generated patterns' : 'Text appears naturally written'}</div>
+        </div>
+      </div>
+      ${data.details ? `
+      <div class="analysis-details">
+        <div class="details-title">Analysis Details</div>
+        ${Object.entries(data.details).map(([key, value]) => `
+          <div class="detail-row">
+            <span class="detail-label">${key}</span>
+            <span class="detail-value ${value.level || ''}">${value.text || value}</span>
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+    </div>
+  `;
+
+  // Animate the progress rings
+  requestAnimationFrame(() => {
+    box.querySelectorAll('.ring-progress').forEach(ring => {
+      const percent = parseFloat(ring.dataset.percent);
+      const circumference = 251.2;
+      const offset = circumference - (percent / 100) * circumference;
+      ring.style.strokeDashoffset = offset;
+    });
+  });
+}
+
 function resetOutputs() {
   setPlaceholder(outputBoxes.professional, 'Your professional version will appear here.');
-  setPlaceholder(outputBoxes.casual,       'Your casual version will appear here.');
-  setPlaceholder(outputBoxes.prompt,       'Your optimized AI prompt will appear here.');
-  setPlaceholder(outputBoxes.humanize,     'Your humanized version will appear here.');
-  setPlaceholder(outputBoxes.detector,     'AI detection result will appear here.');
+  setPlaceholder(outputBoxes.casual, 'Your casual version will appear here.');
+  setPlaceholder(outputBoxes.prompt, 'Your optimized AI prompt will appear here.');
+  setPlaceholder(outputBoxes.humanize, 'Your humanized version will appear here.');
+  setPlaceholderDetector();
+}
+
+function setPlaceholderDetector() {
+  outputBoxes.detector.innerHTML = `
+    <div class="ai-analysis-panel">
+      <div class="analysis-empty">
+        <div class="empty-ring"></div>
+        <p>Enter text to analyze its AI detection probability</p>
+      </div>
+    </div>
+  `;
 }
 
 function showLoading() {
@@ -319,7 +424,19 @@ async function handleTransform() {
     const resultText = await callTransformAPI(text);
     const activeNav = document.querySelector('.nav-link.active');
     const tone = activeNav ? activeNav.getAttribute('data-target').replace('output-', '') : 'professional';
-    setOutputContent(outputBoxes[tone], resultText || '—');
+
+    if (tone === 'detector') {
+      // Parse detector result as JSON
+      try {
+        const detectorData = typeof resultText === 'string' ? JSON.parse(resultText) : resultText;
+        setDetectorContent(outputBoxes[tone], detectorData);
+      } catch (e) {
+        // Fallback if not JSON - treat as regular output
+        setOutputContent(outputBoxes[tone], resultText || '—');
+      }
+    } else {
+      setOutputContent(outputBoxes[tone], resultText || '—');
+    }
   } catch (error) {
     console.error('ToneShift error:', error);
     showError(`Error: ${error.message || 'Unknown error'}`);
