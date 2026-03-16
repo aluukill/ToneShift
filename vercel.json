@@ -1,26 +1,5 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "installCommand": null,
-  "devCommand": null,
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
   "cleanUrls": true,
-  "rewrites": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
