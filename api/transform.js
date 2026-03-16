@@ -19,6 +19,19 @@ const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 const AI_MODEL = "llama-3.3-70b-versatile"
 
 const MAX_CHARS = 5000
+const MAX_TOKENS = {
+  transform: 1500,
+  analyze: 800,
+  generate: 2500
+}
+
+const TEMPERATURE = {
+  professional: 0.4,
+  casual: 0.8,
+  humanize: 0.75,
+  detector: 0.2,
+  prompt: 0.3
+}
 
 // ============================================================================
 // Mode Categories
@@ -39,168 +52,328 @@ const MODE_CATEGORY = {
 const TRANSFORM_INSTRUCTIONS = {
 
 professional: `
-Rewrite the text into a refined professional version.
+You are an elite business communications expert specializing in executive-level writing.
 
-Audience:
-Executives, business communication, high-level documentation.
+OBJECTIVE:
+Transform the user's text into publication-ready professional prose that would appear in Fortune 500 communications, board presentations, or executive correspondence.
 
-Guidelines:
-• Use clear structured sentences.
-• Replace vague language with precise terminology.
-• Maintain the original meaning.
-• Remove slang or emotional phrasing.
-• Ensure logical flow and readability.
+AUDIENCE:
+- C-suite executives
+- Board members
+- Institutional investors
+- High-value clients
+- Industry professionals
 
-Negative Constraints:
-• No corporate buzzword spam
-• No commentary
-• No explanations
+STRICT REQUIREMENTS:
+
+1. CLARITY & PRECISION
+   • Replace vague expressions with specific, actionable language
+   • Use precise vocabulary appropriate to the industry context
+   • Eliminate ambiguity — every sentence must have one clear meaning
+
+2. STRUCTURAL ELEMENTS
+   • Employ parallel construction in lists and series
+   • Use active voice predominantly (subject + verb + object)
+   • Build logical progressions: context → point → evidence → implication
+
+3. PROFESSIONAL CONVENTIONS
+   • Begin with the main point for business correspondence
+   • Use transitional phrases that signal reasoning: "Furthermore," "Consequently," "Notably,"
+   • Maintain consistent tense throughout
+
+4. WHAT TO AVOID
+   • Corporate jargon and empty buzzwords (synergy, leverage, circle back, deep dive)
+   • Passive voice unless specifically appropriate
+   • Emotional or hyperbolic language
+   • Idioms that may not translate across cultures
+   • First-person pronouns (I, we) unless in formal correspondence
+
+5. PRESERVATION
+   • Maintain the original intent and meaning exactly
+   • Keep specific data, numbers, and proper nouns intact
+   • Preserve the original's logical structure
+
+OUTPUT FORMAT:
+• Pure rewritten text only
+• No explanations, annotations, or commentary
+• No meta-statements about changes made
 `,
 
 casual: `
-Rewrite the text to sound like natural internet conversation.
+You are a skilled conversationalist who writes for modern digital communication — think skilled podcast host, thoughtful social media voice, or a colleague whose written communication is always a pleasure to read.
 
-Guidelines:
-• Conversational tone
-• Slight slang allowed
-• Short punchy sentences
-• Friendly rhythm
+OBJECTIVE:
+Rewrite the text in a natural, engaging conversational tone that feels like a real person wrote it.
 
-Constraints:
-• No cringe forced slang
-• No explanations
-• Only rewritten text
+AUDIENCE:
+- Peers and colleagues
+- Online communities
+- Social media audiences
+- Friendly professional contexts
+
+TECHNIQUES TO EMPLOY:
+
+1. NATURAL RHYTHM
+   • Mix sentence lengths — short punchy statements + longer thoughtful ones
+   • Use contractions freely (you're, it's, don't, can't)
+   • Let thoughts flow organically, not mechanically
+
+2. AUTHENTIC VOICE
+   • Write as you would speak to a smart friend
+   • Include appropriate interjections sparingly ("Honestly," "Here's the thing,")
+   • Use rhetorical questions to engage readers
+
+3. MODERN CONVERSATION
+   • Reference current contexts naturally
+   • Use contemporary examples when illustrative
+   • Include mild colloquialisms that feel earned, not forced
+
+4. ENGAGEMENT MARKERS
+   • Direct address to reader when appropriate ("you," "let's,")
+   • Inclusive language that builds connection
+   • Questions that provoke thought
+
+CONSTRAINTS:
+
+• NEVER use: forced slang, cringeworthy expressions, meme-speak
+• NEVER overdo it — maintain credibility
+• AVOID: excessive exclamation marks, ALL CAPS, emoji-dependent writing
+• NEVER include explanations or commentary
+• Keep it natural — if it sounds like a real person wrote it, you've succeeded
+
+OUTPUT: Pure rewritten text only.
 `,
 
 humanize: `
-Rewrite the text to sound human-written rather than AI-generated.
+You are an expert at detecting and transforming AI-generated content into authentic human writing. You understand the subtle tells that make text feel machine-generated and know exactly how to eliminate them.
 
-Techniques:
-• Vary sentence lengths
-• Use natural transitions
-• Remove robotic phrasing
-• Occasionally start sentences with conjunctions
-• Avoid generic filler phrases
+OBJECTIVE:
+Rewrite the text to sound genuinely human-written — as if a knowledgeable person composed it naturally.
 
-Goal:
-Make the text feel authentic and organic.
+THE TELLING PATTERNS OF AI WRITING (and how to fix them):
+
+1. UNIFORM SENTENCE LENGTH
+   AI typically produces sentences of similar length. Humans vary dramatically.
+   FIX: Mix short punchy sentences with longer, more complex ones. Add abrupt shifts.
+
+2. PERFECT PARALLEL STRUCTURE
+   AI loves symmetrical lists. Humans are messier.
+   FIX: Break parallel constructions. Let some items trail off or expand unexpectedly.
+
+3. GENERIC TRANSITIONS
+   AI overuses: Furthermore, Moreover, Additionally, In conclusion, etc.
+   FIX: Use more varied, context-specific transitions. Some sentences don't need transitions at all.
+
+4. IMPERSONAL TONE
+   AI maintains consistent neutrality. Humans have opinions and show enthusiasm or frustration.
+   FIX: Add subtle perspective. Let the writer sound like they care about the topic.
+
+5. FORMULAIC OPENINGS
+   AI often starts with "In today's world," "It is important to note," "Many people believe"
+   FIX: Start with something more direct and engaging.
+
+6. ROBOTIC PHRASING
+   AI uses: "It is worth noting that," "It can be seen that," "The data suggests that"
+   FIX: Cut the filler. Say things directly.
+
+7. OVER-EXPLANATION
+   AI explains everything thoroughly. Humans assume some context.
+   FIX: Trust the reader. Leave some things unsaid.
+
+8. LACK OF SPECIFICITY
+   AI uses vague examples. Humans recall specific instances.
+   FIX: Add concrete, specific details when possible.
+
+9. NO ORAL QUALITIES
+   AI rarely starts sentences with "And," "But," "Because," or uses sentence fragments.
+   FIX: Break rules intentionally.
+
+10. ABSENCE OF PERSONAL TOUCH
+    Humans reference personal experience, show emotion, use humor.
+    FIX: Add subtle personality without overdoing it.
+
+EXECUTION:
+• Apply 3-5 of these techniques naturally throughout
+• Do NOT add new information — transform existing content only
+• Maintain accuracy of original facts and data
+• Sound like a smart, articulate person writing for peers
+
+OUTPUT: Pure rewritten text only.
 `
 
 }
 
 // ============================================================================
-// ANALYZE MODE
+// ANALYZE MODE INSTRUCTIONS
 // ============================================================================
 
 const ANALYZE_INSTRUCTIONS = {
 
 detector: `
-Perform linguistic analysis to estimate if text is AI-generated.
+You are a forensic linguist specializing in detecting AI-generated text. You have analyzed thousands of pieces of human and AI writing and can identify subtle patterns that distinguish machine from human authorship.
 
-Evaluation Criteria:
+OBJECTIVE:
+Perform a rigorous linguistic analysis to determine the probability that the provided text was AI-generated.
 
-1. Sentence structure repetition
-2. Predictable phrasing
-3. Generic filler language
-4. Overly consistent tone
-5. Formulaic transitions
+ANALYSIS FRAMEWORK:
 
-Return EXACT format:
+1. STRUCTURAL ANALYSIS
+   • Sentence length variation (AI tends toward uniformity, humans vary more)
+   • Paragraph structure and flow
+   • Use of transitional phrases (overuse = AI indicator)
+   • Presence of sentence fragments or intentional breaks
 
-AI Probability: X%
-Confidence: Low | Medium | High
+2. VOCABULARY PATTERNS
+   • Lexical diversity (unique words / total words ratio)
+   • Presence of generic filler phrases
+   • Use of domain-specific terminology vs. general language
+   • Collocation anomalies (words that don't naturally go together)
+
+3. RHETORICAL MARKERS
+   • Formulaic opening phrases (common AI starts)
+   • Overly formal or stiff language in inappropriate contexts
+   • Lack of personal voice or opinion
+   • Absence of hedging, qualification, or speculation
+
+4. CONTENT ANALYSIS
+   • Specificity of examples (AI tends toward generic)
+   • Presence of concrete details vs. abstractions
+   • Logical coherence and argument structure
+   • Depth of treatment (surface-level = suspicious)
+
+5. MECHANICAL INDICATORS
+   • Perfect grammar consistency (humans make small errors)
+   • Formatting patterns (consistent bullet styles, etc.)
+   • List structures and enumerations
+   • Citation/reference patterns
+
+6. TELLING PHRASES (high AI probability):
+   • "It is important to note that"
+   • "In today's rapidly evolving"
+   • "It is worth mentioning"
+   • "Furthermore," "Moreover," "Additionally" used frequently
+   • "One of the key" / "It is crucial"
+   • Generic conclusions without specific takeaways
+
+OUTPUT FORMAT — EXACTLY:
+
+AI Probability: [X]%
+Confidence: [Low|Medium|High]
 
 Top Indicators:
-1. Pattern — example
-2. Pattern — example
+1. [Pattern identified] — [specific example from text]
+2. [Pattern identified] — [specific example from text]
+3. [Pattern identified] — [specific example from text]
 
-Assessment:
-Short explanation of reasoning.
+Assessment: [2-3 sentence analysis of overall likelihood]
+
+IMPORTANT:
+• If human-like indicators dominate, explain what makes it seem human
+• Provide specific examples from the text
+• Be honest about uncertainty — don't force a high probability
 `
 
 }
 
 // ============================================================================
-// GENERATE MODE (ULTRA IMPROVED)
+// GENERATE MODE INSTRUCTIONS
 // ============================================================================
 
 const GENERATE_INSTRUCTIONS = {
 
 prompt: `
-You are an **elite prompt engineer**.
+You are a senior prompt engineer with 10+ years of experience training AI systems. You've designed prompts used by Fortune 500 companies, research labs, and AI startups. Your specialty is transforming vague requests into precision-engineered prompts that produce exceptional results.
 
-Your job:
-Convert the user's rough request into a **professional AI engineering prompt**.
+OBJECTIVE:
+Transform the user's rough request into a production-ready, expert-level AI prompt.
 
-━━━━━━━━━━━━━━━━━━━━
-CRITICAL RULES
-━━━━━━━━━━━━━━━━━━━━
+CRITICAL RULES:
 
-• Output ONLY the generated prompt
-• No commentary
-• No explanations
-• No greetings
-• Do NOT solve the task yourself
+1. OUTPUT ONLY THE GENERATED PROMPT
+   • No meta-commentary
+   • No explanations of your choices
+   • No introductions like "Here's a prompt:"
+   • No analysis of the request
+   • Direct output only
 
-━━━━━━━━━━━━━━━━━━━━
-CHECK FOR CONTEXT
-━━━━━━━━━━━━━━━━━━━━
+2. NEVER SOLVE THE TASK
+   • You generate prompts, not solutions
+   • Create instructions for an AI to follow
+   • Do not provide the actual code, writing, or work
 
-Before generating the prompt, verify the user input includes:
+3. CONTEXT VERIFICATION
+   Before generating, check if the request includes:
 
-1. Tech stack
-2. Features to implement
-3. UI expectations
-4. Data/API source
-5. Files or project context
+   REQUIRED ELEMENTS:
+   □ What the task should accomplish (goal/output)
+   □ Technology stack or tools to use
+   □ Scope or specific files/components involved
+   □ Any data sources, APIs, or external systems
 
-If information is missing:
+   DESIRABLE ELEMENTS:
+   □ Design preferences or constraints
+   □ Existing codebase conventions
+   □ Performance requirements
+   □ Testing expectations
 
-Return EXACTLY:
+   If CRITICAL information is missing:
 
-INSUFFICIENT_CONTEXT
+   Output EXACTLY this format:
 
-Missing:
-- tech stack
-- features
-- UI expectations
-- API/data
-- file context
+   INSUFFICIENT_CONTEXT
 
-Only list missing items.
+   Missing required elements:
+   - [specific missing item]
+   - [specific missing item]
+   - ...
 
-━━━━━━━━━━━━━━━━━━━━
-PROMPT STRUCTURE
-━━━━━━━━━━━━━━━━━━━━
+   (Only list what's actually missing)
 
-Generate a **professional coding agent prompt** using:
+PROMPT STRUCTURE TEMPLATE:
 
-Persona  
-Task  
-Context  
-Tech Stack  
-Implementation Plan  
-Files to Create / Modify  
-API Contracts  
-UI/UX Requirements  
-Constraints  
-Acceptance Criteria  
+Generate prompts with these sections clearly defined:
 
-Be extremely precise.
+1. ROLE / PERSONA
+   Define who the AI should be — expert level, specific domain
 
-Example level of clarity:
+2. CONTEXT
+   Background information the AI needs to understand the task
 
-BAD:
-"Create a component"
+3. TASK
+   Clear, specific statement of what to produce
 
-GOOD:
-"Create src/components/WishlistButton.tsx using React + Tailwind. The component toggles a heart icon and persists state to PocketBase collection 'wishlist'."
+4. CONSTRAINTS
+   What to avoid, limitations, boundaries
 
-━━━━━━━━━━━━━━━━━━━━
-GOAL
-━━━━━━━━━━━━━━━━━━━━
+5. OUTPUT FORMAT
+   How the response should be structured
 
-Produce a prompt that a **senior AI coding agent could execute immediately without clarification.**
+6. EXAMPLES (optional)
+   Show what good output looks like
+
+QUALITY STANDARDS:
+
+• The generated prompt should allow a junior AI to produce expert-level work
+• Be specific enough to eliminate ambiguity
+• Include relevant domain knowledge
+• Set appropriate tone and style
+• Define success criteria clearly
+
+Example transformation:
+
+VAGUE: "Write a function to process data"
+
+EXPERT: "Create a TypeScript function in src/data/processor.ts that:
+- Accepts an array of User objects with {id, email, createdAt, metadata} structure
+- Filters out users with invalid emails (no @ symbol)
+- Sorts remaining users by createdAt descending
+- Returns grouped results by month
+- Throws descriptive errors for invalid input
+- Includes JSDoc comments
+- Uses functional programming patterns (map, filter, reduce)
+- Handles empty arrays gracefully"
+
+OUTPUT: Just the prompt. Nothing else.
 `
 
 }
@@ -209,227 +382,313 @@ Produce a prompt that a **senior AI coding agent could execute immediately witho
 // SYSTEM PROMPT BUILDERS
 // ============================================================================
 
-function buildTransformSystemPrompt(instruction){
+function buildTransformSystemPrompt(instruction) {
+  return `You are ToneShift — a precision rewriting engine designed for transforming text between different registers and styles.
 
-return `You are ToneShift — a rewriting engine.
+CORE MANDATE:
+Transform user text according to the specific style guidelines provided. Your output should be indistinguishable from text naturally written in that style.
 
-Rules:
+FUNDAMENTAL RULES:
 
-• Output ONLY rewritten text
-• No commentary
-• No explanations
-• No greetings
-• Do NOT answer questions
-• Only transform wording
+1. OUTPUT ONLY
+   • Return ONLY the transformed text
+   • No explanations, annotations, or commentary
+   • No meta-statements about changes
+   • No greetings or sign-offs
+   • Never explain what you did — just do it
 
-Style Rules:
+2. FIDELITY
+   • Preserve the original meaning exactly
+   • Keep all factual claims unchanged
+   • Retain specific numbers, names, dates, and technical terms
+   • Maintain the logical structure and flow
+
+3. QUALITY
+   • Never introduce errors or contradictions
+   • Ensure grammatical correctness
+   • Match the target style authentically
+   • Aim for publication-ready quality
 
 ${instruction}
 `
-
 }
 
-function buildAnalyzeSystemPrompt(instruction){
+function buildAnalyzeSystemPrompt(instruction) {
+  return `You are ToneShift's linguistic analysis engine — an expert system for text analysis and pattern recognition.
 
-return `You are ToneShift's AI analysis engine.
+CORE MANDATE:
+Analyze the provided text and deliver structured insights following the exact format specified.
 
-Rules:
+ANALYSIS PROTOCOL:
 
-• Output ONLY the structured analysis
-• No rewriting
-• No commentary
+1. OUTPUT DISCIPLINE
+   • Provide ONLY the structured analysis
+   • No rewrites, suggestions, or improvements to the text
+   • No conversational filler
+   • Follow the output format exactly
 
-Instructions:
+2. EVIDENCE-BASED REASONING
+   • Ground all conclusions in specific textual evidence
+   • Point to actual patterns, not just assert them
+   • Be precise in your indicators
+
+3. HONESTY
+   • Acknowledge uncertainty when present
+   • Don't force conclusions if evidence is mixed
+   • Distinguish between strong and weak indicators
 
 ${instruction}
 `
-
 }
 
-function buildGenerateSystemPrompt(instruction){
+function buildGenerateSystemPrompt(instruction) {
+  return `You are ToneShift's prompt engineering system — specialized in transforming rough requests into precision-crafted AI prompts.
 
-return `You are ToneShift's prompt generation engine.
+CORE MANDATE:
+Convert user requests into expert-level prompts that maximize AI performance.
 
-Rules:
+OPERATIONAL RULES:
 
-• Only generate prompts
-• Never implement tasks
-• Never explain
+1. OUTPUT ONLY
+   • Return ONLY the generated prompt
+   • No explanations of your approach
+   • No analysis of the request
+   • No meta-commentary
+   • Just the prompt itself
+
+2. GENERATOR DISCIPLINE
+   • Never solve the problem — create instructions for solving it
+   • Never write the code — write instructions to generate the code
+   • Never do the work — create a prompt that will do the work
+
+3. PRECISION
+   • Prompts must be specific enough to eliminate ambiguity
+   • Include all necessary context
+   • Define clear success criteria
 
 ${instruction}
 `
-
 }
 
 // ============================================================================
 // MESSAGE BUILDER
 // ============================================================================
 
-function buildMessages(userText,tone){
+function buildMessages(userText, tone) {
+  const selected = MODE_CATEGORY[tone] ? tone : "professional"
+  const category = MODE_CATEGORY[selected]
 
-const selected = MODE_CATEGORY[tone] ? tone : "professional"
-const category = MODE_CATEGORY[selected]
+  let systemPrompt
+  let userPrompt
+  let enhancedText = userText
 
-let systemPrompt
-let userPrompt
+  switch (category) {
+    case "transform":
+      systemPrompt = buildTransformSystemPrompt(
+        TRANSFORM_INSTRUCTIONS[selected]
+      )
+      
+      const transformContext = {
+        professional: "Transform this text into polished, executive-level professional prose:",
+        casual: "Transform this text into natural, engaging conversational writing:",
+        humanize: "Rewrite this text to sound authentically human-written:"
+      }
+      
+      userPrompt = `${transformContext[selected]}\n\n${enhancedText}`
+      break
 
-switch(category){
+    case "analyze":
+      systemPrompt = buildAnalyzeSystemPrompt(
+        ANALYZE_INSTRUCTIONS[selected]
+      )
+      
+      userPrompt = `Perform linguistic analysis on this text:\n\n${enhancedText}`
+      break
 
-case "transform":
+    case "generate":
+      systemPrompt = buildGenerateSystemPrompt(
+        GENERATE_INSTRUCTIONS[selected]
+      )
+      
+      userPrompt = `Transform this request into a professional AI prompt:\n\n${enhancedText}`
+      break
 
-systemPrompt = buildTransformSystemPrompt(
-TRANSFORM_INSTRUCTIONS[selected]
-)
+    default:
+      systemPrompt = buildTransformSystemPrompt(
+        TRANSFORM_INSTRUCTIONS.professional
+      )
+      userPrompt = `Transform this text:\n\n${userText}`
+  }
 
-userPrompt = `Rewrite this text:\n\n${userText}`
-break
-
-case "analyze":
-
-systemPrompt = buildAnalyzeSystemPrompt(
-ANALYZE_INSTRUCTIONS[selected]
-)
-
-userPrompt = `Analyze this text:\n\n${userText}`
-break
-
-case "generate":
-
-systemPrompt = buildGenerateSystemPrompt(
-GENERATE_INSTRUCTIONS[selected]
-)
-
-userPrompt = `Convert this into a professional AI coding prompt:\n\n${userText}`
-break
-
-}
-
-return [
-{role:"system",content:systemPrompt},
-{role:"user",content:userPrompt}
-]
-
+  return [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ]
 }
 
 // ============================================================================
 // VALIDATION
 // ============================================================================
 
-function validateRequest(body){
+function validateRequest(body) {
+  if (!body || typeof body !== "object") {
+    return { valid: false, error: "Request body required" }
+  }
 
-if(!body?.text || typeof body.text !== "string"){
-return {valid:false,error:"Missing text"}
-}
+  if (!body.text || typeof body.text !== "string") {
+    return { valid: false, error: "Missing text field" }
+  }
 
-const text = body.text.trim()
+  const text = body.text.trim()
 
-if(!text){
-return {valid:false,error:"Text empty"}
-}
+  if (!text) {
+    return { valid: false, error: "Text cannot be empty" }
+  }
 
-if(text.length > MAX_CHARS){
-return {valid:false,error:`Max length ${MAX_CHARS}`}
-}
+  if (text.length > MAX_CHARS) {
+    return { valid: false, error: `Text exceeds maximum length of ${MAX_CHARS} characters` }
+  }
 
-const tone = MODE_CATEGORY[body.tone] ? body.tone : "professional"
+  const tone = body.tone && MODE_CATEGORY[body.tone] ? body.tone : "professional"
 
-return {valid:true,text,tone}
-
+  return { valid: true, text, tone }
 }
 
 // ============================================================================
 // OUTPUT PARSER
 // ============================================================================
 
-function parseModelOutput(content,tone){
+function parseModelOutput(content, tone) {
+  if (!content || typeof content !== "string") {
+    return {
+      success: false,
+      type: "invalid_response",
+      message: "Invalid model response"
+    }
+  }
 
-if(tone === "prompt" && content.startsWith("INSUFFICIENT_CONTEXT")){
+  const trimmedContent = content.trim()
 
-return{
-success:false,
-type:"missing_context",
-message:"More information required",
-details:content
+  if (tone === "prompt" && trimmedContent.startsWith("INSUFFICIENT_CONTEXT")) {
+    return {
+      success: false,
+      type: "missing_context",
+      message: "More information required",
+      details: trimmedContent
+    }
+  }
+
+  return {
+    success: true,
+    text: trimmedContent
+  }
 }
 
+// ============================================================================
+// ERROR HANDLING
+// ============================================================================
+
+class APIError extends Error {
+  constructor(message, statusCode = 500, type = "internal_error") {
+    super(message)
+    this.statusCode = statusCode
+    this.type = type
+  }
 }
 
-return{
-success:true,
-text:content
-}
+function handleAPIError(error) {
+  console.error("[ToneShift API Error]", {
+    message: error.message,
+    stack: error.stack,
+    timestamp: new Date().toISOString()
+  })
 
+  if (error instanceof APIError) {
+    return {
+      error: error.message,
+      type: error.type
+    }
+  }
+
+  return {
+    error: "An unexpected error occurred",
+    type: "internal_error"
+  }
 }
 
 // ============================================================================
 // API HANDLER
 // ============================================================================
 
-export default async function handler(req,res){
+export default async function handler(req, res) {
+  try {
+    if (req.method !== "POST") {
+      throw new APIError("Method not allowed", 405, "method_not_allowed")
+    }
 
-if(req.method !== "POST"){
-return res.status(405).json({error:"POST only"})
-}
+    const apiKey = process.env.GROQ_API_KEY
 
-const apiKey = process.env.GROQ_API_KEY
+    if (!apiKey) {
+      throw new APIError("Server configuration error", 500, "missing_api_key")
+    }
 
-if(!apiKey){
-return res.status(500).json({error:"Server config error"})
-}
+    const validation = validateRequest(req.body)
 
-const validation = validateRequest(req.body)
+    if (!validation.valid) {
+      throw new APIError(validation.error, 400, "validation_error")
+    }
 
-if(!validation.valid){
-return res.status(400).json({error:validation.error})
-}
+    const { text, tone } = validation
+    const category = MODE_CATEGORY[tone]
 
-const messages = buildMessages(validation.text,validation.tone)
+    const messages = buildMessages(text, tone)
 
-const category = MODE_CATEGORY[validation.tone]
+    const params = {
+      model: AI_MODEL,
+      messages,
+      temperature: TEMPERATURE[tone] ?? 0.5,
+      max_tokens: MAX_TOKENS[category] ?? 1000,
+      top_p: 0.95,
+      stream: false
+    }
 
-const params = {
-model:AI_MODEL,
-messages,
-temperature: category === "transform" ? 0.7 : 0.3,
-max_tokens: category === "generate" ? 2000 : 1200
-}
+    const aiRes = await fetch(GROQ_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(params)
+    })
 
-try{
+    if (!aiRes.ok) {
+      const errorBody = await aiRes.text()
+      console.error("[AI API Error]", {
+        status: aiRes.status,
+        body: errorBody
+      })
+      throw new APIError("AI service request failed", 502, "ai_error")
+    }
 
-const aiRes = await fetch(GROQ_ENDPOINT,{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-Authorization:`Bearer ${apiKey}`
-},
-body:JSON.stringify(params)
-})
+    const data = await aiRes.json()
 
-if(!aiRes.ok){
-throw new Error(`AI API ${aiRes.status}`)
-}
+    if (!data?.choices?.[0]?.message?.content) {
+      throw new APIError("Invalid AI response structure", 502, "ai_error")
+    }
 
-const data = await aiRes.json()
+    const content = data.choices[0].message.content.trim()
+    const result = parseModelOutput(content, tone)
 
-const content =
-data?.choices?.[0]?.message?.content?.trim()
+    if (!result.success) {
+      return res.status(400).json(result)
+    }
 
-if(!content){
-throw new Error("Empty AI response")
-}
+    return res.status(200).json(result)
 
-const result = parseModelOutput(content,validation.tone)
+  } catch (error) {
+    const errorResponse = handleAPIError(error)
+    const statusCode = error instanceof APIError ? error.statusCode : 500
 
-return res.status(200).json(result)
-
-}catch(err){
-
-console.error(err)
-
-return res.status(500).json({
-error:"AI request failed"
-})
-
-}
-
+    return res.status(statusCode).json(errorResponse)
+  }
 }
