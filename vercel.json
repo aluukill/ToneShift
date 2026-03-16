@@ -10,8 +10,11 @@
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
+  "cleanUrls": true,
+  "rewrites": [
     {
-      "handle": "filesystem"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",

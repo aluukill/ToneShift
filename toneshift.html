@@ -10,11 +10,18 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+  
+  <!-- Ambient Orbs -->
+  <div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
   <!-- ===== SIDEBAR ===== -->
   <aside id="sidebar">
     <div class="sidebar-top">
-      <a href="index.html" class="logo-group">
+      <a href="/" class="logo-group">
         <img class="logo-img" src="assets/ToneShift.png" alt="ToneShift Logo">
         <span class="logo-text">ToneShift</span>
       </a>
@@ -216,15 +223,7 @@
           <div class="output-header">
             <div class="output-title">
               <span class="output-dot dot-detector"></span>
-              <h2>AI Detector</h2>
-            </div>
-            <button class="copy-btn" data-target="detector-text" type="button" aria-label="Copy detection result">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              <span>Copy</span>
-            </button>
+            <h2>AI Detector</h2>
           </div>
           <div id="detector-text" class="output-body">
             <div class="ai-analysis-panel">

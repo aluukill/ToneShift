@@ -48,117 +48,82 @@ const MODE_CATEGORY = {
 // ============================================================================
 
 const TRANSFORM_INSTRUCTIONS = {
-  professional: `Rewrite the text into a clear, polished, and professional version suitable for formal communication — emails, reports, client correspondence, or messages to a manager.
+  professional: `Rewrite the text into a clear, polished, and sophisticated professional version. 
+  
+Target Audience: C-suite executives, legal documents, or high-stakes business correspondence.
 
 Guidelines:
-- Fix grammar, punctuation, and sentence structure.
-- Use confident, concise, and neutral language.
-- Eliminate filler words, redundancy, and overly casual expressions.
-- Preserve every idea and piece of information in the original — do not add or remove content.
-- Keep roughly the same length unless tightening is needed for clarity.`,
+- Tone: Confident, authoritative, but never arrogant. Use active voice.
+- Precision: Replace vague words (e.g., "good", "fast") with precise business terminology (e.g., "optimal", "expedited").
+- Nuance: Preserve subtle emotional cues while smoothing over hostility or informalities.
+- Structure: Ensure a logical flow. Use semi-colons or well-placed transitions for a "literary" business feel.
+- Negative Constraint: Avoid corporate jargon-stuffing (e.g., "synergy", "paradigm shift") if it doesn't serve a clear purpose.`,
 
-  casual: `Rewrite the text in a casual, relaxed, and conversational tone suitable for friends, social media, or informal messages.
+  casual: `Rewrite the text to sound like a natural, high-energy conversation between friends or on social media.
 
-Guidelines:
-- Use simple, everyday vocabulary — avoid stiff or corporate phrasing.
-- Contractions are encouraged (don't, can't, it's, etc.).
-- Light, modern slang or internet expressions are fine when they fit naturally — do not force them.
-- Keep sentences short and punchy where it sounds natural.
-- Preserve all the original ideas and meaning — do not add or remove content.`,
-
-  humanize: `Rewrite AI-generated text so it reads as though a real person wrote it.
+Target Audience: Gen-Z, Alpha, or informal community spaces.
 
 Guidelines:
-- Vary sentence length deliberately — mix short punchy sentences with longer flowing ones.
-- Replace generic transitions ("Furthermore", "In conclusion", "It is important to note") with natural connectors or none at all.
-- Remove hedging clusters ("It is worth noting that", "One might argue that") unless they serve a purpose.
-- Favour concrete, specific language over abstract generalisations.
-- Allow minor stylistic quirks that a human writer would naturally have.
-- Maintain the original message, facts, and tone intent — do not add new information.`,
+- Style: Use "text-speak" nuances like lowercase-only for effect, or lowercase first letters.
+- Pacing: Mimic the rhythm of instant messaging — use ellipses (...) for trailing thoughts or punchy short sentences.
+- Authenticity: Use modern slang (e.g., "lowkey", "fr fr", "vibes") but ONLY where it feels organic. Don't force "fellow kids" energy.
+- Punctuation: Use exclamation marks or emojis sparingly but impactfuly.
+- Negative Constraint: Absolutely no corporate "friendliness" or fake enthusiasm.`,
+
+  humanize: `Transform the input (likely AI-generated) into text that carries the unique "fingerprint" of a human writer.
+
+Psychological Triggers:
+- Burstiness: Vary sentence length dramatically. A very short sentence. Followed by a much longer, more descriptive one that winds through multiple clauses before landing.
+- Imperfection: Occasionally use a starting conjunction (But, And, Because) or a fragment for emphasis.
+- Perspective: Shift the "distance" of the narrator — zoom in on details, then zoom out to a wider observation.
+- Vocabulary: Use "low-frequency" words that a human would know from experience, not just statistical probability.
+- Flow: Remove AI markers like "In today's digital landscape" or "Overall, it is important to remember".`,
 };
 
 const ANALYZE_INSTRUCTIONS = {
-  detector: `Analyse the provided text and determine the likelihood that it was written by an AI model rather than a human.
+  detector: `Execute a forensic linguistic analysis to detect machine-generated patterns.
 
-Evaluation criteria — look for the following AI writing patterns:
-- Formulaic or predictable sentence structures (e.g. topic sentence → evidence → summary repeated uniformly)
-- Overuse of balanced parallel lists ("Firstly… Secondly… Finally…")
-- Generic transitions that don't flow from actual ideas ("Moreover", "Furthermore", "It is important to note")
-- Absence of personal voice, hedging, or genuine opinion
-- Uniform vocabulary complexity across the text — no register shifts
-- Unnaturally even paragraph lengths
-- Filler phrases that pad length without adding meaning
-- Correct but overly safe grammar with no natural variance
-- Lack of contractions where a human writer would use them
-- Topic sentences that over-announce what the paragraph will say
+Analysis Depth:
+- Syntax: Check for mathematically perfect sentence rhythms and repetitive structures.
+- Semantic Density: Look for "fluff" — sentences that sound good but contain zero unique information.
+- Register Consistency: Does the voice shift naturally? AI often stays in a "safe" medium register.
+- Transition Signatures: Flag formulaic transitions like "Furthermore", "Moreover", and "In conclusion".
 
-Scoring methodology:
-- Weight each indicator by how strongly it correlates with AI output vs. human variance.
-- A single indicator does not mean AI-generated. Cluster strength matters.
-- Short texts (under 50 words) produce lower-confidence results — note this.
+Scoring Logic:
+- 100% is nearly impossible for humans; 0% is nearly impossible for AI. Be precise.
+- Low Confidence: Short snippets (<30 words) or highly technical/legal text.
+- High Confidence: Long, flowing essays or descriptive stories.
 
-Your output must follow this exact structure:
-
+Exact Output Format:
 **AI Probability**: [0–100]%
+**Confidence**: [Low/Medium/High] — [Contextual reason]
 
-**Confidence**: [Low / Medium / High] — [one sentence explaining why, e.g. "text is too short for reliable analysis"]
+**Top Indicators**:
+1. [Pattern Category]: "[Quote from text]" — [Why this is machine-like]
+2. [Pattern Category]: "[Quote from text]" — [Why this is machine-like]
 
-**Indicators Found**:
-- [Specific pattern observed, with a brief example from the text]
-- [Repeat for each indicator found; if none, write "No strong AI indicators detected"]
-
-**Assessment**: [AI-Generated / Likely AI / Uncertain / Likely Human / Human-Written]
-
-**Reasoning**: [2–4 sentences summarising how you reached this assessment, referencing the indicators above]`,
+**Final Assessment**: [Verdict]
+**Linguistic Reasoning**: [Concise, expert explanation of the verdict.]`,
 };
 
 const GENERATE_INSTRUCTIONS = {
-  prompt: `You are an expert prompt engineer. Your job is to transform a user's rough idea or description into a high-quality, unambiguous prompt for an AI coding agent.
+  prompt: `You are a Senior Prompt Engineer. Your goal is to generate "Zero-Shot" prompts for AI coding agents that minimize hallucination and maximize precision.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-STEP 1 — EVALUATE CONTEXT SUFFICIENCY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Evaluation Phase:
+- If the request is a single sentence like "build a chat app", it is INSUFFICIENT.
+- You NEED: Tech stack, specific feature list, and UI/UX preferences.
 
-Before generating a prompt, assess whether the input contains enough information for a coding agent to act on. A good coding prompt needs at minimum:
-  (a) A clear goal or outcome
-  (b) Enough technical context (language, framework, environment, or existing code) — unless the task is framework-agnostic
-  (c) Any important constraints or requirements (e.g. performance, compatibility, libraries to use or avoid)
+Generation Phase (The "Gold Standard" Prompt):
+1. **Persona**: Define the agent's role (e.g., "Expert React Developer").
+2. **Task**: A detailed, step-by-step implementation guide.
+3. **Context**: Specific libraries, existing file structure, or API endpoints.
+4. **Constraints**: Performance limits, browser support, or design tokens.
+5. **Expected Output**: Folder structure and specific file content descriptions.
 
-If the input is too vague or ambiguous to produce a reliable, actionable coding prompt, you MUST respond with:
-
-INSUFFICIENT_CONTEXT
-Missing: [bullet list of the specific information needed]
-Example: "What programming language or framework should be used?", "What is the expected input/output format?", "Is this a new feature or a fix to existing code?"
-
-Do not attempt to generate a prompt when the context is insufficient — a vague prompt is worse than no prompt.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-STEP 2 — GENERATE THE PROMPT (if context is sufficient)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Transform the user's input into a structured, comprehensive prompt for an AI coding agent. Use the following format where relevant — skip sections that don't apply:
-
-**Objective**
-[One clear sentence stating what needs to be built or done.]
-
-**Context**
-[Background information the agent needs: language, framework, codebase state, relevant constraints, etc.]
-
-**Requirements**
-[Numbered list of specific, testable requirements the solution must satisfy.]
-
-**Implementation Notes**
-[Optional: hints, preferred approach, libraries to use/avoid, known edge cases.]
-
-**Expected Output**
-[What the agent should produce: files, functions, test results, etc. Be specific.]
-
-Prompt engineering rules to follow:
-- Be explicit about what is in scope and out of scope.
-- Prefer concrete examples over abstract descriptions where helpful.
-- Resolve ambiguities in the input by making reasonable assumptions and stating them explicitly in the prompt.
-- Do not answer or solve the task yourself — only produce the improved prompt.
-- Preserve the user's original intent exactly.`,
+Rules:
+- Use Markdown for structure.
+- State assumptions clearly.
+- If INSUFFICIENT, list EXACTLY what is missing with examples.`,
 };
 
 // ============================================================================
