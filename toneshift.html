@@ -10,87 +10,117 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-  
+
   <!-- Ambient Orbs -->
-  <div class="orb-container">
+  <div class="orb-container" aria-hidden="true">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
   </div>
 
   <!-- ===== SIDEBAR ===== -->
-  <aside id="sidebar">
+  <aside id="sidebar" role="navigation" aria-label="Output navigation">
     <div class="sidebar-top">
-      <a href="/" class="logo-group">
+      <a href="/" class="logo-group" aria-label="ToneShift home">
         <img class="logo-img" src="assets/ToneShift.png" alt="ToneShift Logo">
         <span class="logo-text">ToneShift</span>
       </a>
     </div>
 
-    <nav class="sidebar-nav">
-      <span class="nav-label">Outputs</span>
-      <a href="#output-professional" class="nav-link active" data-target="output-professional">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <nav class="sidebar-nav" aria-label="Transform modes">
+      <span class="nav-label">Transforms</span>
+
+      <a href="#output-professional" class="nav-link active" data-target="output-professional" aria-current="true">
+        <span class="nav-dot dot-pro"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
         </svg>
         Professional
       </a>
+
       <a href="#output-casual" class="nav-link" data-target="output-casual">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <span class="nav-dot dot-casual"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
         </svg>
         Casual / Gen-Z
       </a>
+
       <a href="#output-prompt" class="nav-link" data-target="output-prompt">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <span class="nav-dot dot-prompt"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
         </svg>
         AI Agent Prompt
       </a>
+
       <a href="#output-humanize" class="nav-link" data-target="output-humanize">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        <span class="nav-dot dot-humanize"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
         </svg>
         Humanize Text
       </a>
+
+      <span class="nav-divider" aria-hidden="true"></span>
+      <span class="nav-label">Analysis</span>
+
       <a href="#output-detector" class="nav-link" data-target="output-detector">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12l3.5-3.5"/><circle cx="12" cy="12" r="2"/>
+        <span class="nav-dot dot-detector"></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
         AI Detector
       </a>
     </nav>
 
+    <div class="sidebar-footer">
+      <div class="sidebar-tip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>Press <kbd>⌘</kbd><kbd>↵</kbd> to transform</span>
+      </div>
+    </div>
   </aside>
 
-  <!-- ===== MAIN CONTENT ===== -->
+  <!-- Mobile backdrop -->
   <div id="sidebar-backdrop" aria-hidden="true"></div>
+
+  <!-- ===== MAIN CONTENT ===== -->
   <div id="main-wrapper">
 
     <!-- Top Bar -->
-    <header id="top-bar">
+    <header id="top-bar" role="banner">
       <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle sidebar" type="button">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3" y="3" width="18" height="18" rx="2"/>
           <path d="M9 3v18"/>
         </svg>
       </button>
-      <button id="mobile-menu-btn" class="icon-btn" type="button" aria-label="Open menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button id="mobile-menu-btn" class="icon-btn" type="button" aria-label="Open menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
       </button>
-      <div class="top-bar-title">
-        <img class="topbar-logo-img" src="assets/ToneShift.png" alt="ToneShift Logo">
-        <h1>Text Transformer</h1>
+
+      <div class="top-bar-brand">
+        <img class="topbar-logo-img" src="assets/ToneShift.png" alt="">
+        <h1 class="top-bar-title">Text Transformer</h1>
         <span class="badge">AI-Powered</span>
       </div>
+
       <div class="top-bar-actions">
-        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle theme">
-          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle color theme">
+          <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
-          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
@@ -98,138 +128,199 @@
     </header>
 
     <!-- App Content -->
-    <main id="app">
+    <main id="app" role="main">
 
-      <!-- Input Area -->
-      <section id="input-section">
-        <div class="input-container">
-          <div class="input-header">
-            <label id="input-label" for="user-input">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- ── Input Section ── -->
+      <section id="input-section" aria-label="Text input">
+        <div class="input-container" id="input-container">
+
+          <!-- Toolbar row -->
+          <div class="input-toolbar">
+            <label class="input-label-group" for="user-input">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
-              Enter your text
+              Your text
             </label>
-            <span id="char-count" class="char-counter">0 / 5,000</span>
+            <div class="input-meta">
+              <span id="word-count" class="meta-chip" aria-live="polite">0 words</span>
+              <span id="char-count" class="meta-chip" aria-live="polite">0 / 5,000</span>
+            </div>
           </div>
+
+          <!-- Textarea -->
           <textarea
             id="user-input"
-            placeholder="Paste or type the text you want to transform..."
+            placeholder="Paste or type the text you want to transform…"
             rows="6"
             maxlength="5000"
-            aria-describedby="char-count"
+            aria-label="Text to transform"
+            aria-describedby="word-count char-count"
+            spellcheck="true"
           ></textarea>
+
+          <!-- Footer row -->
           <div class="input-footer">
-            <div class="input-hints">
-              <kbd>Ctrl</kbd> + <kbd>Enter</kbd> <span class="hint-text">to transform</span>
+            <div class="input-hints" aria-label="Keyboard shortcut">
+              <kbd>Ctrl</kbd><span class="hint-sep">+</span><kbd>Enter</kbd>
+              <span class="hint-text">to transform all</span>
             </div>
-            <button id="transform-btn" type="button">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
-                <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
-              </svg>
-              Transform
-            </button>
+            <div class="input-actions">
+              <button id="clear-btn" class="ghost-btn" type="button" aria-label="Clear text" title="Clear input">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+                Clear
+              </button>
+              <button id="transform-btn" type="button" aria-label="Transform text in all styles">
+                <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                  <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                </svg>
+                <span class="btn-label">Transform All</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Char limit warning bar -->
+          <div id="char-limit-bar" class="char-limit-bar" aria-hidden="true">
+            <div id="char-limit-fill" class="char-limit-fill"></div>
           </div>
         </div>
       </section>
 
-      <!-- Output Area -->
-      <section id="output-section" aria-label="Transformed results">
+      <!-- ── Outputs: Text Transforms ── -->
+      <section id="output-section" aria-label="Transform results" aria-live="polite">
 
-        <!-- Professional Output -->
-        <article id="output-professional" class="output-card active">
-          <div class="output-header">
-            <div class="output-title">
-              <span class="output-dot dot-pro"></span>
-              <h2>Professional</h2>
+        <div class="section-header">
+          <h2 class="section-title">Transforms</h2>
+          <span id="transform-status" class="section-status" aria-live="polite"></span>
+        </div>
+
+        <div class="output-grid">
+
+          <!-- Professional -->
+          <article id="output-professional" class="output-card" data-mode="professional">
+            <div class="output-card-header">
+              <div class="output-title">
+                <span class="output-dot dot-pro" aria-hidden="true"></span>
+                <h3>Professional</h3>
+              </div>
+              <button class="copy-btn" data-target="professional-text" type="button" aria-label="Copy professional text">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copy
+              </button>
             </div>
-            <button class="copy-btn" data-target="professional-text" type="button" aria-label="Copy professional text">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              <span>Copy</span>
-            </button>
-          </div>
-          <div id="professional-text" class="output-body">
-            <p class="placeholder-text">Your professional version will appear here.</p>
-          </div>
-        </article>
-
-        <!-- Casual Gen-Z Output -->
-        <article id="output-casual" class="output-card">
-          <div class="output-header">
-            <div class="output-title">
-              <span class="output-dot dot-casual"></span>
-              <h2>Casual / Gen-Z</h2>
+            <div id="professional-text" class="output-body">
+              <div class="output-empty-state">
+                <div class="empty-icon empty-icon-pro" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                </div>
+                <p>Professional version will appear here</p>
+              </div>
             </div>
-            <button class="copy-btn" data-target="casual-text" type="button" aria-label="Copy casual text">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              <span>Copy</span>
-            </button>
-          </div>
-          <div id="casual-text" class="output-body">
-            <p class="placeholder-text">Your casual version will appear here.</p>
-          </div>
-        </article>
+          </article>
 
-        <!-- AI Agent Prompt Output -->
-        <article id="output-prompt" class="output-card">
-          <div class="output-header">
-            <div class="output-title">
-              <span class="output-dot dot-prompt"></span>
-              <h2>AI Agent Prompt</h2>
+          <!-- Casual / Gen-Z -->
+          <article id="output-casual" class="output-card" data-mode="casual">
+            <div class="output-card-header">
+              <div class="output-title">
+                <span class="output-dot dot-casual" aria-hidden="true"></span>
+                <h3>Casual / Gen-Z</h3>
+              </div>
+              <button class="copy-btn" data-target="casual-text" type="button" aria-label="Copy casual text">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copy
+              </button>
             </div>
-            <button class="copy-btn" data-target="prompt-text" type="button" aria-label="Copy AI prompt text">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              <span>Copy</span>
-            </button>
-          </div>
-          <div id="prompt-text" class="output-body">
-            <p class="placeholder-text">Your optimized AI prompt will appear here.</p>
-          </div>
-        </article>
-
-        <!-- Humanize Output -->
-        <article id="output-humanize" class="output-card">
-          <div class="output-header">
-            <div class="output-title">
-              <span class="output-dot dot-humanize"></span>
-              <h2>Humanize Text</h2>
+            <div id="casual-text" class="output-body">
+              <div class="output-empty-state">
+                <div class="empty-icon empty-icon-casual" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </div>
+                <p>Casual version will appear here</p>
+              </div>
             </div>
-            <button class="copy-btn" data-target="humanize-text" type="button" aria-label="Copy humanized text">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              <span>Copy</span>
-            </button>
-          </div>
-          <div id="humanize-text" class="output-body">
-            <p class="placeholder-text">Your humanized version will appear here.</p>
-          </div>
-        </article>
+          </article>
 
-        <!-- AI Detector Output -->
-        <article id="output-detector" class="output-card">
-          <div class="output-header">
-            <div class="output-title">
-              <span class="output-dot dot-detector"></span>
-            <h2>AI Detector</h2>
-          </div>
-          <div id="detector-text" class="output-body">
+          <!-- AI Agent Prompt -->
+          <article id="output-prompt" class="output-card" data-mode="prompt">
+            <div class="output-card-header">
+              <div class="output-title">
+                <span class="output-dot dot-prompt" aria-hidden="true"></span>
+                <h3>AI Agent Prompt</h3>
+              </div>
+              <button class="copy-btn" data-target="prompt-text" type="button" aria-label="Copy AI prompt">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <div id="prompt-text" class="output-body">
+              <div class="output-empty-state">
+                <div class="empty-icon empty-icon-prompt" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                </div>
+                <p>AI prompt will appear here</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Humanize -->
+          <article id="output-humanize" class="output-card" data-mode="humanize">
+            <div class="output-card-header">
+              <div class="output-title">
+                <span class="output-dot dot-humanize" aria-hidden="true"></span>
+                <h3>Humanize Text</h3>
+              </div>
+              <button class="copy-btn" data-target="humanize-text" type="button" aria-label="Copy humanized text">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <div id="humanize-text" class="output-body">
+              <div class="output-empty-state">
+                <div class="empty-icon empty-icon-humanize" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <p>Humanized version will appear here</p>
+              </div>
+            </div>
+          </article>
+
+        </div><!-- /.output-grid -->
+      </section>
+
+      <!-- ── AI Detector ── -->
+      <section id="detector-section" aria-label="AI detection">
+
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="output-dot dot-detector" aria-hidden="true"></span>
+            AI Detector
+          </h2>
+          <button id="analyze-btn" class="analyze-btn" type="button" aria-label="Analyze text for AI probability">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            Analyze
+          </button>
+        </div>
+
+        <article id="output-detector" class="output-card output-card--detector" data-mode="detector">
+          <div id="detector-text" class="output-body output-body--detector">
             <div class="ai-analysis-panel">
               <div class="analysis-empty">
-                <div class="empty-ring"></div>
-                <p>Enter text to analyze its AI detection probability</p>
+                <div class="empty-ring" aria-hidden="true"></div>
+                <p>Enter text above and click <strong>Analyze</strong> to detect AI patterns</p>
               </div>
             </div>
           </div>
@@ -240,8 +331,8 @@
     </main>
   </div>
 
-  <!-- Toast container for notifications -->
-  <div id="toast-container" aria-live="polite"></div>
+  <!-- Toast container -->
+  <div id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="script.js"></script>
 </body>
