@@ -42,9 +42,9 @@
         --blue: #2997ff;
         --yellow: #ffd60a;
         --green: #30d158;
-        --font-display: 'Bricolage Grotesque', -apple-system, sans-serif;
-        --font-body: 'Figtree', -apple-system, sans-serif;
-        --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        --font-display: "Bricolage Grotesque", -apple-system, sans-serif;
+        --font-body: "Figtree", -apple-system, sans-serif;
+        --font-mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
         --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
         --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
@@ -161,7 +161,7 @@
 
       /* Noise grain */
       .hero::after {
-        content: '';
+        content: "";
         position: absolute;
         inset: 0;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
@@ -256,7 +256,7 @@
       }
       .hero-kicker::before,
       .hero-kicker::after {
-        content: '';
+        content: "";
         display: block;
         width: 24px;
         height: 1px;
@@ -451,7 +451,7 @@
         gap: 8px;
       }
       .panel-label::before {
-        content: '';
+        content: "";
         display: inline-block;
         width: 5px;
         height: 5px;
@@ -537,7 +537,7 @@
         gap: 8px;
       }
       .slide-label::before {
-        content: '';
+        content: "";
         display: inline-block;
         width: 5px;
         height: 5px;
@@ -926,7 +926,7 @@
         margin-bottom: 18px;
       }
       .demo-chip::before {
-        content: '';
+        content: "";
         width: 4px;
         height: 4px;
         border-radius: 50%;
@@ -1888,54 +1888,54 @@
       /* ═══════════════════════════════════════════════════════
        NAV
     ═══════════════════════════════════════════════════════ */
-      const nav = document.getElementById('nav')
+      const nav = document.getElementById("nav");
       window.addEventListener(
-        'scroll',
+        "scroll",
         () => {
-          nav.classList.toggle('scrolled', window.scrollY > 60)
+          nav.classList.toggle("scrolled", window.scrollY > 60);
         },
-        { passive: true }
-      )
+        { passive: true },
+      );
 
       /* ═══════════════════════════════════════════════════════
        HERO HEADLINE LINE-IN
     ═══════════════════════════════════════════════════════ */
-      document.getElementById('hl1').style.cssText =
-        'animation: lineIn 1s 0.52s cubic-bezier(0.16,1,0.3,1) forwards;'
-      document.getElementById('hl2').style.cssText =
-        'animation: lineIn 1s 0.76s cubic-bezier(0.16,1,0.3,1) forwards;'
+      document.getElementById("hl1").style.cssText =
+        "animation: lineIn 1s 0.52s cubic-bezier(0.16,1,0.3,1) forwards;";
+      document.getElementById("hl2").style.cssText =
+        "animation: lineIn 1s 0.76s cubic-bezier(0.16,1,0.3,1) forwards;";
 
       /* ═══════════════════════════════════════════════════════
        HERO PARALLAX + FADE-OUT  (RAF-batched)
        FIX: parallax applied to .orb-center-wrap (the positioning
        wrapper) so translateX(-50%) centering is not overridden
     ═══════════════════════════════════════════════════════ */
-      const heroInner = document.querySelector('.hero-inner')
-      const orbCenterWrap = document.getElementById('orbCenterWrap')
-      let _rawY = 0
+      const heroInner = document.querySelector(".hero-inner");
+      const orbCenterWrap = document.getElementById("orbCenterWrap");
+      let _rawY = 0;
 
       window.addEventListener(
-        'scroll',
+        "scroll",
         () => {
-          _rawY = window.scrollY
+          _rawY = window.scrollY;
         },
-        { passive: true }
-      )
-      ;(function heroRAF() {
-        const y = _rawY
-        const vh = window.innerHeight
+        { passive: true },
+      );
+      (function heroRAF() {
+        const y = _rawY;
+        const vh = window.innerHeight;
         if (y < vh) {
-          const p = y / vh
-          const opacity = Math.max(0, 1 - p * 1.7)
-          heroInner.style.transform = `translateY(${y * 0.13}px)`
-          heroInner.style.opacity = opacity
+          const p = y / vh;
+          const opacity = Math.max(0, 1 - p * 1.7);
+          heroInner.style.transform = `translateY(${y * 0.13}px)`;
+          heroInner.style.opacity = opacity;
           /* FIX: translateX(-50%) preserved — we only shift Y on the wrapper */
           if (orbCenterWrap) {
-            orbCenterWrap.style.transform = `translateX(-50%) translateY(${y * 0.42}px)`
+            orbCenterWrap.style.transform = `translateX(-50%) translateY(${y * 0.42}px)`;
           }
         }
-        requestAnimationFrame(heroRAF)
-      })()
+        requestAnimationFrame(heroRAF);
+      })();
 
       /* ═══════════════════════════════════════════════════════
        SPLIT STATEMENT — horizontal blur-slide reveal
@@ -1944,127 +1944,127 @@
         (entries) => {
           entries.forEach((e) => {
             if (e.isIntersecting) {
-              e.target.classList.add('visible')
-              splitObs.unobserve(e.target)
+              e.target.classList.add("visible");
+              splitObs.unobserve(e.target);
             }
-          })
+          });
         },
-        { threshold: 0.22, rootMargin: '0px 0px -60px 0px' }
-      )
+        { threshold: 0.22, rootMargin: "0px 0px -60px 0px" },
+      );
 
       document
-        .querySelectorAll('[data-split]')
-        .forEach((el) => splitObs.observe(el))
+        .querySelectorAll("[data-split]")
+        .forEach((el) => splitObs.observe(el));
 
       /* ═══════════════════════════════════════════════════════
        SCROLLYTELLING ENGINE
     ═══════════════════════════════════════════════════════ */
-      const scrollStory = document.getElementById('scrollStory')
-      const storyTint = document.getElementById('storyTint')
-      const storyTo = document.getElementById('storyTo')
-      const arrowIcon = document.getElementById('arrowIcon')
-      const modeIndicator = document.getElementById('modeIndicator')
-      const modeBadgeText = document.getElementById('modeBadgeText')
-      const storyScrollCue = document.getElementById('storyScrollCue')
-      const storyProgressBar = document.getElementById('storyProgressBar')
+      const scrollStory = document.getElementById("scrollStory");
+      const storyTint = document.getElementById("storyTint");
+      const storyTo = document.getElementById("storyTo");
+      const arrowIcon = document.getElementById("arrowIcon");
+      const modeIndicator = document.getElementById("modeIndicator");
+      const modeBadgeText = document.getElementById("modeBadgeText");
+      const storyScrollCue = document.getElementById("storyScrollCue");
+      const storyProgressBar = document.getElementById("storyProgressBar");
       const slides = [
-        document.getElementById('storySlide0'),
-        document.getElementById('storySlide1'),
-        document.getElementById('storySlide2'),
-        document.getElementById('storySlide3'),
-        document.getElementById('storySlide4'),
-      ]
-      const pips = document.querySelectorAll('[data-pip]')
+        document.getElementById("storySlide0"),
+        document.getElementById("storySlide1"),
+        document.getElementById("storySlide2"),
+        document.getElementById("storySlide3"),
+        document.getElementById("storySlide4"),
+      ];
+      const pips = document.querySelectorAll("[data-pip]");
 
       const MODES = [
         {
-          label: 'Professional',
-          tint: 'rgba(41,151,255,0.025)',
-          indicator: '#2997ff',
-          arrow: 'rgba(41,151,255,0.22)',
-          arrowColor: '#2997ff',
-          bar: '#2997ff',
+          label: "Professional",
+          tint: "rgba(41,151,255,0.025)",
+          indicator: "#2997ff",
+          arrow: "rgba(41,151,255,0.22)",
+          arrowColor: "#2997ff",
+          bar: "#2997ff",
         },
         {
-          label: 'Casual / Gen-Z',
-          tint: 'rgba(255,214,10,0.022)',
-          indicator: '#ffd60a',
-          arrow: 'rgba(255,214,10,0.22)',
-          arrowColor: '#ffd60a',
-          bar: '#ffd60a',
+          label: "Casual / Gen-Z",
+          tint: "rgba(255,214,10,0.022)",
+          indicator: "#ffd60a",
+          arrow: "rgba(255,214,10,0.22)",
+          arrowColor: "#ffd60a",
+          bar: "#ffd60a",
         },
         {
-          label: 'AI Agent Prompt',
-          tint: 'rgba(48,209,88,0.022)',
-          indicator: '#30d158',
-          arrow: 'rgba(48,209,88,0.22)',
-          arrowColor: '#30d158',
-          bar: '#30d158',
+          label: "AI Agent Prompt",
+          tint: "rgba(48,209,88,0.022)",
+          indicator: "#30d158",
+          arrow: "rgba(48,209,88,0.22)",
+          arrowColor: "#30d158",
+          bar: "#30d158",
         },
         {
-          label: 'Humanize',
-          tint: 'rgba(168,85,247,0.022)',
-          indicator: '#a855f7',
-          arrow: 'rgba(168,85,247,0.22)',
-          arrowColor: '#a855f7',
-          bar: '#a855f7',
+          label: "Humanize",
+          tint: "rgba(168,85,247,0.022)",
+          indicator: "#a855f7",
+          arrow: "rgba(168,85,247,0.22)",
+          arrowColor: "#a855f7",
+          bar: "#a855f7",
         },
         {
-          label: 'AI Detector',
-          tint: 'rgba(249,115,22,0.022)',
-          indicator: '#f97316',
-          arrow: 'rgba(249,115,22,0.22)',
-          arrowColor: '#f97316',
-          bar: '#f97316',
+          label: "AI Detector",
+          tint: "rgba(249,115,22,0.022)",
+          indicator: "#f97316",
+          arrow: "rgba(249,115,22,0.22)",
+          arrowColor: "#f97316",
+          bar: "#f97316",
         },
-      ]
+      ];
 
-      let currentMode = -1
+      let currentMode = -1;
 
       function setMode(idx) {
-        if (idx === currentMode) return
-        currentMode = idx
-        const m = MODES[idx]
-        storyTint.style.background = m.tint
-        storyTo.className = 'story-to mode-' + idx
+        if (idx === currentMode) return;
+        currentMode = idx;
+        const m = MODES[idx];
+        storyTint.style.background = m.tint;
+        storyTo.className = "story-to mode-" + idx;
         if (arrowIcon) {
-          arrowIcon.style.borderColor = m.arrow
-          arrowIcon.style.color = m.arrowColor
-          arrowIcon.style.boxShadow = `0 0 20px ${m.arrow}`
+          arrowIcon.style.borderColor = m.arrow;
+          arrowIcon.style.color = m.arrowColor;
+          arrowIcon.style.boxShadow = `0 0 20px ${m.arrow}`;
         }
-        modeIndicator.style.background = m.indicator
-        modeBadgeText.textContent = m.label
-        slides.forEach((s, i) => s.classList.toggle('active', i === idx))
-        pips.forEach((p, i) => p.classList.toggle('active', i === idx))
+        modeIndicator.style.background = m.indicator;
+        modeBadgeText.textContent = m.label;
+        slides.forEach((s, i) => s.classList.toggle("active", i === idx));
+        pips.forEach((p, i) => p.classList.toggle("active", i === idx));
       }
 
       function onScrollStory() {
-        const rect = scrollStory.getBoundingClientRect()
-        const scrolled = -rect.top
-        const total = rect.height - window.innerHeight
-        if (total <= 0) return
+        const rect = scrollStory.getBoundingClientRect();
+        const scrolled = -rect.top;
+        const total = rect.height - window.innerHeight;
+        if (total <= 0) return;
 
-        const p = Math.max(0, Math.min(1, scrolled / total))
+        const p = Math.max(0, Math.min(1, scrolled / total));
         const modeIdx =
-          p >= 0.8 ? 4 : p >= 0.6 ? 3 : p >= 0.4 ? 2 : p >= 0.2 ? 1 : 0
-        setMode(modeIdx)
+          p >= 0.8 ? 4 : p >= 0.6 ? 3 : p >= 0.4 ? 2 : p >= 0.2 ? 1 : 0;
+        setMode(modeIdx);
 
         /* ── Progress bar: fill as user scrolls through section ── */
         if (storyProgressBar) {
-          storyProgressBar.style.width = `${p * 100}%`
-          storyProgressBar.style.background = MODES[modeIdx].bar
+          storyProgressBar.style.width = `${p * 100}%`;
+          storyProgressBar.style.background = MODES[modeIdx].bar;
         }
 
         /* ── Scroll cue: fade out once user has scrolled past ~8% ── */
         if (storyScrollCue) {
-          storyScrollCue.classList.toggle('faded', p > 0.06)
+          storyScrollCue.classList.toggle("faded", p > 0.06);
         }
       }
 
-      window.addEventListener('scroll', onScrollStory, { passive: true })
-      setMode(0)
+      window.addEventListener("scroll", onScrollStory, { passive: true });
+      setMode(0);
       /* Also check if story section is already in view on load */
-      onScrollStory()
+      onScrollStory();
 
       /* ═══════════════════════════════════════════════════════
        GENERIC REVEAL  (blur + scale + fade)
@@ -2073,15 +2073,15 @@
         (entries) => {
           entries.forEach((e) => {
             if (e.isIntersecting) {
-              e.target.classList.add('visible')
-              revObs.unobserve(e.target)
+              e.target.classList.add("visible");
+              revObs.unobserve(e.target);
             }
-          })
+          });
         },
-        { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
-      )
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+      );
 
-      document.querySelectorAll('.reveal').forEach((el) => revObs.observe(el))
+      document.querySelectorAll(".reveal").forEach((el) => revObs.observe(el));
 
       /* ═══════════════════════════════════════════════════════
        BIG COPY  — staggered word reveal
@@ -2089,68 +2089,68 @@
       const bigObs = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
-            if (!e.isIntersecting) return
-            e.target.querySelectorAll('span').forEach((s, i) => {
+            if (!e.isIntersecting) return;
+            e.target.querySelectorAll("span").forEach((s, i) => {
               s.style.cssText = [
-                'display:inline-block',
-                'opacity:0',
-                'transform:translateY(20px) scale(0.97)',
+                "display:inline-block",
+                "opacity:0",
+                "transform:translateY(20px) scale(0.97)",
                 `transition:opacity 1s ${0.08 + i * 0.2}s cubic-bezier(0.16,1,0.3,1),transform 1s ${0.08 + i * 0.2}s cubic-bezier(0.16,1,0.3,1)`,
-              ].join(';')
+              ].join(";");
               requestAnimationFrame(() => {
-                s.style.opacity = '1'
-                s.style.transform = 'translateY(0) scale(1)'
-              })
-            })
-            bigObs.unobserve(e.target)
-          })
+                s.style.opacity = "1";
+                s.style.transform = "translateY(0) scale(1)";
+              });
+            });
+            bigObs.unobserve(e.target);
+          });
         },
-        { threshold: 0.32 }
-      )
+        { threshold: 0.32 },
+      );
 
       document
-        .querySelectorAll('.big-copy h2')
-        .forEach((el) => bigObs.observe(el))
+        .querySelectorAll(".big-copy h2")
+        .forEach((el) => bigObs.observe(el));
 
       /* ═══════════════════════════════════════════════════════
        DEMO CARD  — typewriter effect on enter
     ═══════════════════════════════════════════════════════ */
       function typewrite(el, text, speed) {
-        el.innerHTML = ''
-        let i = 0
+        el.innerHTML = "";
+        let i = 0;
         const t = setInterval(() => {
-          el.innerHTML = text.slice(0, i).replace(/\n/g, '<br>')
-          i++
-          if (i > text.length) clearInterval(t)
-        }, speed)
+          el.innerHTML = text.slice(0, i).replace(/\n/g, "<br>");
+          i++;
+          if (i > text.length) clearInterval(t);
+        }, speed);
       }
 
       const typeObs = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
-            if (!e.isIntersecting) return
-            const el = e.target
-            const txt = el.getAttribute('data-text')
+            if (!e.isIntersecting) return;
+            const el = e.target;
+            const txt = el.getAttribute("data-text");
             setTimeout(() => {
-              el.style.opacity = '1'
-              typewrite(el, txt, 15)
-            }, 260)
-            typeObs.unobserve(el)
-          })
+              el.style.opacity = "1";
+              typewrite(el, txt, 15);
+            }, 260);
+            typeObs.unobserve(el);
+          });
         },
-        { threshold: 0.55 }
-      )
+        { threshold: 0.55 },
+      );
 
-      document.querySelectorAll('.demo-text').forEach((el) => {
-        const raw = el.classList.contains('mono')
+      document.querySelectorAll(".demo-text").forEach((el) => {
+        const raw = el.classList.contains("mono")
           ? el.innerHTML
-              .replace(/<br\s*\/?>/gi, '\n')
-              .replace(/<[^>]+>/g, '')
+              .replace(/<br\s*\/?>/gi, "\n")
+              .replace(/<[^>]+>/g, "")
               .trim()
-          : el.textContent.replace(/\s+/g, ' ').trim()
-        el.setAttribute('data-text', raw)
-        typeObs.observe(el)
-      })
+          : el.textContent.replace(/\s+/g, " ").trim();
+        el.setAttribute("data-text", raw);
+        typeObs.observe(el);
+      });
 
       /* ═══════════════════════════════════════════════════════
        STAT VALS  — spring pop on enter
@@ -2158,37 +2158,37 @@
       const statObs = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
-            if (!e.isIntersecting) return
-            const el = e.target
+            if (!e.isIntersecting) return;
+            const el = e.target;
             el.style.transition =
-              'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)'
-            el.style.transform = 'scale(1.08)'
+              "transform 0.6s cubic-bezier(0.34,1.56,0.64,1)";
+            el.style.transform = "scale(1.08)";
             setTimeout(() => {
-              el.style.transform = 'scale(1)'
-            }, 60)
-            statObs.unobserve(el)
-          })
+              el.style.transform = "scale(1)";
+            }, 60);
+            statObs.unobserve(el);
+          });
         },
-        { threshold: 0.75 }
-      )
+        { threshold: 0.75 },
+      );
 
       document
-        .querySelectorAll('.stat-val')
-        .forEach((el) => statObs.observe(el))
+        .querySelectorAll(".stat-val")
+        .forEach((el) => statObs.observe(el));
 
       /* ═══════════════════════════════════════════════════════
        SMOOTH ANCHOR LINKS
     ═══════════════════════════════════════════════════════ */
       document.querySelectorAll('a[href^="#"]').forEach((a) => {
-        a.addEventListener('click', (e) => {
-          const id = a.getAttribute('href').slice(1)
-          if (!id) return
-          const target = document.getElementById(id)
-          if (!target) return
-          e.preventDefault()
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        })
-      })
+        a.addEventListener("click", (e) => {
+          const id = a.getAttribute("href").slice(1);
+          if (!id) return;
+          const target = document.getElementById(id);
+          if (!target) return;
+          e.preventDefault();
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
     </script>
   </body>
 </html>

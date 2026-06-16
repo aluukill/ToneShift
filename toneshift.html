@@ -72,16 +72,16 @@
         --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.6);
 
         /* Typography */
-        --font-display: 'Bricolage Grotesque', -apple-system, sans-serif;
-        --font-sans: 'Figtree', -apple-system, sans-serif;
-        --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+        --font-display: "Bricolage Grotesque", -apple-system, sans-serif;
+        --font-sans: "Figtree", -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
         /* Transitions */
         --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
         --transition: 240ms var(--ease);
       }
 
-      [data-theme='light'] {
+      [data-theme="light"] {
         --bg-base: #f9f9fb;
         --bg-surface: #ffffff;
         --bg-card: #ffffff;
@@ -1410,126 +1410,126 @@
        ToneShift — Client Logic (v4.0 Panel-based)
        ============================================================ */
 
-      const API_ENDPOINT = '/api/transform'
-      const MAX_CHARS = 5000
+      const API_ENDPOINT = "/api/transform";
+      const MAX_CHARS = 5000;
 
       // State
-      let activeMode = 'professional'
+      let activeMode = "professional";
 
       // DOM Elements
-      const userInput = document.getElementById('user-input')
-      const transformBtn = document.getElementById('transform-btn')
-      const btnLabel = document.getElementById('btn-label')
-      const clearBtn = document.getElementById('clear-btn')
-      const pasteBtn = document.getElementById('paste-btn')
-      const charCountEl = document.getElementById('char-count')
-      const wordCountEl = document.getElementById('word-count')
-      const charLimitFill = document.getElementById('char-limit-fill')
-      const toastContainer = document.getElementById('toast-container')
-      const sidebar = document.getElementById('sidebar')
-      const sidebarToggle = document.getElementById('sidebar-toggle')
-      const themeToggle = document.getElementById('theme-toggle')
-      const sidebarBackdrop = document.getElementById('sidebar-backdrop')
+      const userInput = document.getElementById("user-input");
+      const transformBtn = document.getElementById("transform-btn");
+      const btnLabel = document.getElementById("btn-label");
+      const clearBtn = document.getElementById("clear-btn");
+      const pasteBtn = document.getElementById("paste-btn");
+      const charCountEl = document.getElementById("char-count");
+      const wordCountEl = document.getElementById("word-count");
+      const charLimitFill = document.getElementById("char-limit-fill");
+      const toastContainer = document.getElementById("toast-container");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggle = document.getElementById("sidebar-toggle");
+      const themeToggle = document.getElementById("theme-toggle");
+      const sidebarBackdrop = document.getElementById("sidebar-backdrop");
 
       const outputBoxes = {
-        professional: document.getElementById('professional-text'),
-        casual: document.getElementById('casual-text'),
-        prompt: document.getElementById('prompt-text'),
-        humanize: document.getElementById('humanize-text'),
-        detector: document.getElementById('detector-text'),
-      }
+        professional: document.getElementById("professional-text"),
+        casual: document.getElementById("casual-text"),
+        prompt: document.getElementById("prompt-text"),
+        humanize: document.getElementById("humanize-text"),
+        detector: document.getElementById("detector-text"),
+      };
 
       const outputCards = {
         professional: document.querySelector(
-          '#panel-professional .output-card'
+          "#panel-professional .output-card",
         ),
-        casual: document.querySelector('#panel-casual .output-card'),
-        prompt: document.querySelector('#panel-prompt .output-card'),
-        humanize: document.querySelector('#panel-humanize .output-card'),
-        detector: document.querySelector('#panel-detector .output-card'),
-      }
+        casual: document.querySelector("#panel-casual .output-card"),
+        prompt: document.querySelector("#panel-prompt .output-card"),
+        humanize: document.querySelector("#panel-humanize .output-card"),
+        detector: document.querySelector("#panel-detector .output-card"),
+      };
 
       const panels = {
-        professional: document.getElementById('panel-professional'),
-        casual: document.getElementById('panel-casual'),
-        prompt: document.getElementById('panel-prompt'),
-        humanize: document.getElementById('panel-humanize'),
-        detector: document.getElementById('panel-detector'),
-      }
+        professional: document.getElementById("panel-professional"),
+        casual: document.getElementById("panel-casual"),
+        prompt: document.getElementById("panel-prompt"),
+        humanize: document.getElementById("panel-humanize"),
+        detector: document.getElementById("panel-detector"),
+      };
 
       const statusBadges = {
         professional: document.querySelector(
-          '.status-badge[data-for="professional"]'
+          '.status-badge[data-for="professional"]',
         ),
         casual: document.querySelector('.status-badge[data-for="casual"]'),
         prompt: document.querySelector('.status-badge[data-for="prompt"]'),
         humanize: document.querySelector('.status-badge[data-for="humanize"]'),
         detector: document.querySelector('.status-badge[data-for="detector"]'),
-      }
+      };
 
       // --- Theme & Sidebar ---
       function initTheme() {
-        const stored = localStorage.getItem('toneshift-theme') || 'dark'
-        document.documentElement.setAttribute('data-theme', stored)
-        updateThemeIcons(stored)
+        const stored = localStorage.getItem("toneshift-theme") || "dark";
+        document.documentElement.setAttribute("data-theme", stored);
+        updateThemeIcons(stored);
       }
 
       function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme')
-        const next = current === 'dark' ? 'light' : 'dark'
-        document.documentElement.setAttribute('data-theme', next)
-        localStorage.setItem('toneshift-theme', next)
-        updateThemeIcons(next)
+        const current = document.documentElement.getAttribute("data-theme");
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("toneshift-theme", next);
+        updateThemeIcons(next);
       }
 
       function updateThemeIcons(theme) {
-        const sun = document.querySelector('.sun-icon')
-        const moon = document.querySelector('.moon-icon')
-        if (theme === 'dark') {
-          sun.style.display = 'block'
-          moon.style.display = 'none'
+        const sun = document.querySelector(".sun-icon");
+        const moon = document.querySelector(".moon-icon");
+        if (theme === "dark") {
+          sun.style.display = "block";
+          moon.style.display = "none";
         } else {
-          sun.style.display = 'none'
-          moon.style.display = 'block'
+          sun.style.display = "none";
+          moon.style.display = "block";
         }
       }
 
       function toggleSidebar() {
-        sidebar.classList.toggle('mobile-open')
-        sidebarBackdrop.classList.toggle('visible')
+        sidebar.classList.toggle("mobile-open");
+        sidebarBackdrop.classList.toggle("visible");
       }
 
       // --- Navigation ---
       function switchPanel(mode) {
-        activeMode = mode
+        activeMode = mode;
 
         // Update sidebar nav
-        document.querySelectorAll('.nav-link').forEach((link) => {
+        document.querySelectorAll(".nav-link").forEach((link) => {
           link.classList.toggle(
-            'active',
-            link.getAttribute('data-mode') === mode
-          )
-        })
+            "active",
+            link.getAttribute("data-mode") === mode,
+          );
+        });
 
         // Toggle panels
         Object.entries(panels).forEach(([key, panel]) => {
-          panel.classList.toggle('active', key === mode)
-        })
+          panel.classList.toggle("active", key === mode);
+        });
 
         // Update transform button
-        updateTransformButton()
+        updateTransformButton();
 
-        if (window.innerWidth <= 1024) toggleSidebar()
+        if (window.innerWidth <= 1024) toggleSidebar();
       }
 
       function updateTransformButton() {
         const labels = {
-          professional: 'Transform Professional',
-          casual: 'Transform Casual',
-          prompt: 'Generate Prompt',
-          humanize: 'Humanize Text',
-          detector: 'Analyze Text',
-        }
+          professional: "Transform Professional",
+          casual: "Transform Casual",
+          prompt: "Generate Prompt",
+          humanize: "Humanize Text",
+          detector: "Analyze Text",
+        };
 
         const icons = {
           professional:
@@ -1542,86 +1542,86 @@
             '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
           detector:
             '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>',
-        }
+        };
 
-        transformBtn.innerHTML = `${icons[activeMode]} <span id="btn-label">${labels[activeMode]}</span>`
+        transformBtn.innerHTML = `${icons[activeMode]} <span id="btn-label">${labels[activeMode]}</span>`;
 
         // Update accent color of button if needed
-        if (activeMode === 'detector') {
-          transformBtn.style.background = 'var(--accent-orange)'
+        if (activeMode === "detector") {
+          transformBtn.style.background = "var(--accent-orange)";
         } else {
-          transformBtn.style.background = 'var(--btn-primary-bg)'
+          transformBtn.style.background = "var(--btn-primary-bg)";
         }
       }
 
       // --- Utils ---
-      function showToast(message, type = 'success') {
-        const toast = document.createElement('div')
-        toast.className = `toast ${type}`
+      function showToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
         toast.innerHTML = `
         ${
-          type === 'success'
+          type === "success"
             ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
             : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
         }
         <span>${message}</span>
-      `
-        toastContainer.appendChild(toast)
+      `;
+        toastContainer.appendChild(toast);
         setTimeout(() => {
-          toast.style.opacity = '0'
-          toast.style.transform = 'translateX(20px)'
-          setTimeout(() => toast.remove(), 300)
-        }, 3000)
+          toast.style.opacity = "0";
+          toast.style.transform = "translateX(20px)";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
       }
 
       function updateCounters() {
-        const val = userInput.value
-        const chars = val.length
-        const words = val.trim() ? val.trim().split(/\s+/).length : 0
+        const val = userInput.value;
+        const chars = val.length;
+        const words = val.trim() ? val.trim().split(/\s+/).length : 0;
 
-        charCountEl.textContent = `${chars.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`
-        wordCountEl.textContent = `${words.toLocaleString()} word${words !== 1 ? 's' : ''}`
+        charCountEl.textContent = `${chars.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
+        wordCountEl.textContent = `${words.toLocaleString()} word${words !== 1 ? "s" : ""}`;
 
-        const pct = (chars / MAX_CHARS) * 100
-        charLimitFill.style.width = `${Math.min(pct, 100)}%`
+        const pct = (chars / MAX_CHARS) * 100;
+        charLimitFill.style.width = `${Math.min(pct, 100)}%`;
 
-        if (pct > 90) charLimitFill.style.background = 'var(--accent-red)'
+        if (pct > 90) charLimitFill.style.background = "var(--accent-red)";
         else if (pct > 75)
-          charLimitFill.style.background = 'var(--accent-yellow)'
-        else charLimitFill.style.background = 'var(--accent-blue)'
+          charLimitFill.style.background = "var(--accent-yellow)";
+        else charLimitFill.style.background = "var(--accent-blue)";
 
-        autoResize()
+        autoResize();
       }
 
       function autoResize() {
-        userInput.style.height = 'auto'
-        const newHeight = Math.min(userInput.scrollHeight, 400)
-        userInput.style.height = (newHeight || 120) + 'px'
+        userInput.style.height = "auto";
+        const newHeight = Math.min(userInput.scrollHeight, 400);
+        userInput.style.height = (newHeight || 120) + "px";
         userInput.style.overflowY =
-          userInput.scrollHeight > 400 ? 'auto' : 'hidden'
+          userInput.scrollHeight > 400 ? "auto" : "hidden";
       }
 
       async function handlePaste() {
         try {
-          const text = await navigator.clipboard.readText()
+          const text = await navigator.clipboard.readText();
           if (text) {
-            userInput.value = text
-            updateCounters()
-            showToast('Text pasted')
+            userInput.value = text;
+            updateCounters();
+            showToast("Text pasted");
           }
         } catch (err) {
-          showToast('Clipboard access denied', 'error')
+          showToast("Clipboard access denied", "error");
         }
       }
 
       function setStatus(mode, isRunning = false) {
-        const badge = statusBadges[mode]
-        if (!badge) return
+        const badge = statusBadges[mode];
+        if (!badge) return;
         if (isRunning) {
-          badge.classList.add('visible', 'running')
+          badge.classList.add("visible", "running");
         } else {
-          badge.classList.remove('running')
-          setTimeout(() => badge.classList.remove('visible'), 3000)
+          badge.classList.remove("running");
+          setTimeout(() => badge.classList.remove("visible"), 3000);
         }
       }
 
@@ -1629,25 +1629,25 @@
       async function callAPI(text, tone) {
         try {
           const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text, tone }),
-          })
-          if (!response.ok) throw new Error(`API Error: ${response.status}`)
-          const data = await response.json()
-          if (!data.success) throw new Error(data.error || 'Operation failed')
-          return data.text || data.raw || ''
+          });
+          if (!response.ok) throw new Error(`API Error: ${response.status}`);
+          const data = await response.json();
+          if (!data.success) throw new Error(data.error || "Operation failed");
+          return data.text || data.raw || "";
         } catch (err) {
-          throw err
+          throw err;
         }
       }
 
       function renderContent(box, text) {
-        const container = document.createElement('div')
-        container.className = 'fade-in'
-        container.innerHTML = marked.parse(text)
-        box.innerHTML = ''
-        box.appendChild(container)
+        const container = document.createElement("div");
+        container.className = "fade-in";
+        container.innerHTML = marked.parse(text);
+        box.innerHTML = "";
+        box.appendChild(container);
       }
 
       function renderLoading(box) {
@@ -1659,18 +1659,18 @@
           <div class="skeleton"></div>
           <div class="skeleton skeleton-w-75"></div>
         </div>
-      `
+      `;
       }
 
       function renderError(box, msg) {
-        box.innerHTML = `<div class="empty-state" style="color: var(--accent-red);">${msg}</div>`
+        box.innerHTML = `<div class="empty-state" style="color: var(--accent-red);">${msg}</div>`;
       }
 
       function renderDetector(box, data) {
-        const aiProb = data.aiProbability ?? 50
-        const isAI = aiProb > 50
-        const verdict = isAI ? 'AI-Generated' : 'Human-Written'
-        const color = isAI ? 'var(--accent-orange)' : 'var(--accent-green)'
+        const aiProb = data.aiProbability ?? 50;
+        const isAI = aiProb > 50;
+        const verdict = isAI ? "AI-Generated" : "Human-Written";
+        const color = isAI ? "var(--accent-orange)" : "var(--accent-green)";
 
         box.innerHTML = `
         <div class="ai-analysis-panel fade-in">
@@ -1706,85 +1706,85 @@
             </div>
             <div>
               <div class="verdict-title">${verdict}</div>
-              <div class="verdict-desc">${isAI ? 'Patterns detected consistent with AI generation.' : 'Text appears to be naturally human-written.'}</div>
+              <div class="verdict-desc">${isAI ? "Patterns detected consistent with AI generation." : "Text appears to be naturally human-written."}</div>
             </div>
           </div>
         </div>
-      `
+      `;
       }
 
       // --- Actions ---
       async function handleTransform() {
-        const text = userInput.value.trim()
+        const text = userInput.value.trim();
         if (!text) {
-          showToast('Please enter some text first', 'error')
-          userInput.focus()
-          return
+          showToast("Please enter some text first", "error");
+          userInput.focus();
+          return;
         }
 
-        transformBtn.disabled = true
-        const originalContent = transformBtn.innerHTML
+        transformBtn.disabled = true;
+        const originalContent = transformBtn.innerHTML;
         transformBtn.innerHTML =
-          '<div class="loading-dots"><span></span><span></span><span></span></div> Working...'
+          '<div class="loading-dots"><span></span><span></span><span></span></div> Working...';
 
-        setStatus(activeMode, true)
-        renderLoading(outputBoxes[activeMode])
-        outputCards[activeMode].classList.add('loading')
+        setStatus(activeMode, true);
+        renderLoading(outputBoxes[activeMode]);
+        outputCards[activeMode].classList.add("loading");
 
         try {
-          const raw = await callAPI(text, activeMode)
+          const raw = await callAPI(text, activeMode);
 
-          if (activeMode === 'detector') {
-            let data
+          if (activeMode === "detector") {
+            let data;
             try {
-              data = typeof raw === 'string' ? JSON.parse(raw) : raw
+              data = typeof raw === "string" ? JSON.parse(raw) : raw;
             } catch {
-              const aiMatch = raw.match(/AI Probability: (\d+)/i)
-              data = { aiProbability: aiMatch ? parseInt(aiMatch[1]) : 50 }
+              const aiMatch = raw.match(/AI Probability: (\d+)/i);
+              data = { aiProbability: aiMatch ? parseInt(aiMatch[1]) : 50 };
             }
-            renderDetector(outputBoxes.detector, data)
+            renderDetector(outputBoxes.detector, data);
           } else {
-            renderContent(outputBoxes[activeMode], raw)
+            renderContent(outputBoxes[activeMode], raw);
           }
 
-          outputCards[activeMode].classList.remove('loading')
-          outputCards[activeMode].classList.add('has-result')
-          showToast('Complete!')
+          outputCards[activeMode].classList.remove("loading");
+          outputCards[activeMode].classList.add("has-result");
+          showToast("Complete!");
         } catch (err) {
           renderError(
             outputBoxes[activeMode],
-            `Failed to process: ${err.message}`
-          )
-          outputCards[activeMode].classList.remove('loading')
-          showToast('Failed', 'error')
+            `Failed to process: ${err.message}`,
+          );
+          outputCards[activeMode].classList.remove("loading");
+          showToast("Failed", "error");
         } finally {
-          transformBtn.disabled = false
-          transformBtn.innerHTML = originalContent
-          setStatus(activeMode, false)
+          transformBtn.disabled = false;
+          transformBtn.innerHTML = originalContent;
+          setStatus(activeMode, false);
         }
       }
 
       function handleClear() {
-        userInput.value = ''
-        updateCounters()
+        userInput.value = "";
+        updateCounters();
 
         // Reset only active panel
-        outputCards[activeMode].classList.remove('has-result', 'loading')
+        outputCards[activeMode].classList.remove("has-result", "loading");
 
-        if (activeMode === 'detector') {
+        if (activeMode === "detector") {
           outputBoxes.detector.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
             <p>Enter text above and click <strong>Analyze</strong> to detect AI patterns</p>
           </div>
-        `
+        `;
         } else {
           const labels = {
-            professional: 'Professional',
-            casual: 'Casual',
-            prompt: 'AI prompt',
-            humanize: 'Humanized',
-          }
+            professional: "Professional",
+            casual: "Casual",
+            prompt: "AI prompt",
+            humanize: "Humanized",
+          };
           const icons = {
             professional:
               '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
@@ -1794,69 +1794,69 @@
               '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
             humanize:
               '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
-          }
+          };
           outputBoxes[activeMode].innerHTML = `
           <div class="empty-state">
             <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[activeMode]}</svg></div>
             <p>${labels[activeMode]} version will appear here</p>
           </div>
-        `
+        `;
         }
 
-        showToast('Input cleared')
+        showToast("Input cleared");
       }
 
       function handleCopy(btn) {
-        const targetId = btn.getAttribute('data-target')
-        const box = document.getElementById(targetId)
-        const text = box.innerText.trim()
+        const targetId = btn.getAttribute("data-target");
+        const box = document.getElementById(targetId);
+        const text = box.innerText.trim();
 
-        if (!text || box.querySelector('.empty-state')) return
+        if (!text || box.querySelector(".empty-state")) return;
 
         navigator.clipboard.writeText(text).then(() => {
-          const originalHTML = btn.innerHTML
+          const originalHTML = btn.innerHTML;
           btn.innerHTML =
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied'
-          btn.style.borderColor = 'var(--accent-green)'
-          btn.style.color = 'var(--accent-green)'
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+          btn.style.borderColor = "var(--accent-green)";
+          btn.style.color = "var(--accent-green)";
           setTimeout(() => {
-            btn.innerHTML = originalHTML
-            btn.style.borderColor = ''
-            btn.style.color = ''
-          }, 2000)
-          showToast('Copied to clipboard')
-        })
+            btn.innerHTML = originalHTML;
+            btn.style.borderColor = "";
+            btn.style.color = "";
+          }, 2000);
+          showToast("Copied to clipboard");
+        });
       }
 
       // --- Events ---
-      userInput.addEventListener('input', updateCounters)
-      transformBtn.addEventListener('click', handleTransform)
-      clearBtn.addEventListener('click', handleClear)
-      pasteBtn.addEventListener('click', handlePaste)
-      themeToggle.addEventListener('click', toggleTheme)
-      sidebarToggle.addEventListener('click', toggleSidebar)
-      sidebarBackdrop.addEventListener('click', toggleSidebar)
+      userInput.addEventListener("input", updateCounters);
+      transformBtn.addEventListener("click", handleTransform);
+      clearBtn.addEventListener("click", handleClear);
+      pasteBtn.addEventListener("click", handlePaste);
+      themeToggle.addEventListener("click", toggleTheme);
+      sidebarToggle.addEventListener("click", toggleSidebar);
+      sidebarBackdrop.addEventListener("click", toggleSidebar);
 
-      document.querySelectorAll('.copy-btn').forEach((btn) => {
-        btn.addEventListener('click', () => handleCopy(btn))
-      })
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", () => handleCopy(btn));
+      });
 
-      document.querySelectorAll('.nav-link').forEach((link) => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault()
-          const mode = link.getAttribute('data-mode')
-          switchPanel(mode)
-        })
-      })
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const mode = link.getAttribute("data-mode");
+          switchPanel(mode);
+        });
+      });
 
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') handleTransform()
-      })
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") handleTransform();
+      });
 
       // Init
-      initTheme()
-      updateCounters()
-      updateTransformButton()
+      initTheme();
+      updateCounters();
+      updateTransformButton();
     </script>
   </body>
 </html>

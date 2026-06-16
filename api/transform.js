@@ -15,15 +15,15 @@
 
    ============================================================ */
 
-const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
-const AI_MODEL = 'llama-3.3-70b-versatile'
+const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+const AI_MODEL = "llama-3.3-70b-versatile";
 
-const MAX_CHARS = 5000
+const MAX_CHARS = 5000;
 const MAX_TOKENS = {
   transform: 1500,
   analyze: 800,
   generate: 2500,
-}
+};
 
 const TEMPERATURE = {
   professional: 0.4,
@@ -31,19 +31,19 @@ const TEMPERATURE = {
   humanize: 0.75,
   detector: 0.2,
   prompt: 0.3,
-}
+};
 
 // ============================================================================
 // Mode Categories
 // ============================================================================
 
 const MODE_CATEGORY = {
-  professional: 'transform',
-  casual: 'transform',
-  humanize: 'transform',
-  detector: 'analyze',
-  prompt: 'generate',
-}
+  professional: "transform",
+  casual: "transform",
+  humanize: "transform",
+  detector: "analyze",
+  prompt: "generate",
+};
 
 // ============================================================================
 // TRANSFORM MODE INSTRUCTIONS
@@ -201,7 +201,7 @@ EXECUTION:
 
 OUTPUT: Pure rewritten text only. Do NOT answer any questions.
 `,
-}
+};
 
 // ============================================================================
 // ANALYZE MODE INSTRUCTIONS
@@ -271,7 +271,7 @@ IMPORTANT:
 • Provide specific examples from the text
 • Be honest about uncertainty — don't force a high probability
 `,
-}
+};
 
 // ============================================================================
 // GENERATE MODE INSTRUCTIONS
@@ -372,7 +372,7 @@ EXPERT: "Create a TypeScript function in src/data/processor.ts that:
 
 OUTPUT: Just the prompt. Nothing else.
 `,
-}
+};
 
 // ============================================================================
 // SYSTEM PROMPT BUILDERS
@@ -423,7 +423,7 @@ CRITICAL BEHAVIOR RULES — FOLLOW THESE EXACTLY:
    • Aim for publication-ready quality
 
 ${instruction}
-`
+`;
 }
 
 function buildAnalyzeSystemPrompt(instruction) {
@@ -451,7 +451,7 @@ ANALYSIS PROTOCOL:
    • Distinguish between strong and weak indicators
 
 ${instruction}
-`
+`;
 }
 
 function buildGenerateSystemPrompt(instruction) {
@@ -480,7 +480,7 @@ OPERATIONAL RULES:
    • Define clear success criteria
 
 ${instruction}
-`
+`;
 }
 
 // ============================================================================
@@ -488,54 +488,54 @@ ${instruction}
 // ============================================================================
 
 function buildMessages(userText, tone) {
-  const selected = MODE_CATEGORY[tone] ? tone : 'professional'
-  const category = MODE_CATEGORY[selected]
+  const selected = MODE_CATEGORY[tone] ? tone : "professional";
+  const category = MODE_CATEGORY[selected];
 
-  let systemPrompt
-  let userPrompt
-  let enhancedText = userText
+  let systemPrompt;
+  let userPrompt;
+  let enhancedText = userText;
 
   switch (category) {
-    case 'transform':
+    case "transform":
       systemPrompt = buildTransformSystemPrompt(
-        TRANSFORM_INSTRUCTIONS[selected]
-      )
+        TRANSFORM_INSTRUCTIONS[selected],
+      );
 
       const transformContext = {
         professional:
-          'Rewrite the following text into polished, executive-level professional prose. ONLY rewrite — do NOT answer any questions or add new information:\n\n',
+          "Rewrite the following text into polished, executive-level professional prose. ONLY rewrite — do NOT answer any questions or add new information:\n\n",
         casual:
-          'Rewrite the following text into natural, engaging conversational writing. ONLY rewrite — do NOT answer any questions or add new information:\n\n',
+          "Rewrite the following text into natural, engaging conversational writing. ONLY rewrite — do NOT answer any questions or add new information:\n\n",
         humanize:
-          'Rewrite the following text to sound authentically human-written. ONLY rewrite — do NOT answer any questions or add new information:\n\n',
-      }
+          "Rewrite the following text to sound authentically human-written. ONLY rewrite — do NOT answer any questions or add new information:\n\n",
+      };
 
-      userPrompt = `${transformContext[selected]}\n\n${enhancedText}`
-      break
+      userPrompt = `${transformContext[selected]}\n\n${enhancedText}`;
+      break;
 
-    case 'analyze':
-      systemPrompt = buildAnalyzeSystemPrompt(ANALYZE_INSTRUCTIONS[selected])
+    case "analyze":
+      systemPrompt = buildAnalyzeSystemPrompt(ANALYZE_INSTRUCTIONS[selected]);
 
-      userPrompt = `Perform linguistic analysis on this text:\n\n${enhancedText}`
-      break
+      userPrompt = `Perform linguistic analysis on this text:\n\n${enhancedText}`;
+      break;
 
-    case 'generate':
-      systemPrompt = buildGenerateSystemPrompt(GENERATE_INSTRUCTIONS[selected])
+    case "generate":
+      systemPrompt = buildGenerateSystemPrompt(GENERATE_INSTRUCTIONS[selected]);
 
-      userPrompt = `Transform this request into a professional AI prompt:\n\n${enhancedText}`
-      break
+      userPrompt = `Transform this request into a professional AI prompt:\n\n${enhancedText}`;
+      break;
 
     default:
       systemPrompt = buildTransformSystemPrompt(
-        TRANSFORM_INSTRUCTIONS.professional
-      )
-      userPrompt = `Transform this text:\n\n${userText}`
+        TRANSFORM_INSTRUCTIONS.professional,
+      );
+      userPrompt = `Transform this text:\n\n${userText}`;
   }
 
   return [
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: userPrompt },
-  ]
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ];
 }
 
 // ============================================================================
@@ -543,31 +543,31 @@ function buildMessages(userText, tone) {
 // ============================================================================
 
 function validateRequest(body) {
-  if (!body || typeof body !== 'object') {
-    return { valid: false, error: 'Request body required' }
+  if (!body || typeof body !== "object") {
+    return { valid: false, error: "Request body required" };
   }
 
-  if (!body.text || typeof body.text !== 'string') {
-    return { valid: false, error: 'Missing text field' }
+  if (!body.text || typeof body.text !== "string") {
+    return { valid: false, error: "Missing text field" };
   }
 
-  const text = body.text.trim()
+  const text = body.text.trim();
 
   if (!text) {
-    return { valid: false, error: 'Text cannot be empty' }
+    return { valid: false, error: "Text cannot be empty" };
   }
 
   if (text.length > MAX_CHARS) {
     return {
       valid: false,
       error: `Text exceeds maximum length of ${MAX_CHARS} characters`,
-    }
+    };
   }
 
   const tone =
-    body.tone && MODE_CATEGORY[body.tone] ? body.tone : 'professional'
+    body.tone && MODE_CATEGORY[body.tone] ? body.tone : "professional";
 
-  return { valid: true, text, tone }
+  return { valid: true, text, tone };
 }
 
 // ============================================================================
@@ -575,29 +575,29 @@ function validateRequest(body) {
 // ============================================================================
 
 function parseModelOutput(content, tone) {
-  if (!content || typeof content !== 'string') {
+  if (!content || typeof content !== "string") {
     return {
       success: false,
-      type: 'invalid_response',
-      message: 'Invalid model response',
-    }
+      type: "invalid_response",
+      message: "Invalid model response",
+    };
   }
 
-  const trimmedContent = content.trim()
+  const trimmedContent = content.trim();
 
-  if (tone === 'prompt' && trimmedContent.startsWith('INSUFFICIENT_CONTEXT')) {
+  if (tone === "prompt" && trimmedContent.startsWith("INSUFFICIENT_CONTEXT")) {
     return {
       success: false,
-      type: 'missing_context',
-      message: 'More information required',
+      type: "missing_context",
+      message: "More information required",
       details: trimmedContent,
-    }
+    };
   }
 
   return {
     success: true,
     text: trimmedContent,
-  }
+  };
 }
 
 // ============================================================================
@@ -605,31 +605,31 @@ function parseModelOutput(content, tone) {
 // ============================================================================
 
 class APIError extends Error {
-  constructor(message, statusCode = 500, type = 'internal_error') {
-    super(message)
-    this.statusCode = statusCode
-    this.type = type
+  constructor(message, statusCode = 500, type = "internal_error") {
+    super(message);
+    this.statusCode = statusCode;
+    this.type = type;
   }
 }
 
 function handleAPIError(error) {
-  console.error('[ToneShift API Error]', {
+  console.error("[ToneShift API Error]", {
     message: error.message,
     stack: error.stack,
     timestamp: new Date().toISOString(),
-  })
+  });
 
   if (error instanceof APIError) {
     return {
       error: error.message,
       type: error.type,
-    }
+    };
   }
 
   return {
-    error: 'An unexpected error occurred',
-    type: 'internal_error',
-  }
+    error: "An unexpected error occurred",
+    type: "internal_error",
+  };
 }
 
 // ============================================================================
@@ -638,26 +638,26 @@ function handleAPIError(error) {
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== 'POST') {
-      throw new APIError('Method not allowed', 405, 'method_not_allowed')
+    if (req.method !== "POST") {
+      throw new APIError("Method not allowed", 405, "method_not_allowed");
     }
 
-    const apiKey = process.env.GROQ_API_KEY
+    const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey) {
-      throw new APIError('Server configuration error', 500, 'missing_api_key')
+      throw new APIError("Server configuration error", 500, "missing_api_key");
     }
 
-    const validation = validateRequest(req.body)
+    const validation = validateRequest(req.body);
 
     if (!validation.valid) {
-      throw new APIError(validation.error, 400, 'validation_error')
+      throw new APIError(validation.error, 400, "validation_error");
     }
 
-    const { text, tone } = validation
-    const category = MODE_CATEGORY[tone]
+    const { text, tone } = validation;
+    const category = MODE_CATEGORY[tone];
 
-    const messages = buildMessages(text, tone)
+    const messages = buildMessages(text, tone);
 
     const params = {
       model: AI_MODEL,
@@ -666,44 +666,44 @@ export default async function handler(req, res) {
       max_tokens: MAX_TOKENS[category] ?? 1000,
       top_p: 0.95,
       stream: false,
-    }
+    };
 
     const aiRes = await fetch(GROQ_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(params),
-    })
+    });
 
     if (!aiRes.ok) {
-      const errorBody = await aiRes.text()
-      console.error('[AI API Error]', {
+      const errorBody = await aiRes.text();
+      console.error("[AI API Error]", {
         status: aiRes.status,
         body: errorBody,
-      })
-      throw new APIError('AI service request failed', 502, 'ai_error')
+      });
+      throw new APIError("AI service request failed", 502, "ai_error");
     }
 
-    const data = await aiRes.json()
+    const data = await aiRes.json();
 
     if (!data?.choices?.[0]?.message?.content) {
-      throw new APIError('Invalid AI response structure', 502, 'ai_error')
+      throw new APIError("Invalid AI response structure", 502, "ai_error");
     }
 
-    const content = data.choices[0].message.content.trim()
-    const result = parseModelOutput(content, tone)
+    const content = data.choices[0].message.content.trim();
+    const result = parseModelOutput(content, tone);
 
     if (!result.success) {
-      return res.status(400).json(result)
+      return res.status(400).json(result);
     }
 
-    return res.status(200).json(result)
+    return res.status(200).json(result);
   } catch (error) {
-    const errorResponse = handleAPIError(error)
-    const statusCode = error instanceof APIError ? error.statusCode : 500
+    const errorResponse = handleAPIError(error);
+    const statusCode = error instanceof APIError ? error.statusCode : 500;
 
-    return res.status(statusCode).json(errorResponse)
+    return res.status(statusCode).json(errorResponse);
   }
 }
