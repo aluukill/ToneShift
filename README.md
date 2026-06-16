@@ -8,13 +8,13 @@ ToneShift takes any text you write and rewrites it in a different style. Think o
 
 ### Available Transformations
 
-| Mode | Description |
-|------|-------------|
-| **Professional** | Transform your text into polished, business-ready writing suitable for executives, clients, and formal documents |
-| **Casual / Gen-Z** | Convert your text into natural, friendly conversation that sounds like a real person wrote it |
-| **Humanize** | Remove AI-sounding patterns from text and make it sound authentically human-written |
-| **AI Agent Prompt** | Turn a rough idea into a detailed, professional AI prompt that gets better results |
-| **AI Detector** | Analyze any text to estimate whether it was written by a human or AI |
+| Mode                | Description                                                                                                      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Professional**    | Transform your text into polished, business-ready writing suitable for executives, clients, and formal documents |
+| **Casual / Gen-Z**  | Convert your text into natural, friendly conversation that sounds like a real person wrote it                    |
+| **Humanize**        | Remove AI-sounding patterns from text and make it sound authentically human-written                              |
+| **AI Agent Prompt** | Turn a rough idea into a detailed, professional AI prompt that gets better results                               |
+| **AI Detector**     | Analyze any text to estimate whether it was written by a human or AI                                             |
 
 ## Getting Started
 
@@ -75,6 +75,7 @@ You can also use keyboard shortcuts: press `Ctrl + Enter` (or `Cmd + Enter` on M
 ### Professional
 
 Use this when you need to communicate with:
+
 - Business executives
 - Clients or customers
 - Formal documents and reports
@@ -85,6 +86,7 @@ The professional mode removes casual language, adds clarity, and uses business-a
 ### Casual / Gen-Z
 
 Use this for:
+
 - Social media posts
 - Messages to friends or colleagues
 - Blog posts with a friendly tone
@@ -95,6 +97,7 @@ The casual mode adds natural flow, appropriate expressions, and friendly engagem
 ### Humanize
 
 Use this when:
+
 - You have text that sounds too robotic
 - You want to bypass AI detection
 - You need content that feels personally written
@@ -104,6 +107,7 @@ The humanize mode varies sentence length, removes formulaic patterns, and adds a
 ### AI Agent Prompt
 
 Use this when:
+
 - You have a vague idea but don't know how to ask an AI
 - You want better results from ChatGPT or other AI tools
 - You need a detailed prompt for a specific task
@@ -113,6 +117,7 @@ The prompt mode converts your rough idea into a professional, detailed prompt.
 ### AI Detector
 
 Use this when:
+
 - You want to verify if content is AI-generated
 - You're checking if text sounds too artificial
 - You need to verify authenticity of content
@@ -144,6 +149,7 @@ If you want to use ToneShift's transformation capabilities in your own applicati
 **Endpoint**: `POST /api/transform`
 
 **Request Body**:
+
 ```json
 {
   "text": "Your text here",
@@ -152,6 +158,7 @@ If you want to use ToneShift's transformation capabilities in your own applicati
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -164,6 +171,7 @@ If you want to use ToneShift's transformation capabilities in your own applicati
 ### "Server configuration error"
 
 Your Groq API key is not set correctly. Make sure:
+
 - The `.env.local` file exists (for local development)
 - The environment variable is set in Vercel (for deployed version)
 
@@ -186,6 +194,7 @@ This project is available for personal and commercial use.
 ## Support
 
 If you encounter issues:
+
 1. Check that your API key is valid and has not expired
 2. Verify you have an active internet connection
 3. Try refreshing the page and attempting the operation again

@@ -1,1679 +1,2194 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ToneShift — AI-powered text transformation. Professional emails, casual texts, AI prompts — instantly.">
-  <link rel="icon" type="image/png" href="assets/ToneShift.png">
-  <title>ToneShift — Perfect Your Written Tone</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="ToneShift — AI-powered text transformation. Professional emails, casual texts, AI prompts — instantly."
+    />
+    <link rel="icon" type="image/png" href="assets/ToneShift.png" />
+    <title>ToneShift — Perfect Your Written Tone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    :root {
-      --black:    #000000;
-      --gray-08:  #080808;
-      --gray-10:  #0a0a0a;
-      --gray-11:  #111111;
-      --gray-14:  #141414;
-      --gray-1a:  #1a1a1a;
-      --gray-22:  #222222;
-      --gray-2d:  #2d2d2d;
-      --gray-42:  #424245;
-      --gray-6e:  #6e6e73;
-      --gray-86:  #86868b;
-      --gray-a1:  #a1a1a6;
-      --gray-d2:  #d2d2d7;
-      --white:    #ffffff;
-      --blue:     #2997ff;
-      --yellow:   #ffd60a;
-      --green:    #30d158;
-      --font-display: 'Bricolage Grotesque', -apple-system, sans-serif;
-      --font-body:    'Figtree', -apple-system, sans-serif;
-      --font-mono:    'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
-    }
+      :root {
+        --black: #000000;
+        --gray-08: #080808;
+        --gray-10: #0a0a0a;
+        --gray-11: #111111;
+        --gray-14: #141414;
+        --gray-1a: #1a1a1a;
+        --gray-22: #222222;
+        --gray-2d: #2d2d2d;
+        --gray-42: #424245;
+        --gray-6e: #6e6e73;
+        --gray-86: #86868b;
+        --gray-a1: #a1a1a6;
+        --gray-d2: #d2d2d7;
+        --white: #ffffff;
+        --blue: #2997ff;
+        --yellow: #ffd60a;
+        --green: #30d158;
+        --font-display: 'Bricolage Grotesque', -apple-system, sans-serif;
+        --font-body: 'Figtree', -apple-system, sans-serif;
+        --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+      }
 
-    /* ─────────────────────────────────────────
+      /* ─────────────────────────────────────────
        SCROLLBAR — completely hidden
     ───────────────────────────────────────── */
-    html {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      scroll-behavior: smooth;
-    }
-    ::-webkit-scrollbar { display: none; }
+      html {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
 
-    body {
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-weight: 400;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-    }
+      body {
+        background: var(--black);
+        color: var(--white);
+        font-family: var(--font-body);
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
 
-    a { text-decoration: none; color: inherit; }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
 
-    /* ─────────────────────────────────────────
+      /* ─────────────────────────────────────────
        NAV
     ───────────────────────────────────────── */
-    #nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      z-index: 900;
-      transition: background 0.5s var(--ease-in-out),
-                  border-color 0.5s var(--ease-in-out);
-      border-bottom: 1px solid transparent;
-    }
-    #nav.scrolled {
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(28px) saturate(200%);
-      -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-bottom-color: rgba(255,255,255,0.055);
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1rem;
-      letter-spacing: -0.028em;
-      color: var(--white);
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 36px;
-    }
-    .nav-links a {
-      font-size: 0.8rem;
-      font-weight: 400;
-      color: var(--gray-86);
-      letter-spacing: 0.005em;
-      transition: color 0.22s;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta-pill {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--white) !important;
-      background: var(--blue);
-      padding: 7px 20px;
-      border-radius: 980px;
-      transition: background 0.2s, transform 0.3s var(--ease-out),
-                  box-shadow 0.3s !important;
-    }
-    .nav-cta-pill:hover {
-      background: #1a9aff !important;
-      transform: scale(1.04) !important;
-      box-shadow: 0 4px 24px rgba(41,151,255,0.38);
-    }
+      #nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        z-index: 900;
+        transition:
+          background 0.5s var(--ease-in-out),
+          border-color 0.5s var(--ease-in-out);
+        border-bottom: 1px solid transparent;
+      }
+      #nav.scrolled {
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(28px) saturate(200%);
+        -webkit-backdrop-filter: blur(28px) saturate(200%);
+        border-bottom-color: rgba(255, 255, 255, 0.055);
+      }
+      .nav-logo {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: -0.028em;
+        color: var(--white);
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+      }
+      .nav-links a {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: var(--gray-86);
+        letter-spacing: 0.005em;
+        transition: color 0.22s;
+      }
+      .nav-links a:hover {
+        color: var(--white);
+      }
+      .nav-cta-pill {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--white) !important;
+        background: var(--blue);
+        padding: 7px 20px;
+        border-radius: 980px;
+        transition:
+          background 0.2s,
+          transform 0.3s var(--ease-out),
+          box-shadow 0.3s !important;
+      }
+      .nav-cta-pill:hover {
+        background: #1a9aff !important;
+        transform: scale(1.04) !important;
+        box-shadow: 0 4px 24px rgba(41, 151, 255, 0.38);
+      }
 
-    /* ─────────────────────────────────────────
+      /* ─────────────────────────────────────────
        HERO
     ───────────────────────────────────────── */
-    .hero {
-      position: relative;
-      height: 100vh;
-      min-height: 600px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 0 24px;
-      overflow: hidden;
-      background: var(--black);
-    }
-
-    /* Noise grain */
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.55;
-    }
-
-    /* Ambient orbs */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    /* FIX: orb-center uses a wrapper for centering so JS transform doesn't break translateX(-50%) */
-    .orb-center-wrap {
-      position: absolute;
-      top: -140px; left: 50%;
-      transform: translateX(-50%);
-      z-index: 0;
-      pointer-events: none;
-    }
-    .orb-center {
-      width: 800px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center,
-        rgba(41,151,255,0.065) 0%,
-        rgba(41,151,255,0.02) 40%,
-        transparent 70%);
-      animation: orbBreathe 14s ease-in-out infinite;
-    }
-    .orb-accent {
-      width: 500px; height: 500px;
-      bottom: -80px; right: 5%;
-      background: radial-gradient(ellipse at center,
-        rgba(48,209,88,0.035) 0%,
-        transparent 65%);
-      animation: orbBreath2 18s ease-in-out infinite;
-    }
-    @keyframes orbBreathe {
-      0%, 100% { transform: scale(1);    opacity: 1; }
-      50%       { transform: scale(1.08); opacity: 0.7; }
-    }
-    @keyframes orbBreath2 {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50%       { transform: scale(1.12); opacity: 0.6; }
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      will-change: transform, opacity;
-    }
-
-    /* Kicker */
-    .hero-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-body);
-      font-size: 0.68rem;
-      font-weight: 500;
-      color: var(--blue);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 36px;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.35s var(--ease-out) forwards;
-    }
-    .hero-kicker::before,
-    .hero-kicker::after {
-      content: '';
-      display: block;
-      width: 24px; height: 1px;
-      background: currentColor;
-      opacity: 0.4;
-    }
-
-    /* Headline */
-    .hero-headline {
-      font-family: var(--font-display);
-      /* FIX: reduced min from 4.2rem to 3rem to prevent overflow on small screens */
-      font-size: clamp(3rem, 9.8vw, 10rem);
-      font-weight: 800;
-      line-height: 0.96;
-      letter-spacing: -0.045em;
-      color: var(--white);
-      margin-bottom: 32px;
-    }
-    .hero-headline .line {
-      display: block;
-      overflow: hidden;
-    }
-    .hero-headline .line-inner {
-      display: block;
-      opacity: 0;
-      transform: translateY(100%);
-    }
-
-    /* Sub */
-    .hero-sub {
-      font-size: clamp(0.9rem, 2vw, 1.18rem);
-      font-weight: 300;
-      color: var(--gray-86);
-      max-width: 460px;
-      margin: 0 auto 52px;
-      line-height: 1.72;
-      letter-spacing: 0.01em;
-      opacity: 0;
-      animation: fadeUp 0.9s 1.15s var(--ease-out) forwards;
-    }
-
-    /* Actions */
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      /* FIX: wrap so buttons stack cleanly on narrow screens */
-      flex-wrap: wrap;
-      gap: 16px 26px;
-      justify-content: center;
-      opacity: 0;
-      animation: fadeUp 0.9s 1.35s var(--ease-out) forwards;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.93rem;
-      font-weight: 500;
-      color: var(--white);
-      background: var(--blue);
-      padding: 13px 28px;
-      border-radius: 980px;
-      transition: background 0.2s, transform 0.35s var(--ease-out), box-shadow 0.35s;
-      white-space: nowrap;
-    }
-    .btn-primary:hover {
-      background: #1a9aff;
-      transform: scale(1.05);
-      color: var(--white);
-      box-shadow: 0 8px 32px rgba(41,151,255,0.42);
-    }
-    .btn-primary svg { transition: transform 0.35s var(--ease-out); }
-    .btn-primary:hover svg { transform: translateX(3px); }
-
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.93rem;
-      font-weight: 400;
-      color: var(--gray-6e);
-      transition: color 0.22s;
-      white-space: nowrap;
-    }
-    .btn-ghost:hover { color: var(--white); }
-
-
-    /* ─────────────────────────────────────────
-       SPLIT STATEMENT
-    ───────────────────────────────────────── */
-    .split-statement {
-      padding: 170px 56px 130px;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      overflow: hidden;
-    }
-    .split-line {
-      font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5.8vw, 5.8rem);
-      font-weight: 800;
-      line-height: 1.02;
-      letter-spacing: -0.042em;
-      opacity: 0;
-      transition: opacity 1.15s var(--ease-out),
-                  transform 1.15s var(--ease-out),
-                  filter 1.15s var(--ease-out);
-    }
-    .split-line.left {
-      color: var(--gray-42);
-      transform: translateX(-64px);
-      filter: blur(6px);
-    }
-    .split-line.right {
-      color: var(--white);
-      transform: translateX(64px);
-      text-align: right;
-      filter: blur(6px);
-    }
-    .split-line.visible {
-      opacity: 1;
-      transform: translateX(0);
-      filter: blur(0px);
-    }
-    .split-line.right.visible { transition-delay: 0.12s; }
-
-    /* ─────────────────────────────────────────
-       SCROLLYTELLING
-    ───────────────────────────────────────── */
-    .scroll-story {
-      position: relative;
-      height: 560vh;
-    }
-    .story-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .story-tint {
-      position: absolute;
-      inset: 0;
-      background: transparent;
-      transition: background 1.5s ease;
-      pointer-events: none;
-    }
-    .story-ui {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      max-width: 1020px;
-      padding: 0 56px;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 0 52px;
-      align-items: center;
-    }
-
-    /* From panel */
-    .story-from {
-      padding: 36px;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      background: var(--gray-08);
-    }
-    .panel-label {
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gray-42);
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .panel-label::before {
-      content: '';
-      display: inline-block;
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--gray-42);
-    }
-    .from-text {
-      font-size: 0.9rem;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--gray-6e);
-      line-height: 1.78;
-    }
-
-    /* Arrow */
-    .story-arrow {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .arrow-track {
-      width: 1px;
-      height: 60px;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08), transparent);
-    }
-    .arrow-icon {
-      width: 34px; height: 34px;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.82rem;
-      color: var(--gray-6e);
-      transition: border-color 0.8s var(--ease-in-out),
-                  color 0.8s var(--ease-in-out),
-                  box-shadow 0.8s;
-    }
-
-    /* To panel */
-    .story-to {
-      padding: 36px;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      background: var(--gray-08);
-      min-height: 220px;
-      position: relative;
-      transition: border-color 1s var(--ease-in-out);
-    }
-    .story-slide {
-      position: absolute;
-      inset: 36px;
-      opacity: 0;
-      transform: translateY(14px) scale(0.985);
-      transition: opacity 0.9s var(--ease-out),
-                  transform 0.9s var(--ease-out);
-      pointer-events: none;
-    }
-    .story-slide.active {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-      position: relative;
-      inset: auto;
-    }
-    .slide-label {
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .slide-label::before {
-      content: '';
-      display: inline-block;
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      animation: pulseDot 2.8s ease-in-out infinite;
-    }
-    .slide-0 .slide-label { color: var(--blue); }
-    .slide-0 .slide-label::before { background: var(--blue); }
-    .slide-1 .slide-label { color: var(--yellow); }
-    .slide-1 .slide-label::before { background: var(--yellow); }
-    .slide-2 .slide-label { color: var(--green); }
-    .slide-2 .slide-label::before { background: var(--green); }
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1;   transform: scale(1); }
-      50%       { opacity: 0.3; transform: scale(0.6); }
-    }
-    .slide-body {
-      font-size: 0.9rem;
-      font-weight: 400;
-      line-height: 1.82;
-    }
-    .slide-0 .slide-body,
-    .slide-1 .slide-body { color: var(--gray-d2); }
-    .slide-2 .slide-body {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: var(--green);
-      line-height: 1.95;
-    }
-
-    /* Mode badge */
-    .story-meta {
-      position: absolute;
-      top: 56px; left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      z-index: 10;
-      pointer-events: none;
-    }
-    .mode-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 980px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.72);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      font-family: var(--font-body);
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--gray-86);
-      transition: border-color 0.8s;
-    }
-    .mode-indicator {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--blue);
-      transition: background 0.8s;
-    }
-    .story-pip-row { display: flex; gap: 6px; }
-    .story-pip {
-      width: 20px; height: 2px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.1);
-      transition: background 0.55s var(--ease-in-out),
-                  width 0.55s var(--ease-out);
-    }
-    .story-pip.active { background: rgba(255,255,255,0.75); width: 32px; }
-
-    /* Output border color by mode */
-    .story-to.mode-0 { border-color: rgba(41,151,255,0.2); }
-    .story-to.mode-1 { border-color: rgba(255,214,10,0.18); }
-    .story-to.mode-2 { border-color: rgba(48,209,88,0.18); }
-    .story-to.mode-3 { border-color: rgba(168,85,247,0.22); }
-    .story-to.mode-4 { border-color: rgba(249,115,22,0.22); }
-
-    /* Slide label colors for modes 3 & 4 */
-    .slide-3 .slide-label { color: #a855f7; }
-    .slide-3 .slide-label::before { background: #a855f7; }
-    .slide-4 .slide-label { color: #f97316; }
-    .slide-4 .slide-label::before { background: #f97316; }
-    .slide-3 .slide-body { color: var(--gray-d2); }
-    .slide-4 .slide-body {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: #f97316;
-      line-height: 1.95;
-    }
-
-    /* ── SCROLL CUE (new) ───────────────────── */
-    /* Tells the user to keep scrolling through the 3 sticky modes */
-    .story-scroll-cue {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      z-index: 10;
-      pointer-events: none;
-      transition: opacity 0.7s var(--ease-out);
-      will-change: opacity;
-    }
-    .story-scroll-cue.faded { opacity: 0; }
-    .ssc-label {
-      font-size: 0.58rem;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gray-42);
-      white-space: nowrap;
-    }
-    .ssc-chevron {
-      width: 28px; height: 28px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--gray-6e);
-      animation: bounceCue 2.2s ease-in-out infinite;
-    }
-    @keyframes bounceCue {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(6px); }
-    }
-
-    /* ── STORY PROGRESS BAR (new) ──────────── */
-    .story-progress-bar {
-      position: absolute;
-      bottom: 0; left: 0;
-      height: 2px;
-      width: 0%;
-      background: var(--blue);
-      transition: width 0.35s ease, background 0.8s ease;
-      z-index: 10;
-      border-radius: 0 1px 1px 0;
-    }
-
-    /* ── MOBILE FROM HINT (new) ─────────────── */
-    /* Shows original text on mobile since story-from panel is hidden */
-    .story-from-mobile {
-      display: none; /* shown via media query below */
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
-      padding: 14px 18px;
-      margin-bottom: 16px;
-    }
-    .sfm-label {
-      font-size: 0.58rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gray-42);
-      display: block;
-      margin-bottom: 6px;
-    }
-    .sfm-text {
-      font-size: 0.8rem;
-      font-style: italic;
-      color: var(--gray-6e);
-      line-height: 1.6;
-    }
-
-    /* ─────────────────────────────────────────
-       BIG COPY
-    ───────────────────────────────────────── */
-    .big-copy {
-      padding: 200px 56px;
-      max-width: 1160px;
-      margin: 0 auto;
-    }
-    .big-copy h2 {
-      font-family: var(--font-display);
-      font-size: clamp(2.8rem, 6.6vw, 6.4rem);
-      font-weight: 800;
-      line-height: 1.02;
-      letter-spacing: -0.042em;
-    }
-    .big-copy h2 .mute { color: var(--gray-42); }
-    .big-copy h2 .lit  { color: var(--white); }
-
-    /* ─────────────────────────────────────────
-       MODE ROWS
-    ───────────────────────────────────────── */
-    .mode-row {
-      padding: 130px 56px;
-      max-width: 1160px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    .mode-row.flip { direction: rtl; }
-    .mode-row.flip > * { direction: ltr; }
-
-    .mode-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-    .mode-num {
-      font-family: var(--font-body);
-      font-size: 0.65rem;
-      font-weight: 500;
-      color: var(--gray-42);
-      letter-spacing: 0.1em;
-      font-variant-numeric: tabular-nums;
-    }
-    .mode-rule { width: 28px; height: 1px; background: rgba(255,255,255,0.1); }
-    .mode-tag {
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-      padding: 4px 13px;
-      border-radius: 980px;
-      border: 1px solid currentColor;
-    }
-    .mode-tag.blue   { color: var(--blue); }
-    .mode-tag.yellow { color: var(--yellow); }
-    .mode-tag.green  { color: var(--green); }
-
-    .mode-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.9rem, 4.2vw, 3.6rem);
-      font-weight: 800;
-      line-height: 1.04;
-      letter-spacing: -0.038em;
-      margin-bottom: 22px;
-    }
-    .mode-desc {
-      font-size: 0.98rem;
-      font-weight: 300;
-      color: var(--gray-86);
-      line-height: 1.78;
-    }
-
-    /* Demo card */
-    .demo-card {
-      background: var(--gray-10);
-      border: 1px solid rgba(255,255,255,0.065);
-      border-radius: 22px;
-      overflow: hidden;
-      transition: transform 0.7s var(--ease-out),
-                  box-shadow 0.7s var(--ease-out);
-      will-change: transform;
-    }
-    .demo-card:hover {
-      transform: translateY(-10px) scale(1.01);
-      box-shadow: 0 60px 120px rgba(0,0,0,0.7),
-                  0 0 0 1px rgba(255,255,255,0.09);
-    }
-    .demo-top-bar {
-      background: var(--gray-1a);
-      padding: 13px 20px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .dot-r { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
-    .dot-y { width: 10px; height: 10px; border-radius: 50%; background: #febc2e; }
-    .dot-g { width: 10px; height: 10px; border-radius: 50%; background: #28c840; }
-    .demo-body { padding: 30px 34px 38px; }
-    .demo-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 6px;
-      margin-bottom: 18px;
-    }
-    .demo-chip::before {
-      content: '';
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-    .demo-chip.blue   { background: rgba(41,151,255,0.09);  color: var(--blue); }
-    .demo-chip.yellow { background: rgba(255,214,10,0.07);  color: var(--yellow); }
-    .demo-chip.green  { background: rgba(48,209,88,0.07);   color: var(--green); }
-    .demo-text {
-      font-size: 0.9rem;
-      font-weight: 300;
-      line-height: 1.82;
-      color: var(--gray-d2);
-    }
-    .demo-text.mono {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      font-weight: 400;
-      color: var(--green);
-      line-height: 1.95;
-    }
-
-    /* ─────────────────────────────────────────
-       STATS
-    ───────────────────────────────────────── */
-    .stats-section {
-      padding: 120px 56px;
-      background: var(--gray-08);
-      border-top: 1px solid rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .stats-inner {
-      max-width: 1160px;
-      margin: 0 auto;
-    }
-    .stats-label {
-      font-size: 0.62rem;
-      font-weight: 600;
-      color: var(--gray-42);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 68px;
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      background: rgba(255,255,255,0.04);
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.07);
-      overflow: hidden;
-      gap: 1px;
-    }
-    .stat-cell {
-      background: var(--gray-08);
-      padding: 60px 52px;
-    }
-    .stat-val {
-      font-family: var(--font-display);
-      font-size: clamp(2.8rem, 5.2vw, 4.6rem);
-      font-weight: 800;
-      letter-spacing: -0.05em;
-      line-height: 1;
-      color: var(--white);
-      margin-bottom: 14px;
-      display: inline-block;
-    }
-    .stat-val sup {
-      font-size: 0.42em;
-      vertical-align: super;
-      color: var(--gray-6e);
-      letter-spacing: 0;
-      font-weight: 600;
-    }
-    .stat-desc {
-      font-size: 0.86rem;
-      font-weight: 300;
-      color: var(--gray-6e);
-      line-height: 1.65;
-    }
-
-    /* ─────────────────────────────────────────
-       FINAL CTA
-    ───────────────────────────────────────── */
-    .final-cta {
-      position: relative;
-      padding: 240px 24px 220px;
-      text-align: center;
-      overflow: hidden;
-    }
-    .cta-glow {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -58%);
-      width: 900px; height: 900px;
-      background: radial-gradient(circle,
-        rgba(41,151,255,0.08) 0%,
-        rgba(41,151,255,0.02) 40%,
-        transparent 70%);
-      pointer-events: none;
-    }
-    .cta-title {
-      position: relative;
-      font-family: var(--font-display);
-      font-size: clamp(2.8rem, 8.6vw, 8.4rem);
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.05em;
-      margin-bottom: 28px;
-    }
-    .cta-title .dim { color: var(--gray-42); }
-    .cta-sub {
-      position: relative;
-      font-size: 1.02rem;
-      font-weight: 300;
-      color: var(--gray-86);
-      margin-bottom: 56px;
-      line-height: 1.68;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .cta-actions {
-      position: relative;
-      display: flex;
-      align-items: center;
-      /* FIX: wrap so buttons stack on small screens */
-      flex-wrap: wrap;
-      gap: 16px 24px;
-      justify-content: center;
-    }
-    .btn-cta-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.96rem;
-      font-weight: 500;
-      color: var(--white);
-      background: var(--blue);
-      padding: 15px 36px;
-      border-radius: 980px;
-      transition: background 0.2s, transform 0.35s var(--ease-out), box-shadow 0.35s;
-      white-space: nowrap;
-    }
-    .btn-cta-primary:hover {
-      background: #1a9aff;
-      transform: scale(1.05);
-      color: var(--white);
-      box-shadow: 0 12px 44px rgba(41,151,255,0.44);
-    }
-    .btn-cta-secondary {
-      font-size: 0.96rem;
-      font-weight: 400;
-      color: var(--blue);
-      transition: opacity 0.22s;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
-    .btn-cta-secondary:hover { opacity: 0.68; }
-
-    /* ─────────────────────────────────────────
-       FOOTER
-    ───────────────────────────────────────── */
-    footer {
-      padding: 28px 56px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .footer-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-display);
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--gray-42);
-      letter-spacing: -0.01em;
-    }
-    .footer-copy {
-      font-size: 0.72rem;
-      color: var(--gray-42);
-      font-weight: 300;
-    }
-
-    /* ─────────────────────────────────────────
-       REVEAL UTILITY  (Apple-style: blur + scale + fade)
-    ───────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px) scale(0.97);
-      filter: blur(8px);
-      transition: opacity 1.2s var(--ease-out),
-                  transform 1.2s var(--ease-out),
-                  filter 1.2s var(--ease-out);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0px);
-    }
-    .reveal-d1 { transition-delay: 0.15s; }
-    .reveal-d2 { transition-delay: 0.30s; }
-    .reveal-d3 { transition-delay: 0.45s; }
-
-    /* ─────────────────────────────────────────
-       SECTION DIVIDERS
-    ───────────────────────────────────────── */
-    .section-sep {
-      border: none;
-      height: 1px;
-      background: linear-gradient(90deg,
-        transparent,
-        rgba(255,255,255,0.07) 20%,
-        rgba(255,255,255,0.07) 80%,
-        transparent);
-    }
-
-    /* ─────────────────────────────────────────
-       KEYFRAMES
-    ───────────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    @keyframes lineIn {
-      from { opacity: 0; transform: translateY(108%); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─────────────────────────────────────────
-       RESPONSIVE — 900px (small tablets / large phones)
-    ───────────────────────────────────────── */
-    @media (max-width: 900px) {
-      #nav { padding: 0 20px; }
-      .nav-links a:not(.nav-cta-pill) { display: none; }
-
-      .story-ui {
-        grid-template-columns: 1fr;
-        gap: 16px;
-        padding: 0 20px;
-        /* push ui down so mode-badge doesn't overlap */
-        margin-top: 56px;
-      }
-      .story-from, .story-arrow { display: none; }
-      /* FIX: show compact from-hint on mobile */
-      .story-from-mobile { display: block; }
-      .story-to { min-height: auto; }
-      /* FIX: meta badge needs to sit below nav height on mobile */
-      .story-meta { top: 68px; }
-
-      .mode-row, .mode-row.flip {
-        grid-template-columns: 1fr;
-        gap: 48px;
-        direction: ltr;
-        padding: 80px 24px;
-      }
-      .split-statement { padding: 80px 24px 60px; }
-      .big-copy { padding: 80px 24px; }
-      .stats-section { padding: 80px 24px; }
-      .stats-grid {
-        grid-template-columns: 1fr;
-        /* dividers between stacked cells */
-        gap: 1px;
-      }
-      .stat-cell { padding: 40px 32px; }
-      footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 24px; }
-      .final-cta { padding: 120px 24px 100px; }
-      .demo-body { padding: 24px 24px 28px; }
-    }
-
-    /* ─────────────────────────────────────────
-       RESPONSIVE — 640px (phones in landscape / small tablets)
-    ───────────────────────────────────────── */
-    @media (max-width: 640px) {
-      .story-sticky { align-items: flex-start; padding-top: 0; }
-      .story-ui { margin-top: 80px; gap: 14px; }
-      .story-to { padding: 24px; }
-      .story-scroll-cue { bottom: 28px; }
-      .split-line { font-size: clamp(2rem, 9vw, 3.6rem); }
-      .big-copy h2 { font-size: clamp(2.2rem, 8vw, 4rem); }
-      .mode-title { font-size: clamp(1.7rem, 6vw, 2.6rem); }
-      .stats-label { margin-bottom: 40px; }
-      .cta-title { font-size: clamp(2.4rem, 10vw, 5rem); }
-      .cta-sub { font-size: 0.95rem; margin-bottom: 40px; }
-    }
-
-    /* ─────────────────────────────────────────
-       RESPONSIVE — 430px (small phones)
-    ───────────────────────────────────────── */
-    @media (max-width: 430px) {
-      #nav { height: 48px; }
-      .hero { min-height: 580px; }
-      .hero-headline { margin-bottom: 24px; }
-      .hero-sub { margin-bottom: 36px; font-size: 0.92rem; }
-      /* Stack hero buttons vertically on very small screens */
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        width: 100%;
-        max-width: 260px;
-        margin: 0 auto;
-      }
-      .btn-primary {
-        justify-content: center;
-        padding: 14px 24px;
-      }
-      .btn-ghost {
-        justify-content: center;
-        padding: 8px 0;
-      }
-      .story-meta { top: 60px; gap: 12px; }
-      .mode-badge { font-size: 0.65rem; padding: 5px 12px; }
-      .story-ui { padding: 0 16px; margin-top: 68px; }
-      .story-to { padding: 20px; border-radius: 14px; }
-      .slide-body { font-size: 0.82rem; line-height: 1.72; }
-      .slide-2 .slide-body { font-size: 0.7rem; }
-      .split-statement { padding: 60px 20px 50px; }
-      .big-copy { padding: 60px 20px; }
-      .mode-row, .mode-row.flip { padding: 60px 20px; gap: 36px; }
-      .stats-section { padding: 60px 20px; }
-      .stat-cell { padding: 32px 24px; }
-      .final-cta { padding: 90px 20px 80px; }
-      .cta-actions {
+      .hero {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 14px;
+        justify-content: center;
+        text-align: center;
+        padding: 0 24px;
+        overflow: hidden;
+        background: var(--black);
       }
-      .btn-cta-primary { padding: 14px 32px; width: 100%; max-width: 260px; justify-content: center; }
-      footer { padding: 24px 20px; }
-    }
 
-    /* ─────────────────────────────────────────
+      /* Noise grain */
+      .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.55;
+      }
+
+      /* Ambient orbs */
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* FIX: orb-center uses a wrapper for centering so JS transform doesn't break translateX(-50%) */
+      .orb-center-wrap {
+        position: absolute;
+        top: -140px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 0;
+        pointer-events: none;
+      }
+      .orb-center {
+        width: 800px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(41, 151, 255, 0.065) 0%,
+          rgba(41, 151, 255, 0.02) 40%,
+          transparent 70%
+        );
+        animation: orbBreathe 14s ease-in-out infinite;
+      }
+      .orb-accent {
+        width: 500px;
+        height: 500px;
+        bottom: -80px;
+        right: 5%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(48, 209, 88, 0.035) 0%,
+          transparent 65%
+        );
+        animation: orbBreath2 18s ease-in-out infinite;
+      }
+      @keyframes orbBreathe {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.08);
+          opacity: 0.7;
+        }
+      }
+      @keyframes orbBreath2 {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.12);
+          opacity: 0.6;
+        }
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        will-change: transform, opacity;
+      }
+
+      /* Kicker */
+      .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-body);
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: var(--blue);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 36px;
+        opacity: 0;
+        animation: fadeUp 0.8s 0.35s var(--ease-out) forwards;
+      }
+      .hero-kicker::before,
+      .hero-kicker::after {
+        content: '';
+        display: block;
+        width: 24px;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.4;
+      }
+
+      /* Headline */
+      .hero-headline {
+        font-family: var(--font-display);
+        /* FIX: reduced min from 4.2rem to 3rem to prevent overflow on small screens */
+        font-size: clamp(3rem, 9.8vw, 10rem);
+        font-weight: 800;
+        line-height: 0.96;
+        letter-spacing: -0.045em;
+        color: var(--white);
+        margin-bottom: 32px;
+      }
+      .hero-headline .line {
+        display: block;
+        overflow: hidden;
+      }
+      .hero-headline .line-inner {
+        display: block;
+        opacity: 0;
+        transform: translateY(100%);
+      }
+
+      /* Sub */
+      .hero-sub {
+        font-size: clamp(0.9rem, 2vw, 1.18rem);
+        font-weight: 300;
+        color: var(--gray-86);
+        max-width: 460px;
+        margin: 0 auto 52px;
+        line-height: 1.72;
+        letter-spacing: 0.01em;
+        opacity: 0;
+        animation: fadeUp 0.9s 1.15s var(--ease-out) forwards;
+      }
+
+      /* Actions */
+      .hero-actions {
+        display: flex;
+        align-items: center;
+        /* FIX: wrap so buttons stack cleanly on narrow screens */
+        flex-wrap: wrap;
+        gap: 16px 26px;
+        justify-content: center;
+        opacity: 0;
+        animation: fadeUp 0.9s 1.35s var(--ease-out) forwards;
+      }
+
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.93rem;
+        font-weight: 500;
+        color: var(--white);
+        background: var(--blue);
+        padding: 13px 28px;
+        border-radius: 980px;
+        transition:
+          background 0.2s,
+          transform 0.35s var(--ease-out),
+          box-shadow 0.35s;
+        white-space: nowrap;
+      }
+      .btn-primary:hover {
+        background: #1a9aff;
+        transform: scale(1.05);
+        color: var(--white);
+        box-shadow: 0 8px 32px rgba(41, 151, 255, 0.42);
+      }
+      .btn-primary svg {
+        transition: transform 0.35s var(--ease-out);
+      }
+      .btn-primary:hover svg {
+        transform: translateX(3px);
+      }
+
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.93rem;
+        font-weight: 400;
+        color: var(--gray-6e);
+        transition: color 0.22s;
+        white-space: nowrap;
+      }
+      .btn-ghost:hover {
+        color: var(--white);
+      }
+
+      /* ─────────────────────────────────────────
+       SPLIT STATEMENT
+    ───────────────────────────────────────── */
+      .split-statement {
+        padding: 170px 56px 130px;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow: hidden;
+      }
+      .split-line {
+        font-family: var(--font-display);
+        font-size: clamp(2.4rem, 5.8vw, 5.8rem);
+        font-weight: 800;
+        line-height: 1.02;
+        letter-spacing: -0.042em;
+        opacity: 0;
+        transition:
+          opacity 1.15s var(--ease-out),
+          transform 1.15s var(--ease-out),
+          filter 1.15s var(--ease-out);
+      }
+      .split-line.left {
+        color: var(--gray-42);
+        transform: translateX(-64px);
+        filter: blur(6px);
+      }
+      .split-line.right {
+        color: var(--white);
+        transform: translateX(64px);
+        text-align: right;
+        filter: blur(6px);
+      }
+      .split-line.visible {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0px);
+      }
+      .split-line.right.visible {
+        transition-delay: 0.12s;
+      }
+
+      /* ─────────────────────────────────────────
+       SCROLLYTELLING
+    ───────────────────────────────────────── */
+      .scroll-story {
+        position: relative;
+        height: 560vh;
+      }
+      .story-sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .story-tint {
+        position: absolute;
+        inset: 0;
+        background: transparent;
+        transition: background 1.5s ease;
+        pointer-events: none;
+      }
+      .story-ui {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1020px;
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 0 52px;
+        align-items: center;
+      }
+
+      /* From panel */
+      .story-from {
+        padding: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 20px;
+        background: var(--gray-08);
+      }
+      .panel-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gray-42);
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel-label::before {
+        content: '';
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--gray-42);
+      }
+      .from-text {
+        font-size: 0.9rem;
+        font-weight: 300;
+        font-style: italic;
+        color: var(--gray-6e);
+        line-height: 1.78;
+      }
+
+      /* Arrow */
+      .story-arrow {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .arrow-track {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+      }
+      .arrow-icon {
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        color: var(--gray-6e);
+        transition:
+          border-color 0.8s var(--ease-in-out),
+          color 0.8s var(--ease-in-out),
+          box-shadow 0.8s;
+      }
+
+      /* To panel */
+      .story-to {
+        padding: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 20px;
+        background: var(--gray-08);
+        min-height: 220px;
+        position: relative;
+        transition: border-color 1s var(--ease-in-out);
+      }
+      .story-slide {
+        position: absolute;
+        inset: 36px;
+        opacity: 0;
+        transform: translateY(14px) scale(0.985);
+        transition:
+          opacity 0.9s var(--ease-out),
+          transform 0.9s var(--ease-out);
+        pointer-events: none;
+      }
+      .story-slide.active {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+        position: relative;
+        inset: auto;
+      }
+      .slide-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .slide-label::before {
+        content: '';
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        animation: pulseDot 2.8s ease-in-out infinite;
+      }
+      .slide-0 .slide-label {
+        color: var(--blue);
+      }
+      .slide-0 .slide-label::before {
+        background: var(--blue);
+      }
+      .slide-1 .slide-label {
+        color: var(--yellow);
+      }
+      .slide-1 .slide-label::before {
+        background: var(--yellow);
+      }
+      .slide-2 .slide-label {
+        color: var(--green);
+      }
+      .slide-2 .slide-label::before {
+        background: var(--green);
+      }
+      @keyframes pulseDot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.6);
+        }
+      }
+      .slide-body {
+        font-size: 0.9rem;
+        font-weight: 400;
+        line-height: 1.82;
+      }
+      .slide-0 .slide-body,
+      .slide-1 .slide-body {
+        color: var(--gray-d2);
+      }
+      .slide-2 .slide-body {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--green);
+        line-height: 1.95;
+      }
+
+      /* Mode badge */
+      .story-meta {
+        position: absolute;
+        top: 56px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        z-index: 10;
+        pointer-events: none;
+      }
+      .mode-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        border-radius: 980px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--gray-86);
+        transition: border-color 0.8s;
+      }
+      .mode-indicator {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--blue);
+        transition: background 0.8s;
+      }
+      .story-pip-row {
+        display: flex;
+        gap: 6px;
+      }
+      .story-pip {
+        width: 20px;
+        height: 2px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        transition:
+          background 0.55s var(--ease-in-out),
+          width 0.55s var(--ease-out);
+      }
+      .story-pip.active {
+        background: rgba(255, 255, 255, 0.75);
+        width: 32px;
+      }
+
+      /* Output border color by mode */
+      .story-to.mode-0 {
+        border-color: rgba(41, 151, 255, 0.2);
+      }
+      .story-to.mode-1 {
+        border-color: rgba(255, 214, 10, 0.18);
+      }
+      .story-to.mode-2 {
+        border-color: rgba(48, 209, 88, 0.18);
+      }
+      .story-to.mode-3 {
+        border-color: rgba(168, 85, 247, 0.22);
+      }
+      .story-to.mode-4 {
+        border-color: rgba(249, 115, 22, 0.22);
+      }
+
+      /* Slide label colors for modes 3 & 4 */
+      .slide-3 .slide-label {
+        color: #a855f7;
+      }
+      .slide-3 .slide-label::before {
+        background: #a855f7;
+      }
+      .slide-4 .slide-label {
+        color: #f97316;
+      }
+      .slide-4 .slide-label::before {
+        background: #f97316;
+      }
+      .slide-3 .slide-body {
+        color: var(--gray-d2);
+      }
+      .slide-4 .slide-body {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: #f97316;
+        line-height: 1.95;
+      }
+
+      /* ── SCROLL CUE (new) ───────────────────── */
+      /* Tells the user to keep scrolling through the 3 sticky modes */
+      .story-scroll-cue {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        z-index: 10;
+        pointer-events: none;
+        transition: opacity 0.7s var(--ease-out);
+        will-change: opacity;
+      }
+      .story-scroll-cue.faded {
+        opacity: 0;
+      }
+      .ssc-label {
+        font-size: 0.58rem;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--gray-42);
+        white-space: nowrap;
+      }
+      .ssc-chevron {
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray-6e);
+        animation: bounceCue 2.2s ease-in-out infinite;
+      }
+      @keyframes bounceCue {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(6px);
+        }
+      }
+
+      /* ── STORY PROGRESS BAR (new) ──────────── */
+      .story-progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 0%;
+        background: var(--blue);
+        transition:
+          width 0.35s ease,
+          background 0.8s ease;
+        z-index: 10;
+        border-radius: 0 1px 1px 0;
+      }
+
+      /* ── MOBILE FROM HINT (new) ─────────────── */
+      /* Shows original text on mobile since story-from panel is hidden */
+      .story-from-mobile {
+        display: none; /* shown via media query below */
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+      }
+      .sfm-label {
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gray-42);
+        display: block;
+        margin-bottom: 6px;
+      }
+      .sfm-text {
+        font-size: 0.8rem;
+        font-style: italic;
+        color: var(--gray-6e);
+        line-height: 1.6;
+      }
+
+      /* ─────────────────────────────────────────
+       BIG COPY
+    ───────────────────────────────────────── */
+      .big-copy {
+        padding: 200px 56px;
+        max-width: 1160px;
+        margin: 0 auto;
+      }
+      .big-copy h2 {
+        font-family: var(--font-display);
+        font-size: clamp(2.8rem, 6.6vw, 6.4rem);
+        font-weight: 800;
+        line-height: 1.02;
+        letter-spacing: -0.042em;
+      }
+      .big-copy h2 .mute {
+        color: var(--gray-42);
+      }
+      .big-copy h2 .lit {
+        color: var(--white);
+      }
+
+      /* ─────────────────────────────────────────
+       MODE ROWS
+    ───────────────────────────────────────── */
+      .mode-row {
+        padding: 130px 56px;
+        max-width: 1160px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .mode-row.flip {
+        direction: rtl;
+      }
+      .mode-row.flip > * {
+        direction: ltr;
+      }
+
+      .mode-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      .mode-num {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: var(--gray-42);
+        letter-spacing: 0.1em;
+        font-variant-numeric: tabular-nums;
+      }
+      .mode-rule {
+        width: 28px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .mode-tag {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        padding: 4px 13px;
+        border-radius: 980px;
+        border: 1px solid currentColor;
+      }
+      .mode-tag.blue {
+        color: var(--blue);
+      }
+      .mode-tag.yellow {
+        color: var(--yellow);
+      }
+      .mode-tag.green {
+        color: var(--green);
+      }
+
+      .mode-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.9rem, 4.2vw, 3.6rem);
+        font-weight: 800;
+        line-height: 1.04;
+        letter-spacing: -0.038em;
+        margin-bottom: 22px;
+      }
+      .mode-desc {
+        font-size: 0.98rem;
+        font-weight: 300;
+        color: var(--gray-86);
+        line-height: 1.78;
+      }
+
+      /* Demo card */
+      .demo-card {
+        background: var(--gray-10);
+        border: 1px solid rgba(255, 255, 255, 0.065);
+        border-radius: 22px;
+        overflow: hidden;
+        transition:
+          transform 0.7s var(--ease-out),
+          box-shadow 0.7s var(--ease-out);
+        will-change: transform;
+      }
+      .demo-card:hover {
+        transform: translateY(-10px) scale(1.01);
+        box-shadow:
+          0 60px 120px rgba(0, 0, 0, 0.7),
+          0 0 0 1px rgba(255, 255, 255, 0.09);
+      }
+      .demo-top-bar {
+        background: var(--gray-1a);
+        padding: 13px 20px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .dot-r {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ff5f57;
+      }
+      .dot-y {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #febc2e;
+      }
+      .dot-g {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #28c840;
+      }
+      .demo-body {
+        padding: 30px 34px 38px;
+      }
+      .demo-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+      }
+      .demo-chip::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .demo-chip.blue {
+        background: rgba(41, 151, 255, 0.09);
+        color: var(--blue);
+      }
+      .demo-chip.yellow {
+        background: rgba(255, 214, 10, 0.07);
+        color: var(--yellow);
+      }
+      .demo-chip.green {
+        background: rgba(48, 209, 88, 0.07);
+        color: var(--green);
+      }
+      .demo-text {
+        font-size: 0.9rem;
+        font-weight: 300;
+        line-height: 1.82;
+        color: var(--gray-d2);
+      }
+      .demo-text.mono {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 400;
+        color: var(--green);
+        line-height: 1.95;
+      }
+
+      /* ─────────────────────────────────────────
+       STATS
+    ───────────────────────────────────────── */
+      .stats-section {
+        padding: 120px 56px;
+        background: var(--gray-08);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .stats-inner {
+        max-width: 1160px;
+        margin: 0 auto;
+      }
+      .stats-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        color: var(--gray-42);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 68px;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        overflow: hidden;
+        gap: 1px;
+      }
+      .stat-cell {
+        background: var(--gray-08);
+        padding: 60px 52px;
+      }
+      .stat-val {
+        font-family: var(--font-display);
+        font-size: clamp(2.8rem, 5.2vw, 4.6rem);
+        font-weight: 800;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        color: var(--white);
+        margin-bottom: 14px;
+        display: inline-block;
+      }
+      .stat-val sup {
+        font-size: 0.42em;
+        vertical-align: super;
+        color: var(--gray-6e);
+        letter-spacing: 0;
+        font-weight: 600;
+      }
+      .stat-desc {
+        font-size: 0.86rem;
+        font-weight: 300;
+        color: var(--gray-6e);
+        line-height: 1.65;
+      }
+
+      /* ─────────────────────────────────────────
+       FINAL CTA
+    ───────────────────────────────────────── */
+      .final-cta {
+        position: relative;
+        padding: 240px 24px 220px;
+        text-align: center;
+        overflow: hidden;
+      }
+      .cta-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -58%);
+        width: 900px;
+        height: 900px;
+        background: radial-gradient(
+          circle,
+          rgba(41, 151, 255, 0.08) 0%,
+          rgba(41, 151, 255, 0.02) 40%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .cta-title {
+        position: relative;
+        font-family: var(--font-display);
+        font-size: clamp(2.8rem, 8.6vw, 8.4rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        margin-bottom: 28px;
+      }
+      .cta-title .dim {
+        color: var(--gray-42);
+      }
+      .cta-sub {
+        position: relative;
+        font-size: 1.02rem;
+        font-weight: 300;
+        color: var(--gray-86);
+        margin-bottom: 56px;
+        line-height: 1.68;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .cta-actions {
+        position: relative;
+        display: flex;
+        align-items: center;
+        /* FIX: wrap so buttons stack on small screens */
+        flex-wrap: wrap;
+        gap: 16px 24px;
+        justify-content: center;
+      }
+      .btn-cta-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.96rem;
+        font-weight: 500;
+        color: var(--white);
+        background: var(--blue);
+        padding: 15px 36px;
+        border-radius: 980px;
+        transition:
+          background 0.2s,
+          transform 0.35s var(--ease-out),
+          box-shadow 0.35s;
+        white-space: nowrap;
+      }
+      .btn-cta-primary:hover {
+        background: #1a9aff;
+        transform: scale(1.05);
+        color: var(--white);
+        box-shadow: 0 12px 44px rgba(41, 151, 255, 0.44);
+      }
+      .btn-cta-secondary {
+        font-size: 0.96rem;
+        font-weight: 400;
+        color: var(--blue);
+        transition: opacity 0.22s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+      }
+      .btn-cta-secondary:hover {
+        opacity: 0.68;
+      }
+
+      /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+      footer {
+        padding: 28px 56px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-display);
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--gray-42);
+        letter-spacing: -0.01em;
+      }
+      .footer-copy {
+        font-size: 0.72rem;
+        color: var(--gray-42);
+        font-weight: 300;
+      }
+
+      /* ─────────────────────────────────────────
+       REVEAL UTILITY  (Apple-style: blur + scale + fade)
+    ───────────────────────────────────────── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px) scale(0.97);
+        filter: blur(8px);
+        transition:
+          opacity 1.2s var(--ease-out),
+          transform 1.2s var(--ease-out),
+          filter 1.2s var(--ease-out);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+      }
+      .reveal-d1 {
+        transition-delay: 0.15s;
+      }
+      .reveal-d2 {
+        transition-delay: 0.3s;
+      }
+      .reveal-d3 {
+        transition-delay: 0.45s;
+      }
+
+      /* ─────────────────────────────────────────
+       SECTION DIVIDERS
+    ───────────────────────────────────────── */
+      .section-sep {
+        border: none;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.07) 20%,
+          rgba(255, 255, 255, 0.07) 80%,
+          transparent
+        );
+      }
+
+      /* ─────────────────────────────────────────
+       KEYFRAMES
+    ───────────────────────────────────────── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(22px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes lineIn {
+        from {
+          opacity: 0;
+          transform: translateY(108%);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ─────────────────────────────────────────
+       RESPONSIVE — 900px (small tablets / large phones)
+    ───────────────────────────────────────── */
+      @media (max-width: 900px) {
+        #nav {
+          padding: 0 20px;
+        }
+        .nav-links a:not(.nav-cta-pill) {
+          display: none;
+        }
+
+        .story-ui {
+          grid-template-columns: 1fr;
+          gap: 16px;
+          padding: 0 20px;
+          /* push ui down so mode-badge doesn't overlap */
+          margin-top: 56px;
+        }
+        .story-from,
+        .story-arrow {
+          display: none;
+        }
+        /* FIX: show compact from-hint on mobile */
+        .story-from-mobile {
+          display: block;
+        }
+        .story-to {
+          min-height: auto;
+        }
+        /* FIX: meta badge needs to sit below nav height on mobile */
+        .story-meta {
+          top: 68px;
+        }
+
+        .mode-row,
+        .mode-row.flip {
+          grid-template-columns: 1fr;
+          gap: 48px;
+          direction: ltr;
+          padding: 80px 24px;
+        }
+        .split-statement {
+          padding: 80px 24px 60px;
+        }
+        .big-copy {
+          padding: 80px 24px;
+        }
+        .stats-section {
+          padding: 80px 24px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+          /* dividers between stacked cells */
+          gap: 1px;
+        }
+        .stat-cell {
+          padding: 40px 32px;
+        }
+        footer {
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+          padding: 28px 24px;
+        }
+        .final-cta {
+          padding: 120px 24px 100px;
+        }
+        .demo-body {
+          padding: 24px 24px 28px;
+        }
+      }
+
+      /* ─────────────────────────────────────────
+       RESPONSIVE — 640px (phones in landscape / small tablets)
+    ───────────────────────────────────────── */
+      @media (max-width: 640px) {
+        .story-sticky {
+          align-items: flex-start;
+          padding-top: 0;
+        }
+        .story-ui {
+          margin-top: 80px;
+          gap: 14px;
+        }
+        .story-to {
+          padding: 24px;
+        }
+        .story-scroll-cue {
+          bottom: 28px;
+        }
+        .split-line {
+          font-size: clamp(2rem, 9vw, 3.6rem);
+        }
+        .big-copy h2 {
+          font-size: clamp(2.2rem, 8vw, 4rem);
+        }
+        .mode-title {
+          font-size: clamp(1.7rem, 6vw, 2.6rem);
+        }
+        .stats-label {
+          margin-bottom: 40px;
+        }
+        .cta-title {
+          font-size: clamp(2.4rem, 10vw, 5rem);
+        }
+        .cta-sub {
+          font-size: 0.95rem;
+          margin-bottom: 40px;
+        }
+      }
+
+      /* ─────────────────────────────────────────
+       RESPONSIVE — 430px (small phones)
+    ───────────────────────────────────────── */
+      @media (max-width: 430px) {
+        #nav {
+          height: 48px;
+        }
+        .hero {
+          min-height: 580px;
+        }
+        .hero-headline {
+          margin-bottom: 24px;
+        }
+        .hero-sub {
+          margin-bottom: 36px;
+          font-size: 0.92rem;
+        }
+        /* Stack hero buttons vertically on very small screens */
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+          width: 100%;
+          max-width: 260px;
+          margin: 0 auto;
+        }
+        .btn-primary {
+          justify-content: center;
+          padding: 14px 24px;
+        }
+        .btn-ghost {
+          justify-content: center;
+          padding: 8px 0;
+        }
+        .story-meta {
+          top: 60px;
+          gap: 12px;
+        }
+        .mode-badge {
+          font-size: 0.65rem;
+          padding: 5px 12px;
+        }
+        .story-ui {
+          padding: 0 16px;
+          margin-top: 68px;
+        }
+        .story-to {
+          padding: 20px;
+          border-radius: 14px;
+        }
+        .slide-body {
+          font-size: 0.82rem;
+          line-height: 1.72;
+        }
+        .slide-2 .slide-body {
+          font-size: 0.7rem;
+        }
+        .split-statement {
+          padding: 60px 20px 50px;
+        }
+        .big-copy {
+          padding: 60px 20px;
+        }
+        .mode-row,
+        .mode-row.flip {
+          padding: 60px 20px;
+          gap: 36px;
+        }
+        .stats-section {
+          padding: 60px 20px;
+        }
+        .stat-cell {
+          padding: 32px 24px;
+        }
+        .final-cta {
+          padding: 90px 20px 80px;
+        }
+        .cta-actions {
+          flex-direction: column;
+          align-items: center;
+          gap: 14px;
+        }
+        .btn-cta-primary {
+          padding: 14px 32px;
+          width: 100%;
+          max-width: 260px;
+          justify-content: center;
+        }
+        footer {
+          padding: 24px 20px;
+        }
+      }
+
+      /* ─────────────────────────────────────────
        REDUCED MOTION
     ───────────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .hero-headline .line-inner {
+          opacity: 1;
+          transform: none;
+        }
       }
-      .hero-headline .line-inner { opacity: 1; transform: none; }
-    }
-  </style>
-</head>
-<body>
+    </style>
+  </head>
+  <body>
+    <!-- ─── NAV ──────────────────────────────── -->
+    <nav id="nav">
+      <a href="#" class="nav-logo">ToneShift</a>
+      <div class="nav-links">
+        <a href="#modes">Modes</a>
+        <a href="#why">Why ToneShift</a>
+        <a href="/toneshift" class="nav-cta-pill">Launch App</a>
+      </div>
+    </nav>
 
-  <!-- ─── NAV ──────────────────────────────── -->
-  <nav id="nav">
-    <a href="#" class="nav-logo">ToneShift</a>
-    <div class="nav-links">
-      <a href="#modes">Modes</a>
-      <a href="#why">Why ToneShift</a>
-      <a href="/toneshift" class="nav-cta-pill">Launch App</a>
-    </div>
-  </nav>
+    <!-- ─── HERO ──────────────────────────────── -->
+    <section class="hero">
+      <!-- FIX: orb-center wrapped so JS parallax doesn't break translateX(-50%) -->
+      <div class="orb-center-wrap" id="orbCenterWrap">
+        <div class="orb-center"></div>
+      </div>
+      <div class="orb orb-accent"></div>
+      <div class="hero-inner">
+        <h1 class="hero-headline">
+          <span class="line"
+            ><span class="line-inner" id="hl1">Words that</span></span
+          >
+          <span class="line"
+            ><span class="line-inner" id="hl2">resonate.</span></span
+          >
+        </h1>
+        <p class="hero-sub">
+          Write it rough. ToneShift transforms it into the exact voice your
+          moment demands — with 5 powerful modes, instantly.
+        </p>
+        <div class="hero-actions">
+          <a href="/toneshift" class="btn-primary">
+            Start for free
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M2 7h10M8 3l4 4-4 4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+          <a href="#modes" class="btn-ghost">See how it works ›</a>
+        </div>
+      </div>
+    </section>
 
-  <!-- ─── HERO ──────────────────────────────── -->
-  <section class="hero">
-    <!-- FIX: orb-center wrapped so JS parallax doesn't break translateX(-50%) -->
-    <div class="orb-center-wrap" id="orbCenterWrap">
-      <div class="orb-center"></div>
-    </div>
-    <div class="orb orb-accent"></div>
-    <div class="hero-inner">
-      <h1 class="hero-headline">
-        <span class="line"><span class="line-inner" id="hl1">Words that</span></span>
-        <span class="line"><span class="line-inner" id="hl2">resonate.</span></span>
-      </h1>
-      <p class="hero-sub">Write it rough. ToneShift transforms it into the exact voice your moment demands — with 5 powerful modes, instantly.</p>
-      <div class="hero-actions">
-        <a href="/toneshift" class="btn-primary">
-          Start for free
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a href="#modes" class="btn-ghost">See how it works ›</a>
+    <!-- ─── SPLIT STATEMENT ─────────────────── -->
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div class="split-statement">
+        <div class="split-line left" data-split>Write it rough.</div>
+        <div class="split-line right" data-split>Read it flawless.</div>
       </div>
     </div>
 
-  </section>
+    <!-- ─── SCROLLYTELLING ──────────────────── -->
+    <div class="scroll-story" id="scrollStory">
+      <div class="story-sticky">
+        <div class="story-tint" id="storyTint"></div>
 
-  <!-- ─── SPLIT STATEMENT ─────────────────── -->
-  <div style="max-width: 1200px; margin: 0 auto;">
-    <div class="split-statement">
-      <div class="split-line left"  data-split>Write it rough.</div>
-      <div class="split-line right" data-split>Read it flawless.</div>
+        <div class="story-meta">
+          <div class="mode-badge" id="modeBadge">
+            <div class="mode-indicator" id="modeIndicator"></div>
+            <span id="modeBadgeText">Professional</span>
+          </div>
+          <div class="story-pip-row" id="pipRow">
+            <div class="story-pip active" data-pip="0"></div>
+            <div class="story-pip" data-pip="1"></div>
+            <div class="story-pip" data-pip="2"></div>
+            <div class="story-pip" data-pip="3"></div>
+            <div class="story-pip" data-pip="4"></div>
+          </div>
+        </div>
+
+        <div class="story-ui">
+          <!-- Original (desktop only) -->
+          <div class="story-from">
+            <div class="panel-label">You wrote</div>
+            <p class="from-text">
+              "hey can we move the meeting, i totally forgot to prep the deck
+              lol"
+            </p>
+          </div>
+
+          <!-- Arrow (desktop only) -->
+          <div class="story-arrow">
+            <div class="arrow-track"></div>
+            <div class="arrow-icon" id="arrowIcon">→</div>
+            <div class="arrow-track"></div>
+          </div>
+
+          <!-- FIX: Mobile compact "from" context shown above output panel -->
+          <div class="story-from-mobile">
+            <span class="sfm-label">You wrote</span>
+            <p class="sfm-text">
+              "hey can we move the meeting, i totally forgot to prep the deck
+              lol"
+            </p>
+          </div>
+
+          <!-- Output -->
+          <div class="story-to mode-0" id="storyTo">
+            <div class="story-slide slide-0 active" id="storySlide0">
+              <div class="slide-label">Professional</div>
+              <p class="slide-body">
+                I wanted to reach out regarding our scheduled meeting. Due to an
+                oversight on my end with the deck preparation, I'd like to
+                kindly request a brief reschedule. Would another time this week
+                work for you?
+              </p>
+            </div>
+            <div class="story-slide slide-1" id="storySlide1">
+              <div class="slide-label">Casual / Gen-Z</div>
+              <p class="slide-body">
+                hey!! so bad timing but can we push the meeting? 😭 totally
+                blanked on the deck prep lowkey. super sorry fr fr, lmk what
+                works!!
+              </p>
+            </div>
+            <div class="story-slide slide-2" id="storySlide2">
+              <div class="slide-label">AI Agent Prompt</div>
+              <p class="slide-body mono">
+                Task: Meeting reschedule request<br />Context: User forgot to
+                prepare slide deck<br />Tone: Apologetic, professional<br />Constraints:
+                ≤3 sentences, email-ready<br />Output: Include subject line
+                suggestion
+              </p>
+            </div>
+            <div class="story-slide slide-3" id="storySlide3">
+              <div class="slide-label">Humanize</div>
+              <p class="slide-body">
+                Honestly? I totally spaced on getting the deck ready 😅 — could
+                we push the meeting back a bit? Really sorry about the short
+                notice, I promise I'll have everything sorted by then!
+              </p>
+            </div>
+            <div class="story-slide slide-4" id="storySlide4">
+              <div class="slide-label">AI Detection</div>
+              <p class="slide-body mono">
+                Human Score: 94%<br /><br />Indicators Found:<br />• Natural
+                contractions used<br />• Informal, authentic tone<br />•
+                Personal self-expression<br /><br />Verdict: Human-Written ✓
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FIX: Scroll cue — tells users to keep scrolling through sticky modes -->
+        <div class="story-scroll-cue" id="storyScrollCue">
+          <span class="ssc-label">Scroll to explore all 5 modes</span>
+          <div class="ssc-chevron">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path
+                d="M2 4l4 4 4-4"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- FIX: Progress bar along bottom of sticky section -->
+        <div class="story-progress-bar" id="storyProgressBar"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- ─── SCROLLYTELLING ──────────────────── -->
-  <div class="scroll-story" id="scrollStory">
-    <div class="story-sticky">
-      <div class="story-tint" id="storyTint"></div>
-
-      <div class="story-meta">
-        <div class="mode-badge" id="modeBadge">
-          <div class="mode-indicator" id="modeIndicator"></div>
-          <span id="modeBadgeText">Professional</span>
-        </div>
-        <div class="story-pip-row" id="pipRow">
-          <div class="story-pip active" data-pip="0"></div>
-          <div class="story-pip" data-pip="1"></div>
-          <div class="story-pip" data-pip="2"></div>
-          <div class="story-pip" data-pip="3"></div>
-          <div class="story-pip" data-pip="4"></div>
-        </div>
+    <!-- ─── BIG COPY ──────────────────────────── -->
+    <div id="modes" style="background: var(--black)">
+      <hr class="section-sep" />
+      <div class="big-copy">
+        <h2 class="reveal">
+          <span class="mute">The right words.</span><br />
+          <span class="lit">For every room.</span>
+        </h2>
       </div>
-
-      <div class="story-ui">
-
-        <!-- Original (desktop only) -->
-        <div class="story-from">
-          <div class="panel-label">You wrote</div>
-          <p class="from-text">"hey can we move the meeting, i totally forgot to prep the deck lol"</p>
-        </div>
-
-        <!-- Arrow (desktop only) -->
-        <div class="story-arrow">
-          <div class="arrow-track"></div>
-          <div class="arrow-icon" id="arrowIcon">→</div>
-          <div class="arrow-track"></div>
-        </div>
-
-        <!-- FIX: Mobile compact "from" context shown above output panel -->
-        <div class="story-from-mobile">
-          <span class="sfm-label">You wrote</span>
-          <p class="sfm-text">"hey can we move the meeting, i totally forgot to prep the deck lol"</p>
-        </div>
-
-        <!-- Output -->
-        <div class="story-to mode-0" id="storyTo">
-          <div class="story-slide slide-0 active" id="storySlide0">
-            <div class="slide-label">Professional</div>
-            <p class="slide-body">I wanted to reach out regarding our scheduled meeting. Due to an oversight on my end with the deck preparation, I'd like to kindly request a brief reschedule. Would another time this week work for you?</p>
-          </div>
-          <div class="story-slide slide-1" id="storySlide1">
-            <div class="slide-label">Casual / Gen-Z</div>
-            <p class="slide-body">hey!! so bad timing but can we push the meeting? 😭 totally blanked on the deck prep lowkey. super sorry fr fr, lmk what works!!</p>
-          </div>
-          <div class="story-slide slide-2" id="storySlide2">
-            <div class="slide-label">AI Agent Prompt</div>
-            <p class="slide-body mono">Task: Meeting reschedule request<br>Context: User forgot to prepare slide deck<br>Tone: Apologetic, professional<br>Constraints: ≤3 sentences, email-ready<br>Output: Include subject line suggestion</p>
-          </div>
-          <div class="story-slide slide-3" id="storySlide3">
-            <div class="slide-label">Humanize</div>
-            <p class="slide-body">Honestly? I totally spaced on getting the deck ready 😅 — could we push the meeting back a bit? Really sorry about the short notice, I promise I'll have everything sorted by then!</p>
-          </div>
-          <div class="story-slide slide-4" id="storySlide4">
-            <div class="slide-label">AI Detection</div>
-            <p class="slide-body mono">Human Score: 94%<br><br>Indicators Found:<br>• Natural contractions used<br>• Informal, authentic tone<br>• Personal self-expression<br><br>Verdict: Human-Written ✓</p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- FIX: Scroll cue — tells users to keep scrolling through sticky modes -->
-      <div class="story-scroll-cue" id="storyScrollCue">
-        <span class="ssc-label">Scroll to explore all 5 modes</span>
-        <div class="ssc-chevron">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-      </div>
-
-      <!-- FIX: Progress bar along bottom of sticky section -->
-      <div class="story-progress-bar" id="storyProgressBar"></div>
-
     </div>
-  </div>
 
-  <!-- ─── BIG COPY ──────────────────────────── -->
-  <div id="modes" style="background: var(--black);">
-    <hr class="section-sep">
-    <div class="big-copy">
-      <h2 class="reveal">
-        <span class="mute">The right words.</span><br>
-        <span class="lit">For every room.</span>
+    <!-- ─── MODE 1: PROFESSIONAL ─────────────── -->
+    <div style="background: var(--black)">
+      <hr class="section-sep" />
+      <div class="mode-row">
+        <div class="reveal">
+          <div class="mode-eyebrow">
+            <span class="mode-num">01</span>
+            <div class="mode-rule"></div>
+            <span class="mode-tag blue">Professional</span>
+          </div>
+          <h3 class="mode-title">Speak with<br />authority. Always.</h3>
+          <p class="mode-desc">
+            Rough thoughts become boardroom-ready language. Elevated vocabulary,
+            perfect grammar, absolute clarity — so you never second-guess an
+            important email again.
+          </p>
+        </div>
+        <div class="demo-card reveal reveal-d2">
+          <div class="demo-top-bar">
+            <div class="dot-r"></div>
+            <div class="dot-y"></div>
+            <div class="dot-g"></div>
+          </div>
+          <div class="demo-body">
+            <div class="demo-chip blue">Professional Output</div>
+            <p class="demo-text">
+              "I wanted to follow up on our previous discussion regarding the Q4
+              deliverables. I believe aligning on a revised timeline would be
+              mutually beneficial — would you be available for a brief call this
+              week?"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── MODE 2: CASUAL ────────────────────── -->
+    <div style="background: var(--gray-14)">
+      <hr class="section-sep" />
+      <div class="mode-row flip">
+        <div class="reveal">
+          <div class="mode-eyebrow">
+            <span class="mode-num">02</span>
+            <div class="mode-rule"></div>
+            <span class="mode-tag yellow">Casual</span>
+          </div>
+          <h3 class="mode-title">Keep it real.<br />Keep it you.</h3>
+          <p class="mode-desc">
+            Drop the stiffness, keep the vibe. ToneShift speaks fluent Gen-Z —
+            light, modern, perfectly paced for the group chat, DMs, or social
+            media.
+          </p>
+        </div>
+        <div class="demo-card reveal reveal-d2">
+          <div class="demo-top-bar">
+            <div class="dot-r"></div>
+            <div class="dot-y"></div>
+            <div class="dot-g"></div>
+          </div>
+          <div class="demo-body">
+            <div class="demo-chip yellow">Casual Output</div>
+            <p class="demo-text">
+              "okay so real talk, can we talk about q4?? i feel like we kinda
+              need to reset the timeline ngl 😭 lmk if you're free for a quick
+              call!! no pressure tho"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── MODE 3: AI PROMPT ─────────────────── -->
+    <div style="background: var(--black)">
+      <hr class="section-sep" />
+      <div class="mode-row">
+        <div class="reveal">
+          <div class="mode-eyebrow">
+            <span class="mode-num">03</span>
+            <div class="mode-rule"></div>
+            <span class="mode-tag green">AI Prompt</span>
+          </div>
+          <h3 class="mode-title">Talk to machines<br />fluently.</h3>
+          <p class="mode-desc">
+            Transform messy brainstorms into laser-focused, structured
+            instructions that AI coding agents actually understand. No more
+            vague outputs from vague inputs.
+          </p>
+        </div>
+        <div class="demo-card reveal reveal-d2">
+          <div class="demo-top-bar">
+            <div class="dot-r"></div>
+            <div class="dot-y"></div>
+            <div class="dot-g"></div>
+          </div>
+          <div class="demo-body">
+            <div class="demo-chip green">AI Prompt Output</div>
+            <p class="demo-text mono">
+              Task: Q4 timeline negotiation<br />Context: Deliverables behind
+              schedule<br />Tone: Direct, solution-focused<br />Action: Propose
+              revised deadlines<br />Format: Bullet list, max 5 items
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── MODE 4: HUMANIZE ─────────────────── -->
+    <div style="background: var(--gray-14)">
+      <hr class="section-sep" />
+      <div class="mode-row flip">
+        <div class="reveal">
+          <div class="mode-eyebrow">
+            <span class="mode-num">04</span>
+            <div class="mode-rule"></div>
+            <span class="mode-tag" style="color: #a855f7; border-color: #a855f7"
+              >Humanize</span
+            >
+          </div>
+          <h3 class="mode-title">Make AI text<br />feel real.</h3>
+          <p class="mode-desc">
+            Transform robotic, AI-generated content into natural, human-sounding
+            writing. Perfect for bypassing AI detectors while maintaining
+            quality and clarity.
+          </p>
+        </div>
+        <div class="demo-card reveal reveal-d2">
+          <div class="demo-top-bar">
+            <div class="dot-r"></div>
+            <div class="dot-y"></div>
+            <div class="dot-g"></div>
+          </div>
+          <div class="demo-body">
+            <div
+              class="demo-chip"
+              style="background: rgba(168, 85, 247, 0.09); color: #a855f7"
+            >
+              Humanize Output
+            </div>
+            <p class="demo-text">
+              "honestly? i totally spaced on prepping the deck 😅 can we push
+              the meeting to next week? i'll have everything ready by then,
+              promise! lmk what works for you"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── MODE 5: AI DETECTOR ─────────────────── -->
+    <div style="background: var(--black)">
+      <hr class="section-sep" />
+      <div class="mode-row">
+        <div class="reveal">
+          <div class="mode-eyebrow">
+            <span class="mode-num">05</span>
+            <div class="mode-rule"></div>
+            <span class="mode-tag" style="color: #f97316; border-color: #f97316"
+              >Detector</span
+            >
+          </div>
+          <h3 class="mode-title">Spot the machine.<br />Instantly.</h3>
+          <p class="mode-desc">
+            Analyze any text and detect whether it was written by AI or human.
+            Get detailed breakdowns of patterns, probabilities, and specific
+            indicators found.
+          </p>
+        </div>
+        <div class="demo-card reveal reveal-d2">
+          <div class="demo-top-bar">
+            <div class="dot-r"></div>
+            <div class="dot-y"></div>
+            <div class="dot-g"></div>
+          </div>
+          <div class="demo-body">
+            <div
+              class="demo-chip"
+              style="background: rgba(249, 115, 22, 0.09); color: #f97316"
+            >
+              Detection Result
+            </div>
+            <p class="demo-text mono">
+              AI Probability: 87%<br /><br />Indicators Found:<br />• Uniform
+              sentence structure<br />• Formal transitions only<br />• Lack of
+              colloquialisms<br /><br />Assessment: AI-Generated
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STATS ──────────────────────────────── -->
+    <div id="why" class="stats-section">
+      <div class="stats-inner">
+        <p class="stats-label reveal">Why ToneShift</p>
+        <div class="stats-grid">
+          <div class="stat-cell reveal">
+            <div class="stat-val">5<sup>×</sup></div>
+            <p class="stat-desc">
+              Tone modes for every context — professional, casual, AI prompt,
+              humanize, and detection.
+            </p>
+          </div>
+          <div class="stat-cell reveal reveal-d1">
+            <div class="stat-val">&lt;2<sup>s</sup></div>
+            <p class="stat-desc">
+              Average transformation time. Results before you can second-guess
+              yourself.
+            </p>
+          </div>
+          <div class="stat-cell reveal reveal-d2">
+            <div class="stat-val">0<sup>¢</sup></div>
+            <p class="stat-desc">
+              Free to start. No credit card. No friction. Just better writing,
+              immediately.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── FINAL CTA ─────────────────────────── -->
+    <section class="final-cta reveal">
+      <div class="cta-glow"></div>
+      <h2 class="cta-title">
+        <span class="dim">Sound your best.</span><br />Every time.
       </h2>
-    </div>
-  </div>
-
-  <!-- ─── MODE 1: PROFESSIONAL ─────────────── -->
-  <div style="background: var(--black);">
-    <hr class="section-sep">
-    <div class="mode-row">
-      <div class="reveal">
-        <div class="mode-eyebrow">
-          <span class="mode-num">01</span>
-          <div class="mode-rule"></div>
-          <span class="mode-tag blue">Professional</span>
-        </div>
-        <h3 class="mode-title">Speak with<br>authority. Always.</h3>
-        <p class="mode-desc">Rough thoughts become boardroom-ready language. Elevated vocabulary, perfect grammar, absolute clarity — so you never second-guess an important email again.</p>
+      <p class="cta-sub">
+        Join thousands writing with more clarity, confidence, and exactly the
+        right voice.
+      </p>
+      <div class="cta-actions">
+        <a href="/toneshift" class="btn-cta-primary">
+          Launch ToneShift
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M3 8h10M9 4l4 4-4 4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+        <a href="#" class="btn-cta-secondary">It's free ›</a>
       </div>
-      <div class="demo-card reveal reveal-d2">
-        <div class="demo-top-bar">
-          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        </div>
-        <div class="demo-body">
-          <div class="demo-chip blue">Professional Output</div>
-          <p class="demo-text">"I wanted to follow up on our previous discussion regarding the Q4 deliverables. I believe aligning on a revised timeline would be mutually beneficial — would you be available for a brief call this week?"</p>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- ─── MODE 2: CASUAL ────────────────────── -->
-  <div style="background: var(--gray-14);">
-    <hr class="section-sep">
-    <div class="mode-row flip">
-      <div class="reveal">
-        <div class="mode-eyebrow">
-          <span class="mode-num">02</span>
-          <div class="mode-rule"></div>
-          <span class="mode-tag yellow">Casual</span>
-        </div>
-        <h3 class="mode-title">Keep it real.<br>Keep it you.</h3>
-        <p class="mode-desc">Drop the stiffness, keep the vibe. ToneShift speaks fluent Gen-Z — light, modern, perfectly paced for the group chat, DMs, or social media.</p>
+    <!-- ─── FOOTER ────────────────────────────── -->
+    <footer>
+      <div class="footer-brand">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle
+            cx="8"
+            cy="8"
+            r="7"
+            stroke="rgba(255,255,255,0.2)"
+            stroke-width="1.2"
+          />
+          <path
+            d="M5 8h6M8 5l3 3-3 3"
+            stroke="rgba(255,255,255,0.2)"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        ToneShift
       </div>
-      <div class="demo-card reveal reveal-d2">
-        <div class="demo-top-bar">
-          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        </div>
-        <div class="demo-body">
-          <div class="demo-chip yellow">Casual Output</div>
-          <p class="demo-text">"okay so real talk, can we talk about q4?? i feel like we kinda need to reset the timeline ngl 😭 lmk if you're free for a quick call!! no pressure tho"</p>
-        </div>
-      </div>
-    </div>
-  </div>
+      <span class="footer-copy"
+        >© 2026 ToneShift. Designed with precision.</span
+      >
+    </footer>
 
-  <!-- ─── MODE 3: AI PROMPT ─────────────────── -->
-  <div style="background: var(--black);">
-    <hr class="section-sep">
-    <div class="mode-row">
-      <div class="reveal">
-        <div class="mode-eyebrow">
-          <span class="mode-num">03</span>
-          <div class="mode-rule"></div>
-          <span class="mode-tag green">AI Prompt</span>
-        </div>
-        <h3 class="mode-title">Talk to machines<br>fluently.</h3>
-        <p class="mode-desc">Transform messy brainstorms into laser-focused, structured instructions that AI coding agents actually understand. No more vague outputs from vague inputs.</p>
-      </div>
-      <div class="demo-card reveal reveal-d2">
-        <div class="demo-top-bar">
-          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        </div>
-        <div class="demo-body">
-          <div class="demo-chip green">AI Prompt Output</div>
-          <p class="demo-text mono">Task: Q4 timeline negotiation<br>Context: Deliverables behind schedule<br>Tone: Direct, solution-focused<br>Action: Propose revised deadlines<br>Format: Bullet list, max 5 items</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── MODE 4: HUMANIZE ─────────────────── -->
-  <div style="background: var(--gray-14);">
-    <hr class="section-sep">
-    <div class="mode-row flip">
-      <div class="reveal">
-        <div class="mode-eyebrow">
-          <span class="mode-num">04</span>
-          <div class="mode-rule"></div>
-          <span class="mode-tag" style="color: #a855f7; border-color: #a855f7;">Humanize</span>
-        </div>
-        <h3 class="mode-title">Make AI text<br>feel real.</h3>
-        <p class="mode-desc">Transform robotic, AI-generated content into natural, human-sounding writing. Perfect for bypassing AI detectors while maintaining quality and clarity.</p>
-      </div>
-      <div class="demo-card reveal reveal-d2">
-        <div class="demo-top-bar">
-          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        </div>
-        <div class="demo-body">
-          <div class="demo-chip" style="background: rgba(168,85,247,0.09); color: #a855f7;">Humanize Output</div>
-          <p class="demo-text">"honestly? i totally spaced on prepping the deck 😅 can we push the meeting to next week? i'll have everything ready by then, promise! lmk what works for you"</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── MODE 5: AI DETECTOR ─────────────────── -->
-  <div style="background: var(--black);">
-    <hr class="section-sep">
-    <div class="mode-row">
-      <div class="reveal">
-        <div class="mode-eyebrow">
-          <span class="mode-num">05</span>
-          <div class="mode-rule"></div>
-          <span class="mode-tag" style="color: #f97316; border-color: #f97316;">Detector</span>
-        </div>
-        <h3 class="mode-title">Spot the machine.<br>Instantly.</h3>
-        <p class="mode-desc">Analyze any text and detect whether it was written by AI or human. Get detailed breakdowns of patterns, probabilities, and specific indicators found.</p>
-      </div>
-      <div class="demo-card reveal reveal-d2">
-        <div class="demo-top-bar">
-          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        </div>
-        <div class="demo-body">
-          <div class="demo-chip" style="background: rgba(249,115,22,0.09); color: #f97316;">Detection Result</div>
-          <p class="demo-text mono">AI Probability: 87%<br><br>Indicators Found:<br>• Uniform sentence structure<br>• Formal transitions only<br>• Lack of colloquialisms<br><br>Assessment: AI-Generated</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── STATS ──────────────────────────────── -->
-  <div id="why" class="stats-section">
-    <div class="stats-inner">
-      <p class="stats-label reveal">Why ToneShift</p>
-      <div class="stats-grid">
-        <div class="stat-cell reveal">
-          <div class="stat-val">5<sup>×</sup></div>
-          <p class="stat-desc">Tone modes for every context — professional, casual, AI prompt, humanize, and detection.</p>
-        </div>
-        <div class="stat-cell reveal reveal-d1">
-          <div class="stat-val">&lt;2<sup>s</sup></div>
-          <p class="stat-desc">Average transformation time. Results before you can second-guess yourself.</p>
-        </div>
-        <div class="stat-cell reveal reveal-d2">
-          <div class="stat-val">0<sup>¢</sup></div>
-          <p class="stat-desc">Free to start. No credit card. No friction. Just better writing, immediately.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── FINAL CTA ─────────────────────────── -->
-  <section class="final-cta reveal">
-    <div class="cta-glow"></div>
-    <h2 class="cta-title">
-      <span class="dim">Sound your best.</span><br>Every time.
-    </h2>
-    <p class="cta-sub">Join thousands writing with more clarity, confidence, and exactly the right voice.</p>
-    <div class="cta-actions">
-      <a href="/toneshift" class="btn-cta-primary">
-        Launch ToneShift
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a href="#" class="btn-cta-secondary">It's free ›</a>
-    </div>
-  </section>
-
-  <!-- ─── FOOTER ────────────────────────────── -->
-  <footer>
-    <div class="footer-brand">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="7" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
-        <path d="M5 8h6M8 5l3 3-3 3" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      ToneShift
-    </div>
-    <span class="footer-copy">© 2026 ToneShift. Designed with precision.</span>
-  </footer>
-
-
-  <script>
-
-    /* ═══════════════════════════════════════════════════════
+    <script>
+      /* ═══════════════════════════════════════════════════════
        NAV
     ═══════════════════════════════════════════════════════ */
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
+      const nav = document.getElementById('nav')
+      window.addEventListener(
+        'scroll',
+        () => {
+          nav.classList.toggle('scrolled', window.scrollY > 60)
+        },
+        { passive: true }
+      )
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        HERO HEADLINE LINE-IN
     ═══════════════════════════════════════════════════════ */
-    document.getElementById('hl1').style.cssText =
-      'animation: lineIn 1s 0.52s cubic-bezier(0.16,1,0.3,1) forwards;';
-    document.getElementById('hl2').style.cssText =
-      'animation: lineIn 1s 0.76s cubic-bezier(0.16,1,0.3,1) forwards;';
+      document.getElementById('hl1').style.cssText =
+        'animation: lineIn 1s 0.52s cubic-bezier(0.16,1,0.3,1) forwards;'
+      document.getElementById('hl2').style.cssText =
+        'animation: lineIn 1s 0.76s cubic-bezier(0.16,1,0.3,1) forwards;'
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        HERO PARALLAX + FADE-OUT  (RAF-batched)
        FIX: parallax applied to .orb-center-wrap (the positioning
        wrapper) so translateX(-50%) centering is not overridden
     ═══════════════════════════════════════════════════════ */
-    const heroInner    = document.querySelector('.hero-inner');
-    const orbCenterWrap = document.getElementById('orbCenterWrap');
-    let _rawY = 0;
+      const heroInner = document.querySelector('.hero-inner')
+      const orbCenterWrap = document.getElementById('orbCenterWrap')
+      let _rawY = 0
 
-    window.addEventListener('scroll', () => { _rawY = window.scrollY; }, { passive: true });
-
-    (function heroRAF() {
-      const y  = _rawY;
-      const vh = window.innerHeight;
-      if (y < vh) {
-        const p = y / vh;
-        const opacity = Math.max(0, 1 - p * 1.7);
-        heroInner.style.transform  = `translateY(${y * 0.13}px)`;
-        heroInner.style.opacity    = opacity;
-        /* FIX: translateX(-50%) preserved — we only shift Y on the wrapper */
-        if (orbCenterWrap) {
-          orbCenterWrap.style.transform = `translateX(-50%) translateY(${y * 0.42}px)`;
+      window.addEventListener(
+        'scroll',
+        () => {
+          _rawY = window.scrollY
+        },
+        { passive: true }
+      )
+      ;(function heroRAF() {
+        const y = _rawY
+        const vh = window.innerHeight
+        if (y < vh) {
+          const p = y / vh
+          const opacity = Math.max(0, 1 - p * 1.7)
+          heroInner.style.transform = `translateY(${y * 0.13}px)`
+          heroInner.style.opacity = opacity
+          /* FIX: translateX(-50%) preserved — we only shift Y on the wrapper */
+          if (orbCenterWrap) {
+            orbCenterWrap.style.transform = `translateX(-50%) translateY(${y * 0.42}px)`
+          }
         }
-      }
-      requestAnimationFrame(heroRAF);
-    })();
+        requestAnimationFrame(heroRAF)
+      })()
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        SPLIT STATEMENT — horizontal blur-slide reveal
     ═══════════════════════════════════════════════════════ */
-    const splitObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          splitObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.22, rootMargin: '0px 0px -60px 0px' });
+      const splitObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('visible')
+              splitObs.unobserve(e.target)
+            }
+          })
+        },
+        { threshold: 0.22, rootMargin: '0px 0px -60px 0px' }
+      )
 
-    document.querySelectorAll('[data-split]').forEach(el => splitObs.observe(el));
+      document
+        .querySelectorAll('[data-split]')
+        .forEach((el) => splitObs.observe(el))
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        SCROLLYTELLING ENGINE
     ═══════════════════════════════════════════════════════ */
-    const scrollStory    = document.getElementById('scrollStory');
-    const storyTint      = document.getElementById('storyTint');
-    const storyTo        = document.getElementById('storyTo');
-    const arrowIcon      = document.getElementById('arrowIcon');
-    const modeIndicator  = document.getElementById('modeIndicator');
-    const modeBadgeText  = document.getElementById('modeBadgeText');
-    const storyScrollCue = document.getElementById('storyScrollCue');
-    const storyProgressBar = document.getElementById('storyProgressBar');
-    const slides         = [
-      document.getElementById('storySlide0'),
-      document.getElementById('storySlide1'),
-      document.getElementById('storySlide2'),
-      document.getElementById('storySlide3'),
-      document.getElementById('storySlide4'),
-    ];
-    const pips = document.querySelectorAll('[data-pip]');
+      const scrollStory = document.getElementById('scrollStory')
+      const storyTint = document.getElementById('storyTint')
+      const storyTo = document.getElementById('storyTo')
+      const arrowIcon = document.getElementById('arrowIcon')
+      const modeIndicator = document.getElementById('modeIndicator')
+      const modeBadgeText = document.getElementById('modeBadgeText')
+      const storyScrollCue = document.getElementById('storyScrollCue')
+      const storyProgressBar = document.getElementById('storyProgressBar')
+      const slides = [
+        document.getElementById('storySlide0'),
+        document.getElementById('storySlide1'),
+        document.getElementById('storySlide2'),
+        document.getElementById('storySlide3'),
+        document.getElementById('storySlide4'),
+      ]
+      const pips = document.querySelectorAll('[data-pip]')
 
-    const MODES = [
-      { label: 'Professional',    tint: 'rgba(41,151,255,0.025)',  indicator: '#2997ff',
-        arrow: 'rgba(41,151,255,0.22)', arrowColor: '#2997ff',
-        bar: '#2997ff' },
-      { label: 'Casual / Gen-Z',  tint: 'rgba(255,214,10,0.022)', indicator: '#ffd60a',
-        arrow: 'rgba(255,214,10,0.22)', arrowColor: '#ffd60a',
-        bar: '#ffd60a' },
-      { label: 'AI Agent Prompt', tint: 'rgba(48,209,88,0.022)',  indicator: '#30d158',
-        arrow: 'rgba(48,209,88,0.22)',  arrowColor: '#30d158',
-        bar: '#30d158' },
-      { label: 'Humanize',        tint: 'rgba(168,85,247,0.022)', indicator: '#a855f7',
-        arrow: 'rgba(168,85,247,0.22)', arrowColor: '#a855f7',
-        bar: '#a855f7' },
-      { label: 'AI Detector',     tint: 'rgba(249,115,22,0.022)', indicator: '#f97316',
-        arrow: 'rgba(249,115,22,0.22)', arrowColor: '#f97316',
-        bar: '#f97316' },
-    ];
+      const MODES = [
+        {
+          label: 'Professional',
+          tint: 'rgba(41,151,255,0.025)',
+          indicator: '#2997ff',
+          arrow: 'rgba(41,151,255,0.22)',
+          arrowColor: '#2997ff',
+          bar: '#2997ff',
+        },
+        {
+          label: 'Casual / Gen-Z',
+          tint: 'rgba(255,214,10,0.022)',
+          indicator: '#ffd60a',
+          arrow: 'rgba(255,214,10,0.22)',
+          arrowColor: '#ffd60a',
+          bar: '#ffd60a',
+        },
+        {
+          label: 'AI Agent Prompt',
+          tint: 'rgba(48,209,88,0.022)',
+          indicator: '#30d158',
+          arrow: 'rgba(48,209,88,0.22)',
+          arrowColor: '#30d158',
+          bar: '#30d158',
+        },
+        {
+          label: 'Humanize',
+          tint: 'rgba(168,85,247,0.022)',
+          indicator: '#a855f7',
+          arrow: 'rgba(168,85,247,0.22)',
+          arrowColor: '#a855f7',
+          bar: '#a855f7',
+        },
+        {
+          label: 'AI Detector',
+          tint: 'rgba(249,115,22,0.022)',
+          indicator: '#f97316',
+          arrow: 'rgba(249,115,22,0.22)',
+          arrowColor: '#f97316',
+          bar: '#f97316',
+        },
+      ]
 
-    let currentMode = -1;
+      let currentMode = -1
 
-    function setMode(idx) {
-      if (idx === currentMode) return;
-      currentMode = idx;
-      const m = MODES[idx];
-      storyTint.style.background      = m.tint;
-      storyTo.className               = 'story-to mode-' + idx;
-      if (arrowIcon) {
-        arrowIcon.style.borderColor   = m.arrow;
-        arrowIcon.style.color         = m.arrowColor;
-        arrowIcon.style.boxShadow     = `0 0 20px ${m.arrow}`;
+      function setMode(idx) {
+        if (idx === currentMode) return
+        currentMode = idx
+        const m = MODES[idx]
+        storyTint.style.background = m.tint
+        storyTo.className = 'story-to mode-' + idx
+        if (arrowIcon) {
+          arrowIcon.style.borderColor = m.arrow
+          arrowIcon.style.color = m.arrowColor
+          arrowIcon.style.boxShadow = `0 0 20px ${m.arrow}`
+        }
+        modeIndicator.style.background = m.indicator
+        modeBadgeText.textContent = m.label
+        slides.forEach((s, i) => s.classList.toggle('active', i === idx))
+        pips.forEach((p, i) => p.classList.toggle('active', i === idx))
       }
-      modeIndicator.style.background  = m.indicator;
-      modeBadgeText.textContent       = m.label;
-      slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-      pips.forEach((p, i)   => p.classList.toggle('active', i === idx));
-    }
 
-    function onScrollStory() {
-      const rect    = scrollStory.getBoundingClientRect();
-      const scrolled = -rect.top;
-      const total    = rect.height - window.innerHeight;
-      if (total <= 0) return;
+      function onScrollStory() {
+        const rect = scrollStory.getBoundingClientRect()
+        const scrolled = -rect.top
+        const total = rect.height - window.innerHeight
+        if (total <= 0) return
 
-      const p = Math.max(0, Math.min(1, scrolled / total));
-      const modeIdx = p >= 0.8 ? 4 : p >= 0.6 ? 3 : p >= 0.4 ? 2 : p >= 0.2 ? 1 : 0;
-      setMode(modeIdx);
+        const p = Math.max(0, Math.min(1, scrolled / total))
+        const modeIdx =
+          p >= 0.8 ? 4 : p >= 0.6 ? 3 : p >= 0.4 ? 2 : p >= 0.2 ? 1 : 0
+        setMode(modeIdx)
 
-      /* ── Progress bar: fill as user scrolls through section ── */
-      if (storyProgressBar) {
-        storyProgressBar.style.width      = `${p * 100}%`;
-        storyProgressBar.style.background = MODES[modeIdx].bar;
+        /* ── Progress bar: fill as user scrolls through section ── */
+        if (storyProgressBar) {
+          storyProgressBar.style.width = `${p * 100}%`
+          storyProgressBar.style.background = MODES[modeIdx].bar
+        }
+
+        /* ── Scroll cue: fade out once user has scrolled past ~8% ── */
+        if (storyScrollCue) {
+          storyScrollCue.classList.toggle('faded', p > 0.06)
+        }
       }
 
-      /* ── Scroll cue: fade out once user has scrolled past ~8% ── */
-      if (storyScrollCue) {
-        storyScrollCue.classList.toggle('faded', p > 0.06);
-      }
-    }
+      window.addEventListener('scroll', onScrollStory, { passive: true })
+      setMode(0)
+      /* Also check if story section is already in view on load */
+      onScrollStory()
 
-    window.addEventListener('scroll', onScrollStory, { passive: true });
-    setMode(0);
-    /* Also check if story section is already in view on load */
-    onScrollStory();
-
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        GENERIC REVEAL  (blur + scale + fade)
     ═══════════════════════════════════════════════════════ */
-    const revObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          revObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      const revObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('visible')
+              revObs.unobserve(e.target)
+            }
+          })
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+      )
 
-    document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+      document.querySelectorAll('.reveal').forEach((el) => revObs.observe(el))
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        BIG COPY  — staggered word reveal
     ═══════════════════════════════════════════════════════ */
-    const bigObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        e.target.querySelectorAll('span').forEach((s, i) => {
-          s.style.cssText = [
-            'display:inline-block',
-            'opacity:0',
-            'transform:translateY(20px) scale(0.97)',
-            `transition:opacity 1s ${0.08 + i * 0.2}s cubic-bezier(0.16,1,0.3,1),transform 1s ${0.08 + i * 0.2}s cubic-bezier(0.16,1,0.3,1)`,
-          ].join(';');
-          requestAnimationFrame(() => {
-            s.style.opacity   = '1';
-            s.style.transform = 'translateY(0) scale(1)';
-          });
-        });
-        bigObs.unobserve(e.target);
-      });
-    }, { threshold: 0.32 });
+      const bigObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return
+            e.target.querySelectorAll('span').forEach((s, i) => {
+              s.style.cssText = [
+                'display:inline-block',
+                'opacity:0',
+                'transform:translateY(20px) scale(0.97)',
+                `transition:opacity 1s ${0.08 + i * 0.2}s cubic-bezier(0.16,1,0.3,1),transform 1s ${0.08 + i * 0.2}s cubic-bezier(0.16,1,0.3,1)`,
+              ].join(';')
+              requestAnimationFrame(() => {
+                s.style.opacity = '1'
+                s.style.transform = 'translateY(0) scale(1)'
+              })
+            })
+            bigObs.unobserve(e.target)
+          })
+        },
+        { threshold: 0.32 }
+      )
 
-    document.querySelectorAll('.big-copy h2').forEach(el => bigObs.observe(el));
+      document
+        .querySelectorAll('.big-copy h2')
+        .forEach((el) => bigObs.observe(el))
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        DEMO CARD  — typewriter effect on enter
     ═══════════════════════════════════════════════════════ */
-    function typewrite(el, text, speed) {
-      el.innerHTML = '';
-      let i = 0;
-      const t = setInterval(() => {
-        el.innerHTML = text.slice(0, i).replace(/\n/g, '<br>');
-        i++;
-        if (i > text.length) clearInterval(t);
-      }, speed);
-    }
+      function typewrite(el, text, speed) {
+        el.innerHTML = ''
+        let i = 0
+        const t = setInterval(() => {
+          el.innerHTML = text.slice(0, i).replace(/\n/g, '<br>')
+          i++
+          if (i > text.length) clearInterval(t)
+        }, speed)
+      }
 
-    const typeObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const el = e.target;
-        const txt = el.getAttribute('data-text');
-        setTimeout(() => { el.style.opacity = '1'; typewrite(el, txt, 15); }, 260);
-        typeObs.unobserve(el);
-      });
-    }, { threshold: 0.55 });
+      const typeObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return
+            const el = e.target
+            const txt = el.getAttribute('data-text')
+            setTimeout(() => {
+              el.style.opacity = '1'
+              typewrite(el, txt, 15)
+            }, 260)
+            typeObs.unobserve(el)
+          })
+        },
+        { threshold: 0.55 }
+      )
 
-    document.querySelectorAll('.demo-text').forEach(el => {
-      const raw = el.classList.contains('mono')
-        ? el.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim()
-        : el.textContent.replace(/\s+/g, ' ').trim();
-      el.setAttribute('data-text', raw);
-      typeObs.observe(el);
-    });
+      document.querySelectorAll('.demo-text').forEach((el) => {
+        const raw = el.classList.contains('mono')
+          ? el.innerHTML
+              .replace(/<br\s*\/?>/gi, '\n')
+              .replace(/<[^>]+>/g, '')
+              .trim()
+          : el.textContent.replace(/\s+/g, ' ').trim()
+        el.setAttribute('data-text', raw)
+        typeObs.observe(el)
+      })
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        STAT VALS  — spring pop on enter
     ═══════════════════════════════════════════════════════ */
-    const statObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const el = e.target;
-        el.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        el.style.transform  = 'scale(1.08)';
-        setTimeout(() => { el.style.transform = 'scale(1)'; }, 60);
-        statObs.unobserve(el);
-      });
-    }, { threshold: 0.75 });
+      const statObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return
+            const el = e.target
+            el.style.transition =
+              'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)'
+            el.style.transform = 'scale(1.08)'
+            setTimeout(() => {
+              el.style.transform = 'scale(1)'
+            }, 60)
+            statObs.unobserve(el)
+          })
+        },
+        { threshold: 0.75 }
+      )
 
-    document.querySelectorAll('.stat-val').forEach(el => statObs.observe(el));
+      document
+        .querySelectorAll('.stat-val')
+        .forEach((el) => statObs.observe(el))
 
-
-    /* ═══════════════════════════════════════════════════════
+      /* ═══════════════════════════════════════════════════════
        SMOOTH ANCHOR LINKS
     ═══════════════════════════════════════════════════════ */
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const id = a.getAttribute('href').slice(1);
-        if (!id) return;
-        const target = document.getElementById(id);
-        if (!target) return;
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-  </script>
-
-</body>
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href').slice(1)
+          if (!id) return
+          const target = document.getElementById(id)
+          if (!target) return
+          e.preventDefault()
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
+      })
+    </script>
+  </body>
 </html>

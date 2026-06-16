@@ -1,895 +1,1657 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ToneShift — Transform your text into professional, casual, or AI-optimized versions using AI.">
-  <link rel="icon" type="image/png" href="assets/ToneShift.png">
-  <title>ToneShift — AI Text Transformer</title>
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-  
-  <!-- External JS (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="ToneShift — Transform your text into professional, casual, or AI-optimized versions using AI."
+    />
+    <link rel="icon" type="image/png" href="assets/ToneShift.png" />
+    <title>ToneShift — AI Text Transformer</title>
 
-  <style>
-    /* ============================================================
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- External JS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+      /* ============================================================
        ToneShift — Modern SaaS UI Theme (v4.0 Panels)
        ============================================================ */
 
-    :root {
-      /* Base Colors - Dark (Default) */
-      --bg-base:          #050505;
-      --bg-surface:       #0f0f10;
-      --bg-card:          #161618;
-      --bg-hover:         #1d1d20;
-      --bg-overlay:       rgba(15, 15, 16, 0.8);
-      
-      --border-subtle:    rgba(255, 255, 255, 0.04);
-      --border-default:   rgba(255, 255, 255, 0.08);
-      --border-strong:    rgba(255, 255, 255, 0.14);
-      --border-active:    rgba(41, 151, 255, 0.4);
+      :root {
+        /* Base Colors - Dark (Default) */
+        --bg-base: #050505;
+        --bg-surface: #0f0f10;
+        --bg-card: #161618;
+        --bg-hover: #1d1d20;
+        --bg-overlay: rgba(15, 15, 16, 0.8);
 
-      --text-primary:     #f5f5f7;
-      --text-secondary:   #a1a1aa;
-      --text-muted:       #71717a;
-      --text-placeholder: #52525b;
+        --border-subtle: rgba(255, 255, 255, 0.04);
+        --border-default: rgba(255, 255, 255, 0.08);
+        --border-strong: rgba(255, 255, 255, 0.14);
+        --border-active: rgba(41, 151, 255, 0.4);
 
-      /* Accents */
-      --accent-blue:      #2997ff;
-      --accent-purple:    #a855f7;
-      --accent-green:     #10b981;
-      --accent-yellow:    #f59e0b;
-      --accent-orange:    #f97316;
-      --accent-red:       #ef4444;
+        --text-primary: #f5f5f7;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
+        --text-placeholder: #52525b;
 
-      --btn-primary-bg:   #2997ff;
-      --btn-primary-text: #ffffff;
-      
-      /* Radii */
-      --radius-sm:  8px;
-      --radius-md:  12px;
-      --radius-lg:  16px;
-      --radius-xl:  24px;
+        /* Accents */
+        --accent-blue: #2997ff;
+        --accent-purple: #a855f7;
+        --accent-green: #10b981;
+        --accent-yellow: #f59e0b;
+        --accent-orange: #f97316;
+        --accent-red: #ef4444;
 
-      /* Spacing */
-      --sidebar-width:  260px;
-      --header-height:  64px;
-      --container-max:  900px;
+        --btn-primary-bg: #2997ff;
+        --btn-primary-text: #ffffff;
 
-      /* Shadows */
-      --shadow-sm:  0 2px 8px rgba(0,0,0,0.2);
-      --shadow-md:  0 8px 32px rgba(0,0,0,0.4);
-      --shadow-lg:  0 16px 64px rgba(0,0,0,0.6);
+        /* Radii */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
 
-      /* Typography */
-      --font-display: 'Bricolage Grotesque', -apple-system, sans-serif;
-      --font-sans:    'Figtree', -apple-system, sans-serif;
-      --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+        /* Spacing */
+        --sidebar-width: 260px;
+        --header-height: 64px;
+        --container-max: 900px;
 
-      /* Transitions */
-      --ease:         cubic-bezier(0.25, 0.1, 0.25, 1.0);
-      --transition:   240ms var(--ease);
-    }
+        /* Shadows */
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.6);
 
-    [data-theme="light"] {
-      --bg-base:          #f9f9fb;
-      --bg-surface:       #ffffff;
-      --bg-card:          #ffffff;
-      --bg-hover:         #f3f4f6;
-      --bg-overlay:       rgba(255, 255, 255, 0.85);
-      
-      --border-subtle:    rgba(0, 0, 0, 0.04);
-      --border-default:   rgba(0, 0, 0, 0.08);
-      --border-strong:    rgba(0, 0, 0, 0.12);
-      --border-active:    rgba(41, 151, 255, 0.3);
+        /* Typography */
+        --font-display: 'Bricolage Grotesque', -apple-system, sans-serif;
+        --font-sans: 'Figtree', -apple-system, sans-serif;
+        --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-      --text-primary:     #18181b;
-      --text-secondary:   #52525b;
-      --text-muted:       #71717a;
-      --text-placeholder: #a1a1aa;
+        /* Transitions */
+        --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+        --transition: 240ms var(--ease);
+      }
 
-      --shadow-sm:  0 2px 8px rgba(0,0,0,0.05);
-      --shadow-md:  0 8px 32px rgba(0,0,0,0.08);
-      --shadow-lg:  0 16px 64px rgba(0,0,0,0.12);
-    }
+      [data-theme='light'] {
+        --bg-base: #f9f9fb;
+        --bg-surface: #ffffff;
+        --bg-card: #ffffff;
+        --bg-hover: #f3f4f6;
+        --bg-overlay: rgba(255, 255, 255, 0.85);
 
-    /* Reset & Base */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    html {
-      font-size: 16px;
-      scroll-behavior: smooth;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+        --border-subtle: rgba(0, 0, 0, 0.04);
+        --border-default: rgba(0, 0, 0, 0.08);
+        --border-strong: rgba(0, 0, 0, 0.12);
+        --border-active: rgba(41, 151, 255, 0.3);
 
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      min-height: 100vh;
-      display: flex;
-      overflow: hidden;
-      line-height: 1.5;
-    }
+        --text-primary: #18181b;
+        --text-secondary: #52525b;
+        --text-muted: #71717a;
+        --text-placeholder: #a1a1aa;
 
-    button, input, textarea {
-      font-family: inherit;
-      color: inherit;
-    }
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.12);
+      }
 
-    svg { display: block; }
+      /* Reset & Base */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
 
-    /* Ambient Background Orbs */
-    .orb-container {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      z-index: 0;
-      pointer-events: none;
-      filter: blur(100px);
-      opacity: 0.35;
-    }
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      background: var(--accent-blue);
-      mix-blend-mode: screen;
-    }
-    .orb-1 { width: 50vw; height: 50vw; top: -10vw; left: -10vw; background: var(--accent-blue); opacity: 0.5; animation: drift 20s infinite alternate; }
-    .orb-2 { width: 40vw; height: 40vw; bottom: -5vw; right: -5vw; background: var(--accent-purple); opacity: 0.4; animation: drift 25s infinite alternate-reverse; }
-    @keyframes drift {
-      from { transform: translate(0, 0) scale(1); }
-      to { transform: translate(10%, 10%) scale(1.1); }
-    }
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg-base);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        overflow: hidden;
+        line-height: 1.5;
+      }
 
-    /* Layout Components */
-    #sidebar {
-      width: var(--sidebar-width);
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-default);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      z-index: 100;
-      transition: transform var(--transition);
-    }
+      button,
+      input,
+      textarea {
+        font-family: inherit;
+        color: inherit;
+      }
 
-    #main-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-    }
+      svg {
+        display: block;
+      }
 
-    #top-bar {
-      height: var(--header-height);
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      background: var(--bg-overlay);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-default);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-muted);
+      }
 
-    #app {
-      flex: 1;
-      overflow-y: auto;
-      padding: 40px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
+      /* Ambient Background Orbs */
+      .orb-container {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+        filter: blur(100px);
+        opacity: 0.35;
+      }
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        background: var(--accent-blue);
+        mix-blend-mode: screen;
+      }
+      .orb-1 {
+        width: 50vw;
+        height: 50vw;
+        top: -10vw;
+        left: -10vw;
+        background: var(--accent-blue);
+        opacity: 0.5;
+        animation: drift 20s infinite alternate;
+      }
+      .orb-2 {
+        width: 40vw;
+        height: 40vw;
+        bottom: -5vw;
+        right: -5vw;
+        background: var(--accent-purple);
+        opacity: 0.4;
+        animation: drift 25s infinite alternate-reverse;
+      }
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(10%, 10%) scale(1.1);
+        }
+      }
 
-    /* Sidebar Content */
-    .sidebar-header {
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-    .logo-img { width: 32px; height: 32px; border-radius: var(--radius-sm); object-fit: contain; }
-    .logo-text { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; }
+      /* Layout Components */
+      #sidebar {
+        width: var(--sidebar-width);
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border-default);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        z-index: 100;
+        transition: transform var(--transition);
+      }
 
-    .sidebar-nav { flex: 1; padding: 24px 12px; display: flex; flex-direction: column; gap: 4px; }
-    .nav-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); padding: 0 12px 8px; letter-spacing: 0.05em; }
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.9375rem;
-      transition: all var(--transition);
-    }
-    .nav-link:hover { background: var(--bg-hover); color: var(--text-primary); }
-    .nav-link.active { background: var(--bg-hover); color: var(--text-primary); font-weight: 600; box-shadow: inset 2px 0 0 var(--accent-blue); }
-    .nav-link svg { width: 18px; height: 18px; opacity: 0.7; }
-    .nav-link.active svg { opacity: 1; }
+      #main-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+      }
 
-    .sidebar-footer { padding: 24px; border-top: 1px solid var(--border-subtle); }
-    .shortcut-tip { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-    kbd { padding: 2px 6px; background: var(--bg-hover); border: 1px solid var(--border-strong); border-radius: 4px; font-family: var(--font-mono); font-size: 0.7rem; }
+      #top-bar {
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        background: var(--bg-overlay);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-default);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
 
-    /* Top Bar Elements */
-    .top-bar-brand { display: none; align-items: center; gap: 12px; }
-    .top-bar-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+      #app {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
 
-    .icon-btn {
-      width: 40px; height: 40px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-default);
-      background: transparent;
-      cursor: pointer;
-      transition: all var(--transition);
-      color: var(--text-secondary);
-    }
-    #sidebar-toggle { display: none; }
-    .icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-strong); }
+      /* Sidebar Content */
+      .sidebar-header {
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .logo-img {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        object-fit: contain;
+      }
+      .logo-text {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.25rem;
+        letter-spacing: -0.02em;
+      }
 
-    /* Input Section */
-    #input-section { max-width: var(--container-max); width: 100%; margin: 0 auto; }
-    .input-wrapper {
-      background: var(--bg-card);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      transition: all var(--transition);
-    }
-    .input-wrapper:focus-within { 
-      border-color: var(--accent-blue); 
-      box-shadow: 0 0 0 1px var(--accent-blue), 0 0 20px rgba(41, 151, 255, 0.15), var(--shadow-md);
-      background: var(--bg-surface);
-    }
+      .sidebar-nav {
+        flex: 1;
+        padding: 24px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .nav-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 0 12px 8px;
+        letter-spacing: 0.05em;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9375rem;
+        transition: all var(--transition);
+      }
+      .nav-link:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+      }
+      .nav-link.active {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+        font-weight: 600;
+        box-shadow: inset 2px 0 0 var(--accent-blue);
+      }
+      .nav-link svg {
+        width: 18px;
+        height: 18px;
+        opacity: 0.7;
+      }
+      .nav-link.active svg {
+        opacity: 1;
+      }
 
-    .input-header { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); background: rgba(255,255,255,0.01); }
-    .input-title { font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
-    .input-stats { display: flex; align-items: center; gap: 16px; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+      .sidebar-footer {
+        padding: 24px;
+        border-top: 1px solid var(--border-subtle);
+      }
+      .shortcut-tip {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      kbd {
+        padding: 2px 6px;
+        background: var(--bg-hover);
+        border: 1px solid var(--border-strong);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+      }
 
-    #user-input {
-      width: 100%; min-height: 120px; max-height: 400px; padding: 20px;
-      background: transparent; border: none; outline: none;
-      font-size: 1.0625rem; line-height: 1.7; resize: none;
-      color: var(--text-primary);
-      transition: height 0.1s var(--ease);
-      overflow-y: hidden;
-    }
-    #user-input::placeholder { color: var(--text-placeholder); opacity: 0.7; }
+      /* Top Bar Elements */
+      .top-bar-brand {
+        display: none;
+        align-items: center;
+        gap: 12px;
+      }
+      .top-bar-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-    .input-footer { padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-subtle); background: rgba(255,255,255,0.01); }
-    
-    .primary-btn {
-      background: var(--btn-primary-bg);
-      color: var(--btn-primary-text);
-      border: none;
-      padding: 10px 24px;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 0.9375rem;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
-      transition: all var(--transition);
-    }
-    .primary-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(41, 151, 255, 0.4); opacity: 0.9; }
-    .primary-btn:active { transform: translateY(0); }
-    .primary-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-default);
+        background: transparent;
+        cursor: pointer;
+        transition: all var(--transition);
+        color: var(--text-secondary);
+      }
+      #sidebar-toggle {
+        display: none;
+      }
+      .icon-btn:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+        border-color: var(--border-strong);
+      }
 
-    .secondary-btn {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-default);
-      padding: 8px 16px;
-      border-radius: 100px;
-      font-weight: 500;
-      font-size: 0.875rem;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-      transition: all var(--transition);
-    }
-    .secondary-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-strong); }
+      /* Input Section */
+      #input-section {
+        max-width: var(--container-max);
+        width: 100%;
+        margin: 0 auto;
+      }
+      .input-wrapper {
+        background: var(--bg-card);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: all var(--transition);
+      }
+      .input-wrapper:focus-within {
+        border-color: var(--accent-blue);
+        box-shadow:
+          0 0 0 1px var(--accent-blue),
+          0 0 20px rgba(41, 151, 255, 0.15),
+          var(--shadow-md);
+        background: var(--bg-surface);
+      }
 
-    /* Progress Bar */
-    .char-limit-container { height: 3px; background: var(--border-subtle); position: relative; }
-    #char-limit-fill { height: 100%; width: 0%; background: var(--accent-blue); transition: width 0.3s ease, background 0.3s ease; }
+      .input-header {
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-subtle);
+        background: rgba(255, 255, 255, 0.01);
+      }
+      .input-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .input-stats {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+      }
 
-    /* Panels Layout */
-    .panels-container { max-width: var(--container-max); width: 100%; margin: 0 auto; position: relative; }
-    
-    .panel {
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-      animation: panelFadeIn 0.3s var(--ease);
-    }
-    .panel.active { display: flex; }
-    
-    @keyframes panelFadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+      #user-input {
+        width: 100%;
+        min-height: 120px;
+        max-height: 400px;
+        padding: 20px;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        resize: none;
+        color: var(--text-primary);
+        transition: height 0.1s var(--ease);
+        overflow-y: hidden;
+      }
+      #user-input::placeholder {
+        color: var(--text-placeholder);
+        opacity: 0.7;
+      }
 
-    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-    .section-title-main { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
-    .status-badge { font-size: 0.75rem; padding: 4px 12px; border-radius: 100px; background: var(--bg-hover); border: 1px solid var(--border-default); color: var(--text-muted); display: none; }
-    .status-badge.visible { display: block; }
-    .status-badge.running { color: var(--accent-blue); border-color: var(--accent-blue); }
+      .input-footer {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--border-subtle);
+        background: rgba(255, 255, 255, 0.01);
+      }
 
-    .output-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      display: flex; flex-direction: column;
-      transition: all var(--transition);
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-    }
-    .output-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
-    .output-card.has-result { border-color: var(--border-active); }
+      .primary-btn {
+        background: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
+        border: none;
+        padding: 10px 24px;
+        border-radius: 100px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all var(--transition);
+      }
+      .primary-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(41, 151, 255, 0.4);
+        opacity: 0.9;
+      }
+      .primary-btn:active {
+        transform: translateY(0);
+      }
+      .primary-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
 
-    .card-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
-    .card-title { font-size: 0.9375rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; }
-    .dot-pro { background: var(--accent-blue); }
-    .dot-casual { background: var(--accent-yellow); }
-    .dot-prompt { background: var(--accent-green); }
-    .dot-humanize { background: var(--accent-purple); }
-    .dot-detector { background: var(--accent-orange); }
+      .secondary-btn {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-default);
+        padding: 8px 16px;
+        border-radius: 100px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all var(--transition);
+      }
+      .secondary-btn:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+        border-color: var(--border-strong);
+      }
 
-    .card-body { padding: 24px; flex: 1; min-height: 200px; font-size: 1.0625rem; line-height: 1.7; color: var(--text-primary); }
-    
-    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 16px; padding: 60px 20px; color: var(--text-muted); }
-    .empty-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg-hover); opacity: 0.5; }
+      /* Progress Bar */
+      .char-limit-container {
+        height: 3px;
+        background: var(--border-subtle);
+        position: relative;
+      }
+      #char-limit-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--accent-blue);
+        transition:
+          width 0.3s ease,
+          background 0.3s ease;
+      }
 
-    /* Detector Special UI */
-    .ai-analysis-panel { display: flex; flex-direction: column; gap: 32px; padding: 10px; }
-    .analysis-results { display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center; }
-    
-    .primary-ring { position: relative; width: 160px; height: 160px; }
-    .ring-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-    .ring-bg { fill: none; stroke: var(--bg-hover); stroke-width: 8; }
-    .ring-fill { fill: none; stroke: var(--accent-blue); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 408; stroke-dashoffset: 408; transition: stroke-dashoffset 1s ease; }
-    .ring-content { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .ring-value { font-family: var(--font-display); font-size: 2rem; font-weight: 800; }
-    .ring-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+      /* Panels Layout */
+      .panels-container {
+        max-width: var(--container-max);
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+      }
 
-    .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .metric-item { background: var(--bg-hover); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); }
-    .metric-val { display: block; font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
-    .metric-lbl { font-size: 0.8125rem; color: var(--text-muted); }
+      .panel {
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+        animation: panelFadeIn 0.3s var(--ease);
+      }
+      .panel.active {
+        display: flex;
+      }
 
-    .verdict-banner { display: flex; align-items: center; gap: 20px; padding: 20px 24px; border-radius: var(--radius-md); background: var(--bg-hover); border: 1px solid var(--border-subtle); }
-    .verdict-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg-card); }
-    .verdict-title { font-weight: 700; font-size: 1.25rem; }
-    .verdict-desc { font-size: 0.9375rem; color: var(--text-secondary); }
+      @keyframes panelFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    /* Toasts */
-    #toast-container { position: fixed; bottom: 32px; right: 32px; display: flex; flex-direction: column; gap: 12px; z-index: 1000; }
-    .toast {
-      background: var(--bg-card);
-      color: var(--text-primary);
-      padding: 12px 24px;
-      border-radius: 100px;
-      border: 1px solid var(--border-strong);
-      box-shadow: var(--shadow-lg);
-      font-size: 0.875rem;
-      font-weight: 500;
-      display: flex; align-items: center; gap: 12px;
-      animation: slideIn 0.3s var(--ease);
-    }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .toast.success { border-left: 4px solid var(--accent-green); }
-    .toast.error { border-left: 4px solid var(--accent-red); }
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .section-title-main {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .status-badge {
+        font-size: 0.75rem;
+        padding: 4px 12px;
+        border-radius: 100px;
+        background: var(--bg-hover);
+        border: 1px solid var(--border-default);
+        color: var(--text-muted);
+        display: none;
+      }
+      .status-badge.visible {
+        display: block;
+      }
+      .status-badge.running {
+        color: var(--accent-blue);
+        border-color: var(--accent-blue);
+      }
 
-    /* Responsive */
-    @media (max-width: 1024px) {
-      #sidebar { position: fixed; transform: translateX(-100%); }
-      #sidebar.mobile-open { transform: translateX(0); }
-      #sidebar-toggle { display: flex; }
-      .top-bar-brand { display: flex; }
-      .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; display: none; }
-      .sidebar-backdrop.visible { display: block; }
-    }
-    @media (max-width: 640px) {
-      .analysis-results { grid-template-columns: 1fr; justify-items: center; text-align: center; }
-      #app { padding: 24px 16px; }
-      .metrics-grid { grid-template-columns: 1fr; }
-    }
+      .output-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        display: flex;
+        flex-direction: column;
+        transition: all var(--transition);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+      }
+      .output-card:hover {
+        border-color: var(--border-strong);
+        box-shadow: var(--shadow-md);
+      }
+      .output-card.has-result {
+        border-color: var(--border-active);
+      }
 
-    /* Loading States */
-    .loading-pulse { animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+      .card-header {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .card-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .dot-pro {
+        background: var(--accent-blue);
+      }
+      .dot-casual {
+        background: var(--accent-yellow);
+      }
+      .dot-prompt {
+        background: var(--accent-green);
+      }
+      .dot-humanize {
+        background: var(--accent-purple);
+      }
+      .dot-detector {
+        background: var(--accent-orange);
+      }
 
-    .skeleton { background: var(--bg-hover); border-radius: 4px; height: 1em; margin-bottom: 0.5em; width: 100%; }
-    .skeleton-w-75 { width: 75%; }
-    .skeleton-w-50 { width: 50%; }
+      .card-body {
+        padding: 24px;
+        flex: 1;
+        min-height: 200px;
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        color: var(--text-primary);
+      }
 
-  </style>
-</head>
-<body>
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 16px;
+        padding: 60px 20px;
+        color: var(--text-muted);
+      }
+      .empty-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-hover);
+        opacity: 0.5;
+      }
 
-  <!-- Background Effect -->
-  <div class="orb-container" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-  </div>
+      /* Detector Special UI */
+      .ai-analysis-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 10px;
+      }
+      .analysis-results {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 48px;
+        align-items: center;
+      }
 
-  <!-- Sidebar -->
-  <aside id="sidebar">
-    <div class="sidebar-header">
-      <img src="assets/ToneShift.png" alt="ToneShift Logo" class="logo-img">
-      <span class="logo-text">ToneShift</span>
+      .primary-ring {
+        position: relative;
+        width: 160px;
+        height: 160px;
+      }
+      .ring-svg {
+        transform: rotate(-90deg);
+        width: 100%;
+        height: 100%;
+      }
+      .ring-bg {
+        fill: none;
+        stroke: var(--bg-hover);
+        stroke-width: 8;
+      }
+      .ring-fill {
+        fill: none;
+        stroke: var(--accent-blue);
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-dasharray: 408;
+        stroke-dashoffset: 408;
+        transition: stroke-dashoffset 1s ease;
+      }
+      .ring-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .ring-value {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+      }
+      .ring-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      .metric-item {
+        background: var(--bg-hover);
+        padding: 20px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-subtle);
+      }
+      .metric-val {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .metric-lbl {
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+      }
+
+      .verdict-banner {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 24px;
+        border-radius: var(--radius-md);
+        background: var(--bg-hover);
+        border: 1px solid var(--border-subtle);
+      }
+      .verdict-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-card);
+      }
+      .verdict-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+      .verdict-desc {
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+      }
+
+      /* Toasts */
+      #toast-container {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 1000;
+      }
+      .toast {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        padding: 12px 24px;
+        border-radius: 100px;
+        border: 1px solid var(--border-strong);
+        box-shadow: var(--shadow-lg);
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s var(--ease);
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .toast.success {
+        border-left: 4px solid var(--accent-green);
+      }
+      .toast.error {
+        border-left: 4px solid var(--accent-red);
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        #sidebar {
+          position: fixed;
+          transform: translateX(-100%);
+        }
+        #sidebar.mobile-open {
+          transform: translateX(0);
+        }
+        #sidebar-toggle {
+          display: flex;
+        }
+        .top-bar-brand {
+          display: flex;
+        }
+        .sidebar-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 90;
+          display: none;
+        }
+        .sidebar-backdrop.visible {
+          display: block;
+        }
+      }
+      @media (max-width: 640px) {
+        .analysis-results {
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+        }
+        #app {
+          padding: 24px 16px;
+        }
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Loading States */
+      .loading-pulse {
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .skeleton {
+        background: var(--bg-hover);
+        border-radius: 4px;
+        height: 1em;
+        margin-bottom: 0.5em;
+        width: 100%;
+      }
+      .skeleton-w-75 {
+        width: 75%;
+      }
+      .skeleton-w-50 {
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Effect -->
+    <div class="orb-container" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
     </div>
 
-    <nav class="sidebar-nav">
-      <span class="nav-label">Transforms</span>
-      <a href="#" class="nav-link active" data-mode="professional">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-        Professional
-      </a>
-      <a href="#" class="nav-link" data-mode="casual">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-        Casual / Gen-Z
-      </a>
-      <a href="#" class="nav-link" data-mode="prompt">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-        AI Agent Prompt
-      </a>
-      <a href="#" class="nav-link" data-mode="humanize">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        Humanize Text
-      </a>
-
-      <div style="margin-top: 24px;"></div>
-      <span class="nav-label">Analysis</span>
-      <a href="#" class="nav-link" data-mode="detector">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        AI Detector
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="shortcut-tip">
-        <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to transform
-      </div>
-    </div>
-  </aside>
-
-  <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
-
-  <!-- Main Content -->
-  <div id="main-wrapper">
-    <header id="top-bar">
-      <button id="sidebar-toggle" class="icon-btn" style="margin-right: 12px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-
-      <div class="top-bar-brand">
-        <img src="assets/ToneShift.png" alt="ToneShift Logo" class="logo-img" style="width: 24px; height: 24px;">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/ToneShift.png" alt="ToneShift Logo" class="logo-img" />
         <span class="logo-text">ToneShift</span>
       </div>
 
-      <div class="top-bar-actions">
-        <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
-          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <nav class="sidebar-nav">
+        <span class="nav-label">Transforms</span>
+        <a href="#" class="nav-link active" data-mode="professional">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8" />
+            <path d="M12 17v4" />
+          </svg>
+          Professional
+        </a>
+        <a href="#" class="nav-link" data-mode="casual">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+          Casual / Gen-Z
+        </a>
+        <a href="#" class="nav-link" data-mode="prompt">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="4 17 10 11 4 5" />
+            <line x1="12" y1="19" x2="20" y2="19" />
+          </svg>
+          AI Agent Prompt
+        </a>
+        <a href="#" class="nav-link" data-mode="humanize">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+          </svg>
+          Humanize Text
+        </a>
+
+        <div style="margin-top: 24px"></div>
+        <span class="nav-label">Analysis</span>
+        <a href="#" class="nav-link" data-mode="detector">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          AI Detector
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="shortcut-tip">
+          <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to transform
+        </div>
+      </div>
+    </aside>
+
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <!-- Main Content -->
+    <div id="main-wrapper">
+      <header id="top-bar">
+        <button id="sidebar-toggle" class="icon-btn" style="margin-right: 12px">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
         </button>
-      </div>
-    </header>
 
-    <main id="app">
-      <!-- Shared Input Section -->
-      <section id="input-section">
-        <div class="input-wrapper">
-          <div class="input-header">
-            <div class="input-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Compose Content
-            </div>
-            <div class="input-stats">
-              <button id="paste-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.7rem; border-radius: 6px; font-family: var(--font-sans);">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Paste
-              </button>
-              <span id="word-count">0 words</span>
-              <span id="char-count">0 / 5,000</span>
-            </div>
-          </div>
-          
-          <textarea id="user-input" placeholder="Type or paste your content here..." maxlength="5000" spellcheck="true"></textarea>
-          
-          <div class="char-limit-container">
-            <div id="char-limit-fill"></div>
-          </div>
-
-          <div class="input-footer">
-            <button id="clear-btn" class="secondary-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-              Clear
-            </button>
-            <button id="transform-btn" class="primary-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-              <span id="btn-label">Transform Professional</span>
-            </button>
-          </div>
+        <div class="top-bar-brand">
+          <img
+            src="assets/ToneShift.png"
+            alt="ToneShift Logo"
+            class="logo-img"
+            style="width: 24px; height: 24px"
+          />
+          <span class="logo-text">ToneShift</span>
         </div>
-      </section>
 
-      <!-- Dynamic Panels -->
-      <div class="panels-container">
-        
-        <!-- Professional Panel -->
-        <div id="panel-professional" class="panel active" data-mode="professional">
-          <div class="section-header">
-            <h2 class="section-title-main">Professional Result</h2>
-            <div class="status-badge" data-for="professional">Transforming...</div>
-          </div>
-          <article class="output-card">
-            <div class="card-header">
-              <div class="card-title"><span class="dot dot-pro"></span>Professional</div>
-              <button class="secondary-btn copy-btn" data-target="professional-text">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Copy
-              </button>
-            </div>
-            <div id="professional-text" class="card-body">
-              <div class="empty-state">
-                <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
-                <p>Professional version will appear here</p>
+        <div class="top-bar-actions">
+          <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+            <svg
+              class="sun-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+            <svg
+              class="moon-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="display: none"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main id="app">
+        <!-- Shared Input Section -->
+        <section id="input-section">
+          <div class="input-wrapper">
+            <div class="input-header">
+              <div class="input-title">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                  />
+                  <path
+                    d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                  />
+                </svg>
+                Compose Content
+              </div>
+              <div class="input-stats">
+                <button
+                  id="paste-btn"
+                  class="secondary-btn"
+                  style="
+                    padding: 4px 10px;
+                    font-size: 0.7rem;
+                    border-radius: 6px;
+                    font-family: var(--font-sans);
+                  "
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    />
+                  </svg>
+                  Paste
+                </button>
+                <span id="word-count">0 words</span>
+                <span id="char-count">0 / 5,000</span>
               </div>
             </div>
-          </article>
-        </div>
 
-        <!-- Casual Panel -->
-        <div id="panel-casual" class="panel" data-mode="casual">
-          <div class="section-header">
-            <h2 class="section-title-main">Casual Result</h2>
-            <div class="status-badge" data-for="casual">Transforming...</div>
-          </div>
-          <article class="output-card">
-            <div class="card-header">
-              <div class="card-title"><span class="dot dot-casual"></span>Casual / Gen-Z</div>
-              <button class="secondary-btn copy-btn" data-target="casual-text">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Copy
+            <textarea
+              id="user-input"
+              placeholder="Type or paste your content here..."
+              maxlength="5000"
+              spellcheck="true"
+            ></textarea>
+
+            <div class="char-limit-container">
+              <div id="char-limit-fill"></div>
+            </div>
+
+            <div class="input-footer">
+              <button id="clear-btn" class="secondary-btn">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
+                Clear
+              </button>
+              <button id="transform-btn" class="primary-btn">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 2v6h-6" />
+                  <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                  <path d="M3 22v-6h6" />
+                  <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                </svg>
+                <span id="btn-label">Transform Professional</span>
               </button>
             </div>
-            <div id="casual-text" class="card-body">
-              <div class="empty-state">
-                <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-                <p>Casual version will appear here</p>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <!-- Prompt Panel -->
-        <div id="panel-prompt" class="panel" data-mode="prompt">
-          <div class="section-header">
-            <h2 class="section-title-main">AI Prompt Result</h2>
-            <div class="status-badge" data-for="prompt">Generating...</div>
           </div>
-          <article class="output-card">
-            <div class="card-header">
-              <div class="card-title"><span class="dot dot-prompt"></span>AI Agent Prompt</div>
-              <button class="secondary-btn copy-btn" data-target="prompt-text">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Copy
-              </button>
-            </div>
-            <div id="prompt-text" class="card-body">
-              <div class="empty-state">
-                <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
-                <p>AI prompt will appear here</p>
+        </section>
+
+        <!-- Dynamic Panels -->
+        <div class="panels-container">
+          <!-- Professional Panel -->
+          <div
+            id="panel-professional"
+            class="panel active"
+            data-mode="professional"
+          >
+            <div class="section-header">
+              <h2 class="section-title-main">Professional Result</h2>
+              <div class="status-badge" data-for="professional">
+                Transforming...
               </div>
             </div>
-          </article>
-        </div>
-
-        <!-- Humanize Panel -->
-        <div id="panel-humanize" class="panel" data-mode="humanize">
-          <div class="section-header">
-            <h2 class="section-title-main">Humanized Result</h2>
-            <div class="status-badge" data-for="humanize">Humanizing...</div>
+            <article class="output-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="dot dot-pro"></span>Professional
+                </div>
+                <button
+                  class="secondary-btn copy-btn"
+                  data-target="professional-text"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    />
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <div id="professional-text" class="card-body">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="2" y="3" width="20" height="14" rx="2" />
+                      <path d="M8 21h8" />
+                      <path d="M12 17v4" />
+                    </svg>
+                  </div>
+                  <p>Professional version will appear here</p>
+                </div>
+              </div>
+            </article>
           </div>
-          <article class="output-card">
-            <div class="card-header">
-              <div class="card-title"><span class="dot dot-humanize"></span>Humanize Text</div>
-              <button class="secondary-btn copy-btn" data-target="humanize-text">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Copy
-              </button>
-            </div>
-            <div id="humanize-text" class="card-body">
-              <div class="empty-state">
-                <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-                <p>Humanized version will appear here</p>
-              </div>
-            </div>
-          </article>
-        </div>
 
-        <!-- Detector Panel -->
-        <div id="panel-detector" class="panel" data-mode="detector">
-          <div class="section-header">
-            <h2 class="section-title-main">AI Detector Analysis</h2>
-            <div class="status-badge" data-for="detector">Analyzing...</div>
+          <!-- Casual Panel -->
+          <div id="panel-casual" class="panel" data-mode="casual">
+            <div class="section-header">
+              <h2 class="section-title-main">Casual Result</h2>
+              <div class="status-badge" data-for="casual">Transforming...</div>
+            </div>
+            <article class="output-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="dot dot-casual"></span>Casual / Gen-Z
+                </div>
+                <button
+                  class="secondary-btn copy-btn"
+                  data-target="casual-text"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    />
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <div id="casual-text" class="card-body">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                      <line x1="9" y1="9" x2="9.01" y2="9" />
+                      <line x1="15" y1="9" x2="15.01" y2="9" />
+                    </svg>
+                  </div>
+                  <p>Casual version will appear here</p>
+                </div>
+              </div>
+            </article>
           </div>
-          <article class="output-card">
-            <div class="card-header">
-              <div class="card-title"><span class="dot dot-detector"></span>AI Detector</div>
-              <!-- Detector doesn't usually need a copy button but keeping consistent UI -->
+
+          <!-- Prompt Panel -->
+          <div id="panel-prompt" class="panel" data-mode="prompt">
+            <div class="section-header">
+              <h2 class="section-title-main">AI Prompt Result</h2>
+              <div class="status-badge" data-for="prompt">Generating...</div>
             </div>
-            <div id="detector-text" class="card-body">
-              <div class="empty-state">
-                <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
-                <p>Enter text above and click <strong>Analyze</strong> to detect AI patterns</p>
+            <article class="output-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="dot dot-prompt"></span>AI Agent Prompt
+                </div>
+                <button
+                  class="secondary-btn copy-btn"
+                  data-target="prompt-text"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    />
+                  </svg>
+                  Copy
+                </button>
               </div>
+              <div id="prompt-text" class="card-body">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="4 17 10 11 4 5" />
+                      <line x1="12" y1="19" x2="20" y2="19" />
+                    </svg>
+                  </div>
+                  <p>AI prompt will appear here</p>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Humanize Panel -->
+          <div id="panel-humanize" class="panel" data-mode="humanize">
+            <div class="section-header">
+              <h2 class="section-title-main">Humanized Result</h2>
+              <div class="status-badge" data-for="humanize">Humanizing...</div>
             </div>
-          </article>
+            <article class="output-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="dot dot-humanize"></span>Humanize Text
+                </div>
+                <button
+                  class="secondary-btn copy-btn"
+                  data-target="humanize-text"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    />
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <div id="humanize-text" class="card-body">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                    </svg>
+                  </div>
+                  <p>Humanized version will appear here</p>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Detector Panel -->
+          <div id="panel-detector" class="panel" data-mode="detector">
+            <div class="section-header">
+              <h2 class="section-title-main">AI Detector Analysis</h2>
+              <div class="status-badge" data-for="detector">Analyzing...</div>
+            </div>
+            <article class="output-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="dot dot-detector"></span>AI Detector
+                </div>
+                <!-- Detector doesn't usually need a copy button but keeping consistent UI -->
+              </div>
+              <div id="detector-text" class="card-body">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.35-4.35" />
+                    </svg>
+                  </div>
+                  <p>
+                    Enter text above and click <strong>Analyze</strong> to
+                    detect AI patterns
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
+      </main>
+    </div>
 
-      </div>
-    </main>
-  </div>
+    <div id="toast-container"></div>
 
-  <div id="toast-container"></div>
-
-  <script>
-    /* ============================================================
+    <script>
+      /* ============================================================
        ToneShift — Client Logic (v4.0 Panel-based)
        ============================================================ */
 
-    const API_ENDPOINT = '/api/transform';
-    const MAX_CHARS    = 5000;
+      const API_ENDPOINT = '/api/transform'
+      const MAX_CHARS = 5000
 
-    // State
-    let activeMode = 'professional';
+      // State
+      let activeMode = 'professional'
 
-    // DOM Elements
-    const userInput       = document.getElementById('user-input');
-    const transformBtn    = document.getElementById('transform-btn');
-    const btnLabel        = document.getElementById('btn-label');
-    const clearBtn        = document.getElementById('clear-btn');
-    const pasteBtn        = document.getElementById('paste-btn');
-    const charCountEl     = document.getElementById('char-count');
-    const wordCountEl     = document.getElementById('word-count');
-    const charLimitFill   = document.getElementById('char-limit-fill');
-    const toastContainer  = document.getElementById('toast-container');
-    const sidebar         = document.getElementById('sidebar');
-    const sidebarToggle   = document.getElementById('sidebar-toggle');
-    const themeToggle     = document.getElementById('theme-toggle');
-    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+      // DOM Elements
+      const userInput = document.getElementById('user-input')
+      const transformBtn = document.getElementById('transform-btn')
+      const btnLabel = document.getElementById('btn-label')
+      const clearBtn = document.getElementById('clear-btn')
+      const pasteBtn = document.getElementById('paste-btn')
+      const charCountEl = document.getElementById('char-count')
+      const wordCountEl = document.getElementById('word-count')
+      const charLimitFill = document.getElementById('char-limit-fill')
+      const toastContainer = document.getElementById('toast-container')
+      const sidebar = document.getElementById('sidebar')
+      const sidebarToggle = document.getElementById('sidebar-toggle')
+      const themeToggle = document.getElementById('theme-toggle')
+      const sidebarBackdrop = document.getElementById('sidebar-backdrop')
 
-    const outputBoxes = {
-      professional: document.getElementById('professional-text'),
-      casual:       document.getElementById('casual-text'),
-      prompt:       document.getElementById('prompt-text'),
-      humanize:     document.getElementById('humanize-text'),
-      detector:     document.getElementById('detector-text'),
-    };
-
-    const outputCards = {
-      professional: document.querySelector('#panel-professional .output-card'),
-      casual:       document.querySelector('#panel-casual .output-card'),
-      prompt:       document.querySelector('#panel-prompt .output-card'),
-      humanize:     document.querySelector('#panel-humanize .output-card'),
-      detector:     document.querySelector('#panel-detector .output-card'),
-    };
-
-    const panels = {
-      professional: document.getElementById('panel-professional'),
-      casual:       document.getElementById('panel-casual'),
-      prompt:       document.getElementById('panel-prompt'),
-      humanize:     document.getElementById('panel-humanize'),
-      detector:     document.getElementById('panel-detector'),
-    };
-
-    const statusBadges = {
-      professional: document.querySelector('.status-badge[data-for="professional"]'),
-      casual:       document.querySelector('.status-badge[data-for="casual"]'),
-      prompt:       document.querySelector('.status-badge[data-for="prompt"]'),
-      humanize:     document.querySelector('.status-badge[data-for="humanize"]'),
-      detector:     document.querySelector('.status-badge[data-for="detector"]'),
-    };
-
-    // --- Theme & Sidebar ---
-    function initTheme() {
-      const stored = localStorage.getItem('toneshift-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', stored);
-      updateThemeIcons(stored);
-    }
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('toneshift-theme', next);
-      updateThemeIcons(next);
-    }
-
-    function updateThemeIcons(theme) {
-      const sun = document.querySelector('.sun-icon');
-      const moon = document.querySelector('.moon-icon');
-      if (theme === 'dark') {
-        sun.style.display = 'block';
-        moon.style.display = 'none';
-      } else {
-        sun.style.display = 'none';
-        moon.style.display = 'block';
+      const outputBoxes = {
+        professional: document.getElementById('professional-text'),
+        casual: document.getElementById('casual-text'),
+        prompt: document.getElementById('prompt-text'),
+        humanize: document.getElementById('humanize-text'),
+        detector: document.getElementById('detector-text'),
       }
-    }
 
-    function toggleSidebar() {
-      sidebar.classList.toggle('mobile-open');
-      sidebarBackdrop.classList.toggle('visible');
-    }
-
-    // --- Navigation ---
-    function switchPanel(mode) {
-      activeMode = mode;
-      
-      // Update sidebar nav
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.toggle('active', link.getAttribute('data-mode') === mode);
-      });
-
-      // Toggle panels
-      Object.entries(panels).forEach(([key, panel]) => {
-        panel.classList.toggle('active', key === mode);
-      });
-
-      // Update transform button
-      updateTransformButton();
-
-      if (window.innerWidth <= 1024) toggleSidebar();
-    }
-
-    function updateTransformButton() {
-      const labels = {
-        professional: 'Transform Professional',
-        casual:       'Transform Casual',
-        prompt:       'Generate Prompt',
-        humanize:     'Humanize Text',
-        detector:     'Analyze Text'
-      };
-      
-      const icons = {
-        professional: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>',
-        casual:       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>',
-        prompt:       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
-        humanize:     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
-        detector:     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'
-      };
-
-      transformBtn.innerHTML = `${icons[activeMode]} <span id="btn-label">${labels[activeMode]}</span>`;
-      
-      // Update accent color of button if needed
-      if (activeMode === 'detector') {
-        transformBtn.style.background = 'var(--accent-orange)';
-      } else {
-        transformBtn.style.background = 'var(--btn-primary-bg)';
+      const outputCards = {
+        professional: document.querySelector(
+          '#panel-professional .output-card'
+        ),
+        casual: document.querySelector('#panel-casual .output-card'),
+        prompt: document.querySelector('#panel-prompt .output-card'),
+        humanize: document.querySelector('#panel-humanize .output-card'),
+        detector: document.querySelector('#panel-detector .output-card'),
       }
-    }
 
-    // --- Utils ---
-    function showToast(message, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.innerHTML = `
-        ${type === 'success' 
-          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
-          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+      const panels = {
+        professional: document.getElementById('panel-professional'),
+        casual: document.getElementById('panel-casual'),
+        prompt: document.getElementById('panel-prompt'),
+        humanize: document.getElementById('panel-humanize'),
+        detector: document.getElementById('panel-detector'),
+      }
+
+      const statusBadges = {
+        professional: document.querySelector(
+          '.status-badge[data-for="professional"]'
+        ),
+        casual: document.querySelector('.status-badge[data-for="casual"]'),
+        prompt: document.querySelector('.status-badge[data-for="prompt"]'),
+        humanize: document.querySelector('.status-badge[data-for="humanize"]'),
+        detector: document.querySelector('.status-badge[data-for="detector"]'),
+      }
+
+      // --- Theme & Sidebar ---
+      function initTheme() {
+        const stored = localStorage.getItem('toneshift-theme') || 'dark'
+        document.documentElement.setAttribute('data-theme', stored)
+        updateThemeIcons(stored)
+      }
+
+      function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme')
+        const next = current === 'dark' ? 'light' : 'dark'
+        document.documentElement.setAttribute('data-theme', next)
+        localStorage.setItem('toneshift-theme', next)
+        updateThemeIcons(next)
+      }
+
+      function updateThemeIcons(theme) {
+        const sun = document.querySelector('.sun-icon')
+        const moon = document.querySelector('.moon-icon')
+        if (theme === 'dark') {
+          sun.style.display = 'block'
+          moon.style.display = 'none'
+        } else {
+          sun.style.display = 'none'
+          moon.style.display = 'block'
+        }
+      }
+
+      function toggleSidebar() {
+        sidebar.classList.toggle('mobile-open')
+        sidebarBackdrop.classList.toggle('visible')
+      }
+
+      // --- Navigation ---
+      function switchPanel(mode) {
+        activeMode = mode
+
+        // Update sidebar nav
+        document.querySelectorAll('.nav-link').forEach((link) => {
+          link.classList.toggle(
+            'active',
+            link.getAttribute('data-mode') === mode
+          )
+        })
+
+        // Toggle panels
+        Object.entries(panels).forEach(([key, panel]) => {
+          panel.classList.toggle('active', key === mode)
+        })
+
+        // Update transform button
+        updateTransformButton()
+
+        if (window.innerWidth <= 1024) toggleSidebar()
+      }
+
+      function updateTransformButton() {
+        const labels = {
+          professional: 'Transform Professional',
+          casual: 'Transform Casual',
+          prompt: 'Generate Prompt',
+          humanize: 'Humanize Text',
+          detector: 'Analyze Text',
+        }
+
+        const icons = {
+          professional:
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>',
+          casual:
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>',
+          prompt:
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+          humanize:
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+          detector:
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>',
+        }
+
+        transformBtn.innerHTML = `${icons[activeMode]} <span id="btn-label">${labels[activeMode]}</span>`
+
+        // Update accent color of button if needed
+        if (activeMode === 'detector') {
+          transformBtn.style.background = 'var(--accent-orange)'
+        } else {
+          transformBtn.style.background = 'var(--btn-primary-bg)'
+        }
+      }
+
+      // --- Utils ---
+      function showToast(message, type = 'success') {
+        const toast = document.createElement('div')
+        toast.className = `toast ${type}`
+        toast.innerHTML = `
+        ${
+          type === 'success'
+            ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
         }
         <span>${message}</span>
-      `;
-      toastContainer.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(20px)';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
+      `
+        toastContainer.appendChild(toast)
+        setTimeout(() => {
+          toast.style.opacity = '0'
+          toast.style.transform = 'translateX(20px)'
+          setTimeout(() => toast.remove(), 300)
+        }, 3000)
+      }
 
-    function updateCounters() {
-      const val = userInput.value;
-      const chars = val.length;
-      const words = val.trim() ? val.trim().split(/\s+/).length : 0;
-      
-      charCountEl.textContent = `${chars.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
-      wordCountEl.textContent = `${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
-      
-      const pct = (chars / MAX_CHARS) * 100;
-      charLimitFill.style.width = `${Math.min(pct, 100)}%`;
-      
-      if (pct > 90) charLimitFill.style.background = 'var(--accent-red)';
-      else if (pct > 75) charLimitFill.style.background = 'var(--accent-yellow)';
-      else charLimitFill.style.background = 'var(--accent-blue)';
+      function updateCounters() {
+        const val = userInput.value
+        const chars = val.length
+        const words = val.trim() ? val.trim().split(/\s+/).length : 0
 
-      autoResize();
-    }
+        charCountEl.textContent = `${chars.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`
+        wordCountEl.textContent = `${words.toLocaleString()} word${words !== 1 ? 's' : ''}`
 
-    function autoResize() {
-      userInput.style.height = 'auto';
-      const newHeight = Math.min(userInput.scrollHeight, 400);
-      userInput.style.height = (newHeight || 120) + 'px';
-      userInput.style.overflowY = userInput.scrollHeight > 400 ? 'auto' : 'hidden';
-    }
+        const pct = (chars / MAX_CHARS) * 100
+        charLimitFill.style.width = `${Math.min(pct, 100)}%`
 
-    async function handlePaste() {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text) {
-          userInput.value = text;
-          updateCounters();
-          showToast('Text pasted');
+        if (pct > 90) charLimitFill.style.background = 'var(--accent-red)'
+        else if (pct > 75)
+          charLimitFill.style.background = 'var(--accent-yellow)'
+        else charLimitFill.style.background = 'var(--accent-blue)'
+
+        autoResize()
+      }
+
+      function autoResize() {
+        userInput.style.height = 'auto'
+        const newHeight = Math.min(userInput.scrollHeight, 400)
+        userInput.style.height = (newHeight || 120) + 'px'
+        userInput.style.overflowY =
+          userInput.scrollHeight > 400 ? 'auto' : 'hidden'
+      }
+
+      async function handlePaste() {
+        try {
+          const text = await navigator.clipboard.readText()
+          if (text) {
+            userInput.value = text
+            updateCounters()
+            showToast('Text pasted')
+          }
+        } catch (err) {
+          showToast('Clipboard access denied', 'error')
         }
-      } catch (err) {
-        showToast('Clipboard access denied', 'error');
       }
-    }
 
-    function setStatus(mode, isRunning = false) {
-      const badge = statusBadges[mode];
-      if (!badge) return;
-      if (isRunning) {
-        badge.classList.add('visible', 'running');
-      } else {
-        badge.classList.remove('running');
-        setTimeout(() => badge.classList.remove('visible'), 3000);
+      function setStatus(mode, isRunning = false) {
+        const badge = statusBadges[mode]
+        if (!badge) return
+        if (isRunning) {
+          badge.classList.add('visible', 'running')
+        } else {
+          badge.classList.remove('running')
+          setTimeout(() => badge.classList.remove('visible'), 3000)
+        }
       }
-    }
 
-    // --- API & UI ---
-    async function callAPI(text, tone) {
-      try {
-        const response = await fetch(API_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, tone }),
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-        const data = await response.json();
-        if (!data.success) throw new Error(data.error || 'Operation failed');
-        return data.text || data.raw || '';
-      } catch (err) {
-        throw err;
+      // --- API & UI ---
+      async function callAPI(text, tone) {
+        try {
+          const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, tone }),
+          })
+          if (!response.ok) throw new Error(`API Error: ${response.status}`)
+          const data = await response.json()
+          if (!data.success) throw new Error(data.error || 'Operation failed')
+          return data.text || data.raw || ''
+        } catch (err) {
+          throw err
+        }
       }
-    }
 
-    function renderContent(box, text) {
-      const container = document.createElement('div');
-      container.className = 'fade-in';
-      container.innerHTML = marked.parse(text);
-      box.innerHTML = '';
-      box.appendChild(container);
-    }
+      function renderContent(box, text) {
+        const container = document.createElement('div')
+        container.className = 'fade-in'
+        container.innerHTML = marked.parse(text)
+        box.innerHTML = ''
+        box.appendChild(container)
+      }
 
-    function renderLoading(box) {
-      box.innerHTML = `
+      function renderLoading(box) {
+        box.innerHTML = `
         <div class="empty-state loading-pulse">
           <div class="skeleton"></div>
           <div class="skeleton skeleton-w-75"></div>
@@ -897,26 +1659,26 @@
           <div class="skeleton"></div>
           <div class="skeleton skeleton-w-75"></div>
         </div>
-      `;
-    }
+      `
+      }
 
-    function renderError(box, msg) {
-      box.innerHTML = `<div class="empty-state" style="color: var(--accent-red);">${msg}</div>`;
-    }
+      function renderError(box, msg) {
+        box.innerHTML = `<div class="empty-state" style="color: var(--accent-red);">${msg}</div>`
+      }
 
-    function renderDetector(box, data) {
-      const aiProb = data.aiProbability ?? 50;
-      const isAI = aiProb > 50;
-      const verdict = isAI ? 'AI-Generated' : 'Human-Written';
-      const color = isAI ? 'var(--accent-orange)' : 'var(--accent-green)';
-      
-      box.innerHTML = `
+      function renderDetector(box, data) {
+        const aiProb = data.aiProbability ?? 50
+        const isAI = aiProb > 50
+        const verdict = isAI ? 'AI-Generated' : 'Human-Written'
+        const color = isAI ? 'var(--accent-orange)' : 'var(--accent-green)'
+
+        box.innerHTML = `
         <div class="ai-analysis-panel fade-in">
           <div class="analysis-results">
             <div class="primary-ring">
               <svg class="ring-svg" viewBox="0 0 140 140">
                 <circle class="ring-bg" cx="70" cy="70" r="65"/>
-                <circle class="ring-fill" cx="70" cy="70" r="65" style="stroke: ${color}; stroke-dashoffset: ${408 - (aiProb/100 * 408)}"/>
+                <circle class="ring-fill" cx="70" cy="70" r="65" style="stroke: ${color}; stroke-dashoffset: ${408 - (aiProb / 100) * 408}"/>
               </svg>
               <div class="ring-content">
                 <span class="ring-value">${aiProb}%</span>
@@ -936,9 +1698,10 @@
           </div>
           <div class="verdict-banner">
             <div class="verdict-icon" style="color: ${color};">
-              ${isAI 
-                ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>'
-                : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>'
+              ${
+                isAI
+                  ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>'
+                  : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>'
               }
             </div>
             <div>
@@ -947,140 +1710,153 @@
             </div>
           </div>
         </div>
-      `;
-    }
-
-    // --- Actions ---
-    async function handleTransform() {
-      const text = userInput.value.trim();
-      if (!text) {
-        showToast('Please enter some text first', 'error');
-        userInput.focus();
-        return;
+      `
       }
 
-      transformBtn.disabled = true;
-      const originalContent = transformBtn.innerHTML;
-      transformBtn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Working...';
-      
-      setStatus(activeMode, true);
-      renderLoading(outputBoxes[activeMode]);
-      outputCards[activeMode].classList.add('loading');
-
-      try {
-        const raw = await callAPI(text, activeMode);
-        
-        if (activeMode === 'detector') {
-          let data;
-          try {
-            data = typeof raw === 'string' ? JSON.parse(raw) : raw;
-          } catch {
-            const aiMatch = raw.match(/AI Probability: (\d+)/i);
-            data = { aiProbability: aiMatch ? parseInt(aiMatch[1]) : 50 };
-          }
-          renderDetector(outputBoxes.detector, data);
-        } else {
-          renderContent(outputBoxes[activeMode], raw);
+      // --- Actions ---
+      async function handleTransform() {
+        const text = userInput.value.trim()
+        if (!text) {
+          showToast('Please enter some text first', 'error')
+          userInput.focus()
+          return
         }
-        
-        outputCards[activeMode].classList.remove('loading');
-        outputCards[activeMode].classList.add('has-result');
-        showToast('Complete!');
-      } catch (err) {
-        renderError(outputBoxes[activeMode], `Failed to process: ${err.message}`);
-        outputCards[activeMode].classList.remove('loading');
-        showToast('Failed', 'error');
-      } finally {
-        transformBtn.disabled = false;
-        transformBtn.innerHTML = originalContent;
-        setStatus(activeMode, false);
-      }
-    }
 
-    function handleClear() {
-      userInput.value = '';
-      updateCounters();
-      
-      // Reset only active panel
-      outputCards[activeMode].classList.remove('has-result', 'loading');
-      
-      if (activeMode === 'detector') {
-        outputBoxes.detector.innerHTML = `
+        transformBtn.disabled = true
+        const originalContent = transformBtn.innerHTML
+        transformBtn.innerHTML =
+          '<div class="loading-dots"><span></span><span></span><span></span></div> Working...'
+
+        setStatus(activeMode, true)
+        renderLoading(outputBoxes[activeMode])
+        outputCards[activeMode].classList.add('loading')
+
+        try {
+          const raw = await callAPI(text, activeMode)
+
+          if (activeMode === 'detector') {
+            let data
+            try {
+              data = typeof raw === 'string' ? JSON.parse(raw) : raw
+            } catch {
+              const aiMatch = raw.match(/AI Probability: (\d+)/i)
+              data = { aiProbability: aiMatch ? parseInt(aiMatch[1]) : 50 }
+            }
+            renderDetector(outputBoxes.detector, data)
+          } else {
+            renderContent(outputBoxes[activeMode], raw)
+          }
+
+          outputCards[activeMode].classList.remove('loading')
+          outputCards[activeMode].classList.add('has-result')
+          showToast('Complete!')
+        } catch (err) {
+          renderError(
+            outputBoxes[activeMode],
+            `Failed to process: ${err.message}`
+          )
+          outputCards[activeMode].classList.remove('loading')
+          showToast('Failed', 'error')
+        } finally {
+          transformBtn.disabled = false
+          transformBtn.innerHTML = originalContent
+          setStatus(activeMode, false)
+        }
+      }
+
+      function handleClear() {
+        userInput.value = ''
+        updateCounters()
+
+        // Reset only active panel
+        outputCards[activeMode].classList.remove('has-result', 'loading')
+
+        if (activeMode === 'detector') {
+          outputBoxes.detector.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
             <p>Enter text above and click <strong>Analyze</strong> to detect AI patterns</p>
           </div>
-        `;
-      } else {
-        const labels = { professional: 'Professional', casual: 'Casual', prompt: 'AI prompt', humanize: 'Humanized' };
-        const icons = {
-          professional: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
-          casual: '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
-          prompt: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
-          humanize: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'
-        };
-        outputBoxes[activeMode].innerHTML = `
+        `
+        } else {
+          const labels = {
+            professional: 'Professional',
+            casual: 'Casual',
+            prompt: 'AI prompt',
+            humanize: 'Humanized',
+          }
+          const icons = {
+            professional:
+              '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+            casual:
+              '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
+            prompt:
+              '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+            humanize:
+              '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+          }
+          outputBoxes[activeMode].innerHTML = `
           <div class="empty-state">
             <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[activeMode]}</svg></div>
             <p>${labels[activeMode]} version will appear here</p>
           </div>
-        `;
+        `
+        }
+
+        showToast('Input cleared')
       }
-      
-      showToast('Input cleared');
-    }
 
-    function handleCopy(btn) {
-      const targetId = btn.getAttribute('data-target');
-      const box = document.getElementById(targetId);
-      const text = box.innerText.trim();
-      
-      if (!text || box.querySelector('.empty-state')) return;
+      function handleCopy(btn) {
+        const targetId = btn.getAttribute('data-target')
+        const box = document.getElementById(targetId)
+        const text = box.innerText.trim()
 
-      navigator.clipboard.writeText(text).then(() => {
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied';
-        btn.style.borderColor = 'var(--accent-green)';
-        btn.style.color = 'var(--accent-green)';
-        setTimeout(() => {
-          btn.innerHTML = originalHTML;
-          btn.style.borderColor = '';
-          btn.style.color = '';
-        }, 2000);
-        showToast('Copied to clipboard');
-      });
-    }
+        if (!text || box.querySelector('.empty-state')) return
 
-    // --- Events ---
-    userInput.addEventListener('input', updateCounters);
-    transformBtn.addEventListener('click', handleTransform);
-    clearBtn.addEventListener('click', handleClear);
-    pasteBtn.addEventListener('click', handlePaste);
-    themeToggle.addEventListener('click', toggleTheme);
-    sidebarToggle.addEventListener('click', toggleSidebar);
-    sidebarBackdrop.addEventListener('click', toggleSidebar);
+        navigator.clipboard.writeText(text).then(() => {
+          const originalHTML = btn.innerHTML
+          btn.innerHTML =
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied'
+          btn.style.borderColor = 'var(--accent-green)'
+          btn.style.color = 'var(--accent-green)'
+          setTimeout(() => {
+            btn.innerHTML = originalHTML
+            btn.style.borderColor = ''
+            btn.style.color = ''
+          }, 2000)
+          showToast('Copied to clipboard')
+        })
+      }
 
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', () => handleCopy(btn));
-    });
+      // --- Events ---
+      userInput.addEventListener('input', updateCounters)
+      transformBtn.addEventListener('click', handleTransform)
+      clearBtn.addEventListener('click', handleClear)
+      pasteBtn.addEventListener('click', handlePaste)
+      themeToggle.addEventListener('click', toggleTheme)
+      sidebarToggle.addEventListener('click', toggleSidebar)
+      sidebarBackdrop.addEventListener('click', toggleSidebar)
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const mode = link.getAttribute('data-mode');
-        switchPanel(mode);
-      });
-    });
+      document.querySelectorAll('.copy-btn').forEach((btn) => {
+        btn.addEventListener('click', () => handleCopy(btn))
+      })
 
-    document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') handleTransform();
-    });
+      document.querySelectorAll('.nav-link').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault()
+          const mode = link.getAttribute('data-mode')
+          switchPanel(mode)
+        })
+      })
 
-    // Init
-    initTheme();
-    updateCounters();
-    updateTransformButton();
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') handleTransform()
+      })
 
-  </script>
-</body>
+      // Init
+      initTheme()
+      updateCounters()
+      updateTransformButton()
+    </script>
+  </body>
 </html>
