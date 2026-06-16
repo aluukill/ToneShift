@@ -1,13 +1,18 @@
 # ToneShift
 
-ToneShift is an AI-powered tool that transforms your writing into different tones instantly. Whether you need to sound more professional, casual, or human, ToneShift has you covered.
+ToneShift is a lightweight, AI-driven text transformation engine. It processes raw input and instantly restructures it into specific stylistic formats—whether you need business-ready polish, authentic conversational pacing, or structured prompts for other AI agents.
 
-## What Does ToneShift Do?
+<div align="center">
+  <img src="https://i.ibb.co.com/NnHqP4SQ/Screenshot-6.png" alt="ToneShift Landing Page" width="800"/>
+  <br><br>
+  <img src="https://i.ibb.co.com/wrz5Rz4P/Screenshot-7.png" alt="ToneShift Interface" width="800"/>
+</div>
 
-ToneShift takes any text you write and rewrites it in a different style. Think of it as having a professional editor, a friendly conversation partner, and an AI expert all in one place.
+## Capabilities
 
-### Available Transformations
+ToneShift uses LLaMA 3.3 (via Groq) to analyze and rewrite text across five distinct modes:
 
+<<<<<<< HEAD
 | Mode                | Description                                                                                                      |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | **Professional**    | Transform your text into polished, business-ready writing suitable for executives, clients, and formal documents |
@@ -15,29 +20,48 @@ ToneShift takes any text you write and rewrites it in a different style. Think o
 | **Humanize**        | Remove AI-sounding patterns from text and make it sound authentically human-written                              |
 | **AI Agent Prompt** | Turn a rough idea into a detailed, professional AI prompt that gets better results                               |
 | **AI Detector**     | Analyze any text to estimate whether it was written by a human or AI                                             |
+=======
+| Mode | Function |
+| :--- | :--- |
+| **Professional** | Polishes rough drafts into business-ready copy suitable for executive communication and formal documentation. |
+| **Casual** | Relaxes formal text into natural, conversational language with authentic phrasing. |
+| **Humanize** | Strips predictable LLM cadence and vocabulary, restructuring text to bypass synthetic detection. |
+| **AI Prompt** | Expands raw ideas into highly structured, context-rich prompts designed for other AI agents. |
+| **Detector** | Analyzes text patterns to estimate the probability of synthetic generation. |
+>>>>>>> 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
+ToneShift requires a free [Groq API key](https://console.groq.com/keys) to handle the model inference. 
 
-You will need:
+### Local Development (Zero Setup)
+ToneShift can run entirely in the browser without a build step.
+1. Clone the repository.
+2. Duplicate `.env.example` and rename it to `.env.local`.
+3. Add your Groq API key to the file.
+4. Open `toneshift.html` directly in your browser.
 
-1. A computer with internet access
-2. A free Groq API key (instructions below)
+### Vercel Deployment (Recommended)
+For production use, the backend is optimized for Vercel Serverless Functions.
+1. Install the Vercel CLI: `npm i -g vercel`
+2. Authenticate: `vercel login`
+3. Deploy the project: `vercel`
+4. In your Vercel Project Settings, add a new Environment Variable: `GROQ_API_KEY` mapped to your key.
 
-### Obtaining Your API Key
+## Architecture
 
-ToneShift uses Groq's AI technology to process your text. To get your free API key:
+ToneShift is built with a minimalist, dependency-light stack:
+* **Frontend**: Vanilla HTML/CSS/JavaScript (Clean, dark-mode-ready UI)
+* **Backend**: Node.js (Vercel Serverless Functions)
+* **Inference**: LLaMA 3.3 powered by Groq's high-speed API
 
-1. Visit [console.groq.com/keys](https://console.groq.com/keys)
-2. Create a free account or sign in
-3. Click "Create API Key"
-4. Copy the key (it will look like a long string of letters and numbers)
+## API Reference
 
-### Running ToneShift Locally
+ToneShift's transformation logic can be consumed by external applications via its serverless endpoint.
 
-#### Option 1: Simple HTML File (No Installation)
+**Endpoint:** `POST /api/transform`
 
+<<<<<<< HEAD
 The easiest way to use ToneShift is to open the HTML file directly in your browser:
 
 1. Copy `.env.example` to a new file named `.env.local`
@@ -150,11 +174,15 @@ If you want to use ToneShift's transformation capabilities in your own applicati
 
 **Request Body**:
 
+=======
+**Payload:**
+>>>>>>> 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
 ```json
 {
-  "text": "Your text here",
-  "tone": "professional|casual|humanize|prompt|detector"
+  "text": "String to be transformed",
+  "tone": "professional | casual | humanize | prompt | detector"
 }
+<<<<<<< HEAD
 ```
 
 **Response**:
@@ -198,3 +226,5 @@ If you encounter issues:
 1. Check that your API key is valid and has not expired
 2. Verify you have an active internet connection
 3. Try refreshing the page and attempting the operation again
+=======
+>>>>>>> 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
