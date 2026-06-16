@@ -13,13 +13,13 @@ ToneShift is a lightweight, AI-driven text transformation engine. It processes r
 ToneShift uses LLaMA 3.3 (via Groq) to analyze and rewrite text across five distinct modes:
 
 <<<<<<< HEAD
-| Mode                | Description                                                                                                      |
+| Mode | Description |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Professional**    | Transform your text into polished, business-ready writing suitable for executives, clients, and formal documents |
-| **Casual / Gen-Z**  | Convert your text into natural, friendly conversation that sounds like a real person wrote it                    |
-| **Humanize**        | Remove AI-sounding patterns from text and make it sound authentically human-written                              |
-| **AI Agent Prompt** | Turn a rough idea into a detailed, professional AI prompt that gets better results                               |
-| **AI Detector**     | Analyze any text to estimate whether it was written by a human or AI                                             |
+| **Professional** | Transform your text into polished, business-ready writing suitable for executives, clients, and formal documents |
+| **Casual / Gen-Z** | Convert your text into natural, friendly conversation that sounds like a real person wrote it |
+| **Humanize** | Remove AI-sounding patterns from text and make it sound authentically human-written |
+| **AI Agent Prompt** | Turn a rough idea into a detailed, professional AI prompt that gets better results |
+| **AI Detector** | Analyze any text to estimate whether it was written by a human or AI |
 =======
 | Mode | Function |
 | :--- | :--- |
@@ -28,21 +28,26 @@ ToneShift uses LLaMA 3.3 (via Groq) to analyze and rewrite text across five dist
 | **Humanize** | Strips predictable LLM cadence and vocabulary, restructuring text to bypass synthetic detection. |
 | **AI Prompt** | Expands raw ideas into highly structured, context-rich prompts designed for other AI agents. |
 | **Detector** | Analyzes text patterns to estimate the probability of synthetic generation. |
->>>>>>> 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
+
+> > > > > > > 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
 
 ## Quick Start
 
-ToneShift requires a free [Groq API key](https://console.groq.com/keys) to handle the model inference. 
+ToneShift requires a free [Groq API key](https://console.groq.com/keys) to handle the model inference.
 
 ### Local Development (Zero Setup)
+
 ToneShift can run entirely in the browser without a build step.
+
 1. Clone the repository.
 2. Duplicate `.env.example` and rename it to `.env.local`.
 3. Add your Groq API key to the file.
 4. Open `toneshift.html` directly in your browser.
 
 ### Vercel Deployment (Recommended)
+
 For production use, the backend is optimized for Vercel Serverless Functions.
+
 1. Install the Vercel CLI: `npm i -g vercel`
 2. Authenticate: `vercel login`
 3. Deploy the project: `vercel`
@@ -51,9 +56,10 @@ For production use, the backend is optimized for Vercel Serverless Functions.
 ## Architecture
 
 ToneShift is built with a minimalist, dependency-light stack:
-* **Frontend**: Vanilla HTML/CSS/JavaScript (Clean, dark-mode-ready UI)
-* **Backend**: Node.js (Vercel Serverless Functions)
-* **Inference**: LLaMA 3.3 powered by Groq's high-speed API
+
+- **Frontend**: Vanilla HTML/CSS/JavaScript (Clean, dark-mode-ready UI)
+- **Backend**: Node.js (Vercel Serverless Functions)
+- **Inference**: LLaMA 3.3 powered by Groq's high-speed API
 
 ## API Reference
 
@@ -176,7 +182,9 @@ If you want to use ToneShift's transformation capabilities in your own applicati
 
 =======
 **Payload:**
->>>>>>> 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
+
+> > > > > > > 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
+
 ```json
 {
   "text": "String to be transformed",
@@ -225,6 +233,5 @@ If you encounter issues:
 
 1. Check that your API key is valid and has not expired
 2. Verify you have an active internet connection
-3. Try refreshing the page and attempting the operation again
-=======
->>>>>>> 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
+3. # Try refreshing the page and attempting the operation again
+   > > > > > > > 2b2c28ef0db36ceccf0dd5b8206e1eca0de1ee1d
