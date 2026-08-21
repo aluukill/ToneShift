@@ -304,9 +304,12 @@ function buildMessages(userText, tone) {
       );
 
       const transformContext = {
-        professional: "Rewrite this text as polished, executive-level professional prose.",
-        casual: "Rewrite this text as natural, engaging conversational writing.",
-        humanize: "Rewrite this text so it reads as authentically human-written.",
+        professional:
+          "Rewrite this text as polished, executive-level professional prose.",
+        casual:
+          "Rewrite this text as natural, engaging conversational writing.",
+        humanize:
+          "Rewrite this text so it reads as authentically human-written.",
       };
 
       userPrompt = `${transformContext[selected]}\n\n${tagged}`;
