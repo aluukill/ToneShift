@@ -1,20 +1,3 @@
-/* ============================================================
-   ToneShift API — Production Grade Version
-   ============================================================
-
-   Serverless Function for Vercel
-
-   Endpoint:
-   POST /api/transform
-
-   Body:
-   {
-     "text": "user input",
-     "tone": "professional|casual|humanize|prompt|detector"
-   }
-
-   ============================================================ */
-
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
 const AI_MODEL = "openai/gpt-oss-120b";
 
@@ -33,10 +16,6 @@ const TEMPERATURE = {
   prompt: 0.3,
 };
 
-// ============================================================================
-// Mode Categories
-// ============================================================================
-
 const MODE_CATEGORY = {
   professional: "transform",
   casual: "transform",
@@ -44,10 +23,6 @@ const MODE_CATEGORY = {
   detector: "analyze",
   prompt: "generate",
 };
-
-// ============================================================================
-// TRANSFORM MODE INSTRUCTIONS
-// ============================================================================
 
 const TRANSFORM_INSTRUCTIONS = {
   professional: `
@@ -127,10 +102,6 @@ Would a reader assume a thoughtful human wrote it without hesitation? Then you'r
 `,
 };
 
-// ============================================================================
-// ANALYZE MODE INSTRUCTIONS
-// ============================================================================
-
 const ANALYZE_INSTRUCTIONS = {
   detector: `
 ANALYSIS PROFILE — AI DETECTOR
@@ -167,10 +138,6 @@ Top Indicators:
 Assessment: [2-3 sentences weighing the strongest evidence on both sides]
 `,
 };
-
-// ============================================================================
-// GENERATE MODE INSTRUCTIONS
-// ============================================================================
 
 const GENERATE_INSTRUCTIONS = {
   prompt: `
@@ -219,10 +186,6 @@ Result:
 Add JSDoc. Use map/filter/reduce — no imperative loops."
 `,
 };
-
-// ============================================================================
-// SYSTEM PROMPT BUILDERS
-// ============================================================================
 
 function buildTransformSystemPrompt(instruction) {
   return `You are ToneShift — a precision rewriting engine. You transform text between styles. That is all you do.
@@ -278,10 +241,6 @@ PROFILE
 ${instruction}
 `;
 }
-
-// ============================================================================
-// MESSAGE BUILDER
-// ============================================================================
 
 function sanitizeForInputTag(text) {
   return text.replace(/<\/?\s*input\s*>/gi, "");
@@ -339,10 +298,6 @@ function buildMessages(userText, tone) {
   ];
 }
 
-// ============================================================================
-// VALIDATION
-// ============================================================================
-
 function validateRequest(body) {
   if (!body || typeof body !== "object") {
     return { valid: false, error: "Request body required" };
@@ -371,10 +326,6 @@ function validateRequest(body) {
   return { valid: true, text, tone };
 }
 
-// ============================================================================
-// OUTPUT PARSER
-// ============================================================================
-
 function parseModelOutput(content, tone) {
   if (!content || typeof content !== "string") {
     return {
@@ -400,10 +351,6 @@ function parseModelOutput(content, tone) {
     text: trimmedContent,
   };
 }
-
-// ============================================================================
-// ERROR HANDLING
-// ============================================================================
 
 class APIError extends Error {
   constructor(message, statusCode = 500, type = "internal_error") {
@@ -432,10 +379,6 @@ function handleAPIError(error) {
     type: "internal_error",
   };
 }
-
-// ============================================================================
-// API HANDLER
-// ============================================================================
 
 export default async function handler(req, res) {
   try {
