@@ -10,7 +10,7 @@ ToneShift is a lightweight, AI-driven text transformation engine. It processes r
 
 ## Capabilities
 
-ToneShift uses LLaMA 3.3 (via Groq) to analyze and rewrite text across five distinct modes:
+ToneShift uses GPT-OSS 120B (via Groq) to analyze and rewrite text across five distinct modes:
 
 <<<<<<< HEAD
 | Mode | Description |
@@ -59,7 +59,7 @@ ToneShift is built with a minimalist, dependency-light stack:
 
 - **Frontend**: Vanilla HTML/CSS/JavaScript (Clean, dark-mode-ready UI)
 - **Backend**: Node.js (Vercel Serverless Functions)
-- **Inference**: LLaMA 3.3 powered by Groq's high-speed API
+- **Inference**: GPT-OSS 120B powered by Groq's high-speed API
 
 ## API Reference
 
@@ -169,7 +169,7 @@ The backend is designed as a Vercel serverless function, meaning it runs automat
 
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Node.js (Serverless function)
-- **AI Model**: LLaMA 3.3 (via Groq API)
+- **AI Model**: GPT-OSS 120B (via Groq API)
 - **Deployment**: Vercel
 
 ### API Reference

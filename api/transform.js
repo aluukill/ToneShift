@@ -16,7 +16,7 @@
    ============================================================ */
 
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
-const AI_MODEL = "llama-3.3-70b-versatile";
+const AI_MODEL = "openai/gpt-oss-120b";
 
 const MAX_CHARS = 5000;
 const MAX_TOKENS = {
@@ -665,6 +665,7 @@ export default async function handler(req, res) {
       temperature: TEMPERATURE[tone] ?? 0.5,
       max_tokens: MAX_TOKENS[category] ?? 1000,
       top_p: 0.95,
+      reasoning_effort: "low",
       stream: false,
     };
 
