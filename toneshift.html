@@ -122,10 +122,7 @@ kbd{padding:2px 6px;background:var(--surface-2);border:1px solid var(--border);b
 .verdict-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);flex-shrink:0}
 .verdict-title{font-weight:600;font-size:15px}
 .verdict-desc{font-size:13px;color:var(--text-secondary);line-height:1.5}
-#toast-container{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:1000}
-.toast{background:var(--surface);color:var(--text-primary);padding:12px 16px;border-radius:999px;border:1px solid var(--border);font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;max-width:360px}
-.toast.success{border-color:var(--accent)}
-.toast.error{border-color:#ff4a4a}
+#toast-container{display:none}
 .skeleton{background:var(--surface-2);border-radius:6px;height:14px;margin-bottom:10px;width:100%;border:1px solid var(--border)}
 .skeleton-w-75{width:75%}
 .skeleton-w-50{width:50%}
@@ -336,7 +333,6 @@ Copy
 </div>
 </main>
 </div>
-<div id="toast-container"></div>
 <script>
 const API_ENDPOINT = "/api/transform";
 const MAX_CHARS = 5000;
@@ -348,7 +344,6 @@ const pasteBtn = document.getElementById("paste-btn");
 const charCountEl = document.getElementById("char-count");
 const wordCountEl = document.getElementById("word-count");
 const charLimitFill = document.getElementById("char-limit-fill");
-const toastContainer = document.getElementById("toast-container");
 const sidebar = document.getElementById("sidebar");
 const sidebarToggle = document.getElementById("sidebar-toggle");
 const sidebarBackdrop = document.getElementById("sidebar-backdrop");
@@ -423,18 +418,7 @@ transformBtn.style.background = "var(--accent)";
 transformBtn.style.borderColor = "var(--accent)";
 transformBtn.style.color = "#0E0E0F";
 }
-function showToast(message, type){
-if(!type) type = "success";
-var toast = document.createElement("div");
-toast.className = "toast " + type;
-var icon = type === "success" ? '<i data-lucide="check" style="width:16px;height:16px"></i>' : '<i data-lucide="alert-circle" style="width:16px;height:16px"></i>';
-toast.innerHTML = icon + "<span>"+message+"</span>";
-toastContainer.appendChild(toast);
-lucide.createIcons();
-setTimeout(function(){
-toast.remove();
-}, 3000);
-}
+function showToast(){}
 function updateCounters(){
 var val = userInput.value;
 var chars = val.length;
